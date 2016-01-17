@@ -115,39 +115,39 @@ public class SQLGridView extends View
         {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SQLGridView, defStyleAttr, defStyleRes);
 
-            mVerticalDividerSize = a.getDimension(R.styleable.SQLGridView_verticalDividerSize, DEFAULT_DIVIDER_SIZE);
-            mHorizontalDividerSize = a.getDimension(R.styleable.SQLGridView_horizontalDividerSize, DEFAULT_DIVIDER_SIZE);
+            mVerticalDividerSize = a.getDimension(R.styleable.SQLGridView_sqlview_verticalDividerSize, DEFAULT_DIVIDER_SIZE);
+            mHorizontalDividerSize = a.getDimension(R.styleable.SQLGridView_sqlview_horizontalDividerSize, DEFAULT_DIVIDER_SIZE);
 
             mTextSize = a.getDimension(R.styleable.SQLGridView_android_textSize, dpToPixels(DEFAULT_TEXT_SIZE));
 
-            mItemPaddingTop = a.getDimension(R.styleable.SQLGridView_itemPaddingTop, dpToPixels(DEFAULT_PADDING));
-            mItemPaddingBottom = a.getDimension(R.styleable.SQLGridView_itemPaddingBottom, dpToPixels(DEFAULT_PADDING));
-            mItemPaddingLeft = a.getDimension(R.styleable.SQLGridView_itemPaddingLeft, dpToPixels(DEFAULT_PADDING));
-            mItemPaddingRight = a.getDimension(R.styleable.SQLGridView_itemPaddingRight, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingTop = a.getDimension(R.styleable.SQLGridView_sqlview_itemPaddingTop, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingBottom = a.getDimension(R.styleable.SQLGridView_sqlview_itemPaddingBottom, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingLeft = a.getDimension(R.styleable.SQLGridView_sqlview_itemPaddingLeft, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingRight = a.getDimension(R.styleable.SQLGridView_sqlview_itemPaddingRight, dpToPixels(DEFAULT_PADDING));
 
-            mMaxColumnWidth = a.getDimension(R.styleable.SQLGridView_maxColumnWidth, dpToPixels(DEFAULT_MAX_COLUMN_WIDTH));
+            mMaxColumnWidth = a.getDimension(R.styleable.SQLGridView_sqlview_maxColumnWidth, dpToPixels(DEFAULT_MAX_COLUMN_WIDTH));
 
-            mMaxRowsToDisplay = a.getInteger(R.styleable.SQLGridView_maxDisplayRows, DEFAULT_MAX_ROWS_TO_DISPLAY);
-            mShowMessageIfDisplayLimitIsExceeded = a.getBoolean(R.styleable.SQLGridView_showMessageIfDisplayLimitIsExceeded, DEFAULT_SHOW_LIMIT_EXCEEDED_MESSAGE);
+            mMaxRowsToDisplay = a.getInteger(R.styleable.SQLGridView_sqlview_maxDisplayRows, DEFAULT_MAX_ROWS_TO_DISPLAY);
+            mShowMessageIfDisplayLimitIsExceeded = a.getBoolean(R.styleable.SQLGridView_sqlview_showMessageIfDisplayLimitIsExceeded, DEFAULT_SHOW_LIMIT_EXCEEDED_MESSAGE);
 
-            mDividerColor = a.getColor(R.styleable.SQLGridView_dividerColor, DEFAULT_DIVIDER_COLOR);
+            mDividerColor = a.getColor(R.styleable.SQLGridView_sqlview_dividerColor, DEFAULT_DIVIDER_COLOR);
 
-            mItemTextColor = a.getColor(R.styleable.SQLGridView_itemTextColor, DEFAULT_ITEM_TEXT_COLOR);
-            mItemTextColorSelected = a.getColor(R.styleable.SQLGridView_itemTextColorSelected, DEFAULT_ITEM_TEXT_COLOR_SELECTED);
+            mItemTextColor = a.getColor(R.styleable.SQLGridView_sqlview_itemTextColor, DEFAULT_ITEM_TEXT_COLOR);
+            mItemTextColorSelected = a.getColor(R.styleable.SQLGridView_sqlview_itemTextColorSelected, DEFAULT_ITEM_TEXT_COLOR_SELECTED);
 
-            mColumnTextColor = a.getColor(R.styleable.SQLGridView_columnTextColor, DEFAULT_COLUMN_TEXT_COLOR);
+            mColumnTextColor = a.getColor(R.styleable.SQLGridView_sqlview_columnTextColor, DEFAULT_COLUMN_TEXT_COLOR);
 
-            if (a.hasValue(R.styleable.SQLGridView_columnsBackground))
+            if (a.hasValue(R.styleable.SQLGridView_sqlview_columnsBackground))
             {
-                mColumnsBackground = a.getDrawable(R.styleable.SQLGridView_columnsBackground);
+                mColumnsBackground = a.getDrawable(R.styleable.SQLGridView_sqlview_columnsBackground);
             }
             else
             {
                 mColumnsBackground = new ColorDrawable(DEFAULT_COLUMNS_BACKGROUND_COLOR);
             }
-            if (a.hasValue(R.styleable.SQLGridView_selectedItemBackground))
+            if (a.hasValue(R.styleable.SQLGridView_sqlview_selectedItemBackground))
             {
-                mSelectedItemBackground = a.getDrawable(R.styleable.SQLGridView_selectedItemBackground);
+                mSelectedItemBackground = a.getDrawable(R.styleable.SQLGridView_sqlview_selectedItemBackground);
             }
             else
             {

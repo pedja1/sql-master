@@ -8,5 +8,5 @@
     tools:context=".MainActivity"
     android:id="@+id/sqlView"
     android:background="@android:color/white"
-    app:dividerColor="@color/grey"
+    app:sqlview_dividerColor="@color/grey"
     />
