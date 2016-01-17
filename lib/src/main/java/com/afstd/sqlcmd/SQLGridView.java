@@ -2,10 +2,13 @@ package com.afstd.sqlcmd;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -14,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Scroller;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,21 @@ import java.util.List;
  */
 public class SQLGridView extends View
 {
+
+    private static final float DEFAULT_DIVIDER_SIZE = 1;//dp
+    private static final float DEFAULT_PADDING = 5;//dp
+    private static final float DEFAULT_TEXT_SIZE = 14;//dp
+    private static final float DEFAULT_MAX_COLUMN_WIDTH = 150;//dp
+
+    private static final int DEFAULT_MAX_ROWS_TO_DISPLAY = 5000;
+    private static final boolean DEFAULT_SHOW_LIMIT_EXCEEDED_MESSAGE = true;
+    private static final int DEFAULT_DIVIDER_COLOR = Color.GRAY;
+    private static final int DEFAULT_ITEM_TEXT_COLOR = Color.GRAY;
+    private static final int DEFAULT_ITEM_TEXT_COLOR_SELECTED = Color.WHITE;
+    private static final int DEFAULT_COLUMN_TEXT_COLOR = Color.WHITE;
+    private static final int DEFAULT_COLUMNS_BACKGROUND_COLOR = Color.CYAN;
+    private static final int DEFAULT_ITEM_SELECTED_BACKGROUND = Color.GRAY;
+
     private Rect mClipRect;
     private Rect mDrawingRect;
     private Rect mMeasuringRect;
@@ -37,41 +56,50 @@ public class SQLGridView extends View
     private int mMaxVerticalScroll;
 
     private int mRowHeight;
-    private float mPadding;
+    private float mItemPaddingLeft;
+    private float mItemPaddingRight;
+    private float mItemPaddingTop;
+    private float mItemPaddingBottom;
     private float mTextSize;
     private float mMaxColumnWidth;
 
     private int mMaxRowsToDisplay;
-    private float separatorSize;
+    private float mVerticalDividerSize;
+    private float mHorizontalDividerSize;
+
+    private int mDividerColor, mItemTextColor, mItemTextColorSelected, mColumnTextColor;
+    private Drawable mColumnsBackground, mSelectedItemBackground;
+
+    private boolean mShowMessageIfDisplayLimitIsExceeded;
 
     private List<Column> data;
 
     public SQLGridView(Context context)
     {
         super(context);
-        init();
+        init(null, 0, 0);
     }
 
     public SQLGridView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
+        init(attrs, 0, 0);
     }
 
     public SQLGridView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SQLGridView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(attrs, defStyleAttr, defStyleRes);
     }
 
-    private void init()
+    private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mDrawingRect = new Rect();
@@ -83,11 +111,72 @@ public class SQLGridView extends View
         mScroller = new Scroller(getContext());
         mScroller.setFriction(0.2f);
 
-        separatorSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1 , getResources().getDisplayMetrics());
-        mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
-        mPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-        mMaxColumnWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics());
-        mMaxRowsToDisplay = 5000;
+        if (attrs != null)
+        {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SQLGridView, defStyleAttr, defStyleRes);
+
+            mVerticalDividerSize = a.getDimension(R.styleable.SQLGridView_verticalDividerSize, DEFAULT_DIVIDER_SIZE);
+            mHorizontalDividerSize = a.getDimension(R.styleable.SQLGridView_horizontalDividerSize, DEFAULT_DIVIDER_SIZE);
+
+            mTextSize = a.getDimension(R.styleable.SQLGridView_android_textSize, dpToPixels(DEFAULT_TEXT_SIZE));
+
+            mItemPaddingTop = a.getDimension(R.styleable.SQLGridView_itemPaddingTop, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingBottom = a.getDimension(R.styleable.SQLGridView_itemPaddingBottom, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingLeft = a.getDimension(R.styleable.SQLGridView_itemPaddingLeft, dpToPixels(DEFAULT_PADDING));
+            mItemPaddingRight = a.getDimension(R.styleable.SQLGridView_itemPaddingRight, dpToPixels(DEFAULT_PADDING));
+
+            mMaxColumnWidth = a.getDimension(R.styleable.SQLGridView_maxColumnWidth, dpToPixels(DEFAULT_MAX_COLUMN_WIDTH));
+
+            mMaxRowsToDisplay = a.getInteger(R.styleable.SQLGridView_maxDisplayRows, DEFAULT_MAX_ROWS_TO_DISPLAY);
+            mShowMessageIfDisplayLimitIsExceeded = a.getBoolean(R.styleable.SQLGridView_showMessageIfDisplayLimitIsExceeded, DEFAULT_SHOW_LIMIT_EXCEEDED_MESSAGE);
+
+            mDividerColor = a.getColor(R.styleable.SQLGridView_dividerColor, DEFAULT_DIVIDER_COLOR);
+
+            mItemTextColor = a.getColor(R.styleable.SQLGridView_itemTextColor, DEFAULT_ITEM_TEXT_COLOR);
+            mItemTextColorSelected = a.getColor(R.styleable.SQLGridView_itemTextColorSelected, DEFAULT_ITEM_TEXT_COLOR_SELECTED);
+
+            mColumnTextColor = a.getColor(R.styleable.SQLGridView_columnTextColor, DEFAULT_COLUMN_TEXT_COLOR);
+
+            if (a.hasValue(R.styleable.SQLGridView_columnsBackground))
+            {
+                mColumnsBackground = a.getDrawable(R.styleable.SQLGridView_columnsBackground);
+            }
+            else
+            {
+                mColumnsBackground = new ColorDrawable(DEFAULT_COLUMNS_BACKGROUND_COLOR);
+            }
+            if (a.hasValue(R.styleable.SQLGridView_selectedItemBackground))
+            {
+                mSelectedItemBackground = a.getDrawable(R.styleable.SQLGridView_selectedItemBackground);
+            }
+            else
+            {
+                mSelectedItemBackground = new ColorDrawable(DEFAULT_ITEM_SELECTED_BACKGROUND);
+            }
+
+            a.recycle();
+        }
+        else
+        {
+            mVerticalDividerSize = mHorizontalDividerSize = dpToPixels(DEFAULT_DIVIDER_SIZE);
+            mTextSize = dpToPixels(DEFAULT_TEXT_SIZE);
+            mItemPaddingBottom = mItemPaddingLeft = mItemPaddingRight = mItemPaddingTop = dpToPixels(DEFAULT_PADDING);
+            mMaxColumnWidth = dpToPixels(DEFAULT_MAX_COLUMN_WIDTH);
+            mMaxRowsToDisplay = DEFAULT_MAX_ROWS_TO_DISPLAY;
+            mShowMessageIfDisplayLimitIsExceeded = DEFAULT_SHOW_LIMIT_EXCEEDED_MESSAGE;
+            mDividerColor = DEFAULT_DIVIDER_COLOR;
+            mItemTextColor = DEFAULT_ITEM_TEXT_COLOR;
+            mItemTextColorSelected = DEFAULT_ITEM_TEXT_COLOR_SELECTED;
+            mColumnTextColor = DEFAULT_COLUMN_TEXT_COLOR;
+            mColumnsBackground = new ColorDrawable(DEFAULT_COLUMNS_BACKGROUND_COLOR);
+            mSelectedItemBackground = new ColorDrawable(DEFAULT_COLUMNS_BACKGROUND_COLOR);
+        }
+
+    }
+
+    private float dpToPixels(float dps)
+    {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dps, getResources().getDisplayMetrics());
     }
 
     @Override
@@ -104,7 +193,7 @@ public class SQLGridView extends View
             drawingRect.bottom = drawingRect.top + getHeight();
 
             drawEvents(canvas, drawingRect);
-            drawTimebar(canvas, drawingRect);
+            drawColumns(canvas, drawingRect);
 
             // If scroller is scrolling/animating do scroll. This applies when doing a fling.
             if (mScroller.computeScrollOffset())
@@ -140,29 +229,29 @@ public class SQLGridView extends View
         for (Column column : data)
         {
             //if not visible skip it
-            if(columnOffsetX + column.columnWidth < getScrollX())
+            if (columnOffsetX + column.columnWidth < getScrollX())
             {
-                columnOffsetX += column.columnWidth + separatorSize;
+                columnOffsetX += column.columnWidth + mHorizontalDividerSize;
                 continue;
             }
             //if we are past screen width, dont draw any more
-            if(columnOffsetX > getScrollX() + getWidth())
+            if (columnOffsetX > getScrollX() + getWidth())
                 break;
             // Set clip rectangle
             mClipRect.left = getScrollX();
             mClipRect.top = getScrollY() + mRowHeight;
-            mClipRect.right = (int) (columnOffsetX + column.columnWidth + separatorSize);
+            mClipRect.right = (int) (columnOffsetX + column.columnWidth + mHorizontalDividerSize);
             mClipRect.bottom = mClipRect.top + getHeight();
 
             canvas.save();
             canvas.clipRect(mClipRect);
 
             int itemOffsetY = mRowHeight;
-            for(SQLCMD.KeyValuePair pair : column.entries)
+            for (SQLCMD.KeyValuePair pair : column.entries)
             {
-                if(itemOffsetY < getScrollY() - mRowHeight)
+                if (itemOffsetY < getScrollY() - mRowHeight)
                 {
-                    itemOffsetY += mRowHeight + separatorSize;
+                    itemOffsetY += mRowHeight + mVerticalDividerSize;
                     continue;
                 }
                 if (itemOffsetY + mRowHeight > mClipRect.bottom)
@@ -174,31 +263,52 @@ public class SQLGridView extends View
                 drawingRect.bottom = drawingRect.top + mRowHeight;
                 drawEvent(canvas, pair, drawingRect);
 
-                itemOffsetY += mRowHeight + separatorSize;
+                drawingRect.top = (int) (itemOffsetY + mRowHeight - mVerticalDividerSize);
+                drawingRect.left = columnOffsetX;
+                drawingRect.right = drawingRect.left + (int) column.columnWidth;
+                drawingRect.bottom = (int) (drawingRect.top + mVerticalDividerSize);
+                drawDivider(canvas, drawingRect);
+
+                itemOffsetY += mRowHeight + mVerticalDividerSize;
             }
+
+            drawingRect.top = getScrollY() + mRowHeight;
+            drawingRect.left = (int) (columnOffsetX + column.columnWidth - mHorizontalDividerSize);
+            drawingRect.right = (int) (drawingRect.left + mHorizontalDividerSize);
+            drawingRect.bottom = drawingRect.top + getHeight();
+            drawDivider(canvas, drawingRect);
 
             canvas.restore();
 
-            columnOffsetX += column.columnWidth + separatorSize;
+            columnOffsetX += column.columnWidth + mHorizontalDividerSize;
         }
 
+    }
+
+    private void drawDivider(Canvas canvas, Rect drawingRect)
+    {
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(mDividerColor);
+        canvas.drawRect(drawingRect, mPaint);
     }
 
     private void drawEvent(final Canvas canvas, final SQLCMD.KeyValuePair item, final Rect drawingRect)
     {
         // Background
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(item.selected ? Color.GRAY : Color.WHITE);
-        canvas.drawRect(drawingRect, mPaint);
+        if (item.selected && mSelectedItemBackground != null)
+        {
+            mSelectedItemBackground.setBounds(drawingRect.left, drawingRect.top, drawingRect.right, drawingRect.bottom);
+            mSelectedItemBackground.draw(canvas);
+        }
 
         // Add left and right inner padding
-        drawingRect.left += separatorSize;
-        drawingRect.right -= separatorSize;
-        drawingRect.top += separatorSize;
-        drawingRect.bottom -= separatorSize;
+        drawingRect.left += mHorizontalDividerSize;
+        drawingRect.right -= mHorizontalDividerSize;
+        drawingRect.top += mVerticalDividerSize;
+        drawingRect.bottom -= mVerticalDividerSize;
 
         // Description
-        mPaint.setColor(item.selected ? Color.WHITE : Color.GRAY);
+        mPaint.setColor(item.selected ? mItemTextColorSelected : mItemTextColor);
         mPaint.setTextSize(mTextSize);
 
         String desc = item.value;
@@ -211,7 +321,7 @@ public class SQLGridView extends View
         canvas.drawText(desc, drawingRect.left, drawingRect.top, mPaint);
     }
 
-    private void drawTimebar(Canvas canvas, Rect drawingRect)
+    private void drawColumns(Canvas canvas, Rect drawingRect)
     {
         drawingRect.left = getScrollX();
         drawingRect.top = getScrollY();
@@ -227,31 +337,33 @@ public class SQLGridView extends View
         canvas.clipRect(mClipRect);
 
         // Background
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.CYAN);
-        canvas.drawRect(drawingRect, mPaint);
+        if (mColumnsBackground != null)
+        {
+            mColumnsBackground.setBounds(drawingRect.left, drawingRect.top, drawingRect.right, drawingRect.bottom);
+            mColumnsBackground.draw(canvas);
+        }
 
         // Time stamps
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(mColumnTextColor);
         mPaint.setTextSize(mTextSize);
 
         int columnOffsetX = 0;
         for (Column column : data)
         {
             //if not visible skip it
-            if(columnOffsetX + column.columnWidth < getScrollX())
+            if (columnOffsetX + column.columnWidth < getScrollX())
             {
-                columnOffsetX += column.columnWidth + separatorSize;
+                columnOffsetX += column.columnWidth + mHorizontalDividerSize;
                 continue;
             }
             //if we are past screen width, dont draw any more
-            if(columnOffsetX > getScrollX() + getWidth())
+            if (columnOffsetX > getScrollX() + getWidth())
                 break;
 
             canvas.drawText(column.column,
                     columnOffsetX,
                     drawingRect.top + (((drawingRect.bottom - drawingRect.top) / 2) + (mTextSize / 2)), mPaint);
-            columnOffsetX += column.columnWidth + separatorSize;
+            columnOffsetX += column.columnWidth + mHorizontalDividerSize;
         }
 
         canvas.restore();
@@ -282,9 +394,9 @@ public class SQLGridView extends View
     private void calculateMaxHorizontalScroll()
     {
         mMaxHorizontalScroll = 0;
-        for(Column column : data)
+        for (Column column : data)
         {
-            mMaxHorizontalScroll += column.columnWidth + separatorSize;
+            mMaxHorizontalScroll += column.columnWidth + mHorizontalDividerSize;
         }
         mMaxHorizontalScroll = mMaxHorizontalScroll < getWidth() ? 0 : mMaxHorizontalScroll - getWidth();
     }
@@ -294,9 +406,9 @@ public class SQLGridView extends View
         mPaint.setTextSize(mTextSize);
         mPaint.getTextBounds("A", 0, 1, mMeasuringRect);
         int height = mMeasuringRect.height();
-        mRowHeight = (int) (height + mPadding * 2);
+        mRowHeight = (int) (height + mItemPaddingTop + mItemPaddingBottom);
 
-        mMaxVerticalScroll = (int) ((mRowHeight + separatorSize) * (data.get(0).entries.size() + 1));
+        mMaxVerticalScroll = (int) ((mRowHeight + mVerticalDividerSize) * (data.get(0).entries.size() + 1));
 
         mMaxVerticalScroll = mMaxVerticalScroll < getHeight() ? 0 : mMaxVerticalScroll - getHeight();
     }
@@ -312,25 +424,25 @@ public class SQLGridView extends View
 
     public void setData(List<List<SQLCMD.KeyValuePair>> newData)
     {
-        if(newData == null || newData.isEmpty())
+        if (newData == null || newData.isEmpty())
             return;
-        if(data == null)
+        if (data == null)
             data = new ArrayList<>();
         mPaint.setTextSize(mTextSize);
         data.clear();
         int offset = 0;
-        for(List<SQLCMD.KeyValuePair> row : newData)
+        for (List<SQLCMD.KeyValuePair> row : newData)
         {
             int columnIndex = 0;
-            for(SQLCMD.KeyValuePair pair : row)
+            for (SQLCMD.KeyValuePair pair : row)
             {
-                if(pair.value == null)
+                if (pair.value == null)
                     pair.value = "NULL";
-                if(data.size() == columnIndex)
+                if (data.size() == columnIndex)
                 {
                     Column column = new Column();
                     mPaint.getTextBounds(pair.key, 0, pair.key.length(), mMeasuringRect);
-                    column.columnWidth = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + 2 * mPadding));
+                    column.columnWidth = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + mItemPaddingLeft + mItemPaddingRight));
                     data.add(column);
                 }
                 Column column = data.get(columnIndex);
@@ -338,15 +450,21 @@ public class SQLGridView extends View
                 column.entries.add(pair);
 
                 mPaint.getTextBounds(pair.value, 0, pair.value.length(), mMeasuringRect);
-                float width = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + 2 * mPadding));
-                if(width > column.columnWidth)
+                float width = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + mItemPaddingLeft + mItemPaddingRight));
+                if (width > column.columnWidth)
                     column.columnWidth = width;
 
                 columnIndex++;
             }
             offset++;
-            if(offset >= mMaxRowsToDisplay)
+            if (offset >= mMaxRowsToDisplay)
+            {
+                if (mShowMessageIfDisplayLimitIsExceeded)
+                {
+                    Toast.makeText(getContext(), getResources().getString(R.string.display_limit_exceeded, mMaxRowsToDisplay), Toast.LENGTH_SHORT).show();
+                }
                 break;
+            }
         }
         recalculateAndRedraw(false);
     }
@@ -368,22 +486,22 @@ public class SQLGridView extends View
             int offsetX = 0;
             int selectedColumnPosition = -1;
             int columnPositionOffset = 0;
-            for(Column column : data)
+            for (Column column : data)
             {
-                offsetX += column.columnWidth + separatorSize;
-                if(offsetX < scrollX)
+                offsetX += column.columnWidth + mHorizontalDividerSize;
+                if (offsetX < scrollX)
                 {
                     deselectColumn(column);
                     continue;
                 }
 
-                if(selectedColumnPosition == -1)
+                if (selectedColumnPosition == -1)
                 {
-                    int position = (int) Math.floor((scrollY - (mRowHeight + separatorSize)) / (mRowHeight + separatorSize));
+                    int position = (int) Math.floor((scrollY - (mRowHeight + mVerticalDividerSize)) / (mRowHeight + mVerticalDividerSize));
                     int offset = 0;
-                    for(SQLCMD.KeyValuePair pair : column.entries)
+                    for (SQLCMD.KeyValuePair pair : column.entries)
                     {
-                        if(position == offset)
+                        if (position == offset)
                         {
                             pair.selected = true;
                             redraw();
@@ -410,7 +528,7 @@ public class SQLGridView extends View
 
         private void deselectColumn(Column column)
         {
-            for(SQLCMD.KeyValuePair pair : column.entries)
+            for (SQLCMD.KeyValuePair pair : column.entries)
             {
                 pair.selected = false;
             }

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         List<List<SQLCMD.KeyValuePair>> data;
         try
         {
-            data = sqlcmd.executeSql("SELECT * FROM test-_table");
+            data = sqlcmd.executeSql("SELECT * FROM test_table");
             sqlView.setData(data);
         }
         catch (SQLCMDException e)
