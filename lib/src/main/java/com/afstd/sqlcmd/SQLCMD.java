@@ -22,29 +22,36 @@ public class SQLCMD
         this.database = database;
     }
 
-    public List<List<KeyValuePair>> executeSql(String sql)
+    public List<List<KeyValuePair>> executeSql(String sql) throws SQLCMDException
     {
         return executeSql(database, sql);
     }
 
-    public List<List<KeyValuePair>> executeSql(SQLiteDatabase database, String sql)
+    public List<List<KeyValuePair>> executeSql(SQLiteDatabase database, String sql) throws SQLCMDException
     {
-        List<List<KeyValuePair>> result = new ArrayList<>();
-        Cursor cursor = database.rawQuery(sql, null);
-
-        while (cursor.moveToNext())
+        try
         {
-            List<KeyValuePair> row = new ArrayList<>();
-            for(int i = 0; i < cursor.getColumnCount(); i++)
-            {
-                KeyValuePair keyValuePair = new KeyValuePair(cursor.getColumnName(i), cursor.getString(i));
-                row.add(keyValuePair);
-            }
-            result.add(row);
-        }
+            List<List<KeyValuePair>> result = new ArrayList<>();
+            Cursor cursor = database.rawQuery(sql, null);
 
-        cursor.close();
-        return result;
+            while (cursor.moveToNext())
+            {
+                List<KeyValuePair> row = new ArrayList<>();
+                for(int i = 0; i < cursor.getColumnCount(); i++)
+                {
+                    KeyValuePair keyValuePair = new KeyValuePair(cursor.getColumnName(i), cursor.getString(i));
+                    row.add(keyValuePair);
+                }
+                result.add(row);
+            }
+
+            cursor.close();
+            return result;
+        }
+        catch (Exception e)
+        {
+            throw new SQLCMDException(e);
+        }
     }
 
     public String serializeToJson(List<List<KeyValuePair>> result)
@@ -76,12 +83,12 @@ public class SQLCMD
         }
     }
 
-    public String serializeToJson(String sql)
+    public String serializeToJson(String sql) throws SQLCMDException
     {
         return serializeToJson(executeSql(sql));
     }
 
-    public String serializeToJson(SQLiteDatabase database, String sql)
+    public String serializeToJson(SQLiteDatabase database, String sql) throws SQLCMDException
     {
         return serializeToJson(executeSql(database, sql));
     }
@@ -90,7 +97,7 @@ public class SQLCMD
     public static class KeyValuePair
     {
         public final String key;
-        public final String value;
+        public String value;
         public boolean selected;
 
         public KeyValuePair(String key, String value)

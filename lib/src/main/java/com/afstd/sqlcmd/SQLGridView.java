@@ -324,6 +324,8 @@ public class SQLGridView extends View
             int columnIndex = 0;
             for(SQLCMD.KeyValuePair pair : row)
             {
+                if(pair.value == null)
+                    pair.value = "NULL";
                 if(data.size() == columnIndex)
                 {
                     Column column = new Column();
@@ -334,10 +336,12 @@ public class SQLGridView extends View
                 Column column = data.get(columnIndex);
                 column.column = pair.key;
                 column.entries.add(pair);
+
                 mPaint.getTextBounds(pair.value, 0, pair.value.length(), mMeasuringRect);
                 float width = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + 2 * mPadding));
                 if(width > column.columnWidth)
                     column.columnWidth = width;
+
                 columnIndex++;
             }
             offset++;
