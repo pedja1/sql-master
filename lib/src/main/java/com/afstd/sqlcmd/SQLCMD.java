@@ -91,6 +91,7 @@ public class SQLCMD
     {
         public final String key;
         public final String value;
+        public boolean selected;
 
         public KeyValuePair(String key, String value)
         {

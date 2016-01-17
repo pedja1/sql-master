@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Scroller;
 
@@ -29,6 +30,8 @@ public class SQLGridView extends View
 
     private Scroller mScroller;
     private GestureDetector mGestureDetector;
+    private ScaleGestureDetector mScaleDetector;
+    private float mScaleFactor = 1.f;
 
     private int mMaxHorizontalScroll;
     private int mMaxVerticalScroll;
@@ -36,7 +39,9 @@ public class SQLGridView extends View
     private int mRowHeight;
     private float mPadding;
     private float mTextSize;
+    private float mMaxColumnWidth;
 
+    private int mMaxRowsToDisplay;
     private float separatorSize;
 
     private List<Column> data;
@@ -73,13 +78,16 @@ public class SQLGridView extends View
         mClipRect = new Rect();
         mMeasuringRect = new Rect();
         mGestureDetector = new GestureDetector(getContext(), new OnGestureListener());
+        mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 
         mScroller = new Scroller(getContext());
         mScroller.setFriction(0.2f);
 
         separatorSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1 , getResources().getDisplayMetrics());
-        mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics());
+        mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
         mPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+        mMaxColumnWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics());
+        mMaxRowsToDisplay = 5000;
     }
 
     @Override
@@ -87,6 +95,8 @@ public class SQLGridView extends View
     {
         if (data != null && !data.isEmpty())
         {
+            //canvas.save();
+            //canvas.scale(mScaleFactor, mScaleFactor);
             Rect drawingRect = mDrawingRect;
             drawingRect.left = getScrollX();
             drawingRect.top = getScrollY();
@@ -101,17 +111,14 @@ public class SQLGridView extends View
             {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             }
-        }
-        // If scroller is scrolling/animating do scroll. This applies when doing a fling.
-        if (mScroller.computeScrollOffset())
-        {
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            //canvas.restore();
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        mScaleDetector.onTouchEvent(event);
         return mGestureDetector.onTouchEvent(event);
     }
 
@@ -135,7 +142,7 @@ public class SQLGridView extends View
             //if not visible skip it
             if(columnOffsetX + column.columnWidth < getScrollX())
             {
-                columnOffsetX += column.columnWidth;
+                columnOffsetX += column.columnWidth + separatorSize;
                 continue;
             }
             //if we are past screen width, dont draw any more
@@ -153,7 +160,7 @@ public class SQLGridView extends View
             int itemOffsetY = mRowHeight;
             for(SQLCMD.KeyValuePair pair : column.entries)
             {
-                if(itemOffsetY < getScrollY() + mRowHeight)
+                if(itemOffsetY < getScrollY() - mRowHeight)
                 {
                     itemOffsetY += mRowHeight + separatorSize;
                     continue;
@@ -172,7 +179,7 @@ public class SQLGridView extends View
 
             canvas.restore();
 
-            columnOffsetX += column.columnWidth;
+            columnOffsetX += column.columnWidth + separatorSize;
         }
 
     }
@@ -181,7 +188,7 @@ public class SQLGridView extends View
     {
         // Background
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(item.selected ? Color.GRAY : Color.WHITE);
         canvas.drawRect(drawingRect, mPaint);
 
         // Add left and right inner padding
@@ -191,7 +198,7 @@ public class SQLGridView extends View
         drawingRect.bottom -= separatorSize;
 
         // Description
-        mPaint.setColor(Color.GRAY);
+        mPaint.setColor(item.selected ? Color.WHITE : Color.GRAY);
         mPaint.setTextSize(mTextSize);
 
         String desc = item.value;
@@ -203,15 +210,6 @@ public class SQLGridView extends View
                 mPaint.breakText(desc, true, drawingRect.right - drawingRect.left, null));
         canvas.drawText(desc, drawingRect.left, drawingRect.top, mPaint);
     }
-
-    /*private Rect calculateProgramsHitArea()
-    {
-        mMeasuringRect.top = mTimeBarHeight;
-        mMeasuringRect.bottom = getHeight();
-        mMeasuringRect.left = mChannelLayoutWidth;
-        mMeasuringRect.right = getWidth();
-        return mMeasuringRect;
-    }*/
 
     private void drawTimebar(Canvas canvas, Rect drawingRect)
     {
@@ -243,7 +241,7 @@ public class SQLGridView extends View
             //if not visible skip it
             if(columnOffsetX + column.columnWidth < getScrollX())
             {
-                columnOffsetX += column.columnWidth;
+                columnOffsetX += column.columnWidth + separatorSize;
                 continue;
             }
             //if we are past screen width, dont draw any more
@@ -253,7 +251,7 @@ public class SQLGridView extends View
             canvas.drawText(column.column,
                     columnOffsetX,
                     drawingRect.top + (((drawingRect.bottom - drawingRect.top) / 2) + (mTextSize / 2)), mPaint);
-            columnOffsetX += column.columnWidth;
+            columnOffsetX += column.columnWidth + separatorSize;
         }
 
         canvas.restore();
@@ -298,7 +296,7 @@ public class SQLGridView extends View
         int height = mMeasuringRect.height();
         mRowHeight = (int) (height + mPadding * 2);
 
-        mMaxVerticalScroll = (int) ((mRowHeight + separatorSize) * data.get(0).entries.size());
+        mMaxVerticalScroll = (int) ((mRowHeight + separatorSize) * (data.get(0).entries.size() + 1));
 
         mMaxVerticalScroll = mMaxVerticalScroll < getHeight() ? 0 : mMaxVerticalScroll - getHeight();
     }
@@ -320,6 +318,7 @@ public class SQLGridView extends View
             data = new ArrayList<>();
         mPaint.setTextSize(mTextSize);
         data.clear();
+        int offset = 0;
         for(List<SQLCMD.KeyValuePair> row : newData)
         {
             int columnIndex = 0;
@@ -329,18 +328,21 @@ public class SQLGridView extends View
                 {
                     Column column = new Column();
                     mPaint.getTextBounds(pair.key, 0, pair.key.length(), mMeasuringRect);
-                    column.columnWidth = (int) (mMeasuringRect.width() + 2 * mPadding);
+                    column.columnWidth = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + 2 * mPadding));
                     data.add(column);
                 }
                 Column column = data.get(columnIndex);
                 column.column = pair.key;
                 column.entries.add(pair);
                 mPaint.getTextBounds(pair.value, 0, pair.value.length(), mMeasuringRect);
-                int width = (int) (mMeasuringRect.width() + 2 * mPadding);
+                float width = Math.min(mMaxColumnWidth, (mMeasuringRect.width() + 2 * mPadding));
                 if(width > column.columnWidth)
                     column.columnWidth = width;
                 columnIndex++;
             }
+            offset++;
+            if(offset >= mMaxRowsToDisplay)
+                break;
         }
         recalculateAndRedraw(false);
     }
@@ -351,7 +353,6 @@ public class SQLGridView extends View
         @Override
         public boolean onSingleTapUp(MotionEvent e)
         {
-
             // This is absolute coordinate on screen not taking scroll into account.
             int x = (int) e.getX();
             int y = (int) e.getY();
@@ -360,25 +361,59 @@ public class SQLGridView extends View
             int scrollX = getScrollX() + x;
             int scrollY = getScrollY() + y;
 
-            /*if (mClickListener != null)
+            int offsetX = 0;
+            int selectedColumnPosition = -1;
+            int columnPositionOffset = 0;
+            for(Column column : data)
             {
-                if (calculateProgramsHitArea().contains(x, y))
+                offsetX += column.columnWidth + separatorSize;
+                if(offsetX < scrollX)
                 {
-                    // Event area is clicked
-                    int programPosition = getProgramPosition(channelPosition, getTimeFrom(getScrollX() + x - calculateProgramsHitArea().left));
-                    if (programPosition != -1)
-                    {
-                        mClickListener.onEventClicked(channelPosition, programPosition, epgData.getEvent(channelPosition, programPosition));
-                    }
+                    deselectColumn(column);
+                    continue;
                 }
-            }*/
+
+                if(selectedColumnPosition == -1)
+                {
+                    int position = (int) Math.floor((scrollY - (mRowHeight + separatorSize)) / (mRowHeight + separatorSize));
+                    int offset = 0;
+                    for(SQLCMD.KeyValuePair pair : column.entries)
+                    {
+                        if(position == offset)
+                        {
+                            pair.selected = true;
+                            redraw();
+                        }
+                        else
+                        {
+                            pair.selected = false;
+                        }
+                        offset++;
+                    }
+                    selectedColumnPosition = columnPositionOffset;
+
+                }
+                else
+                {
+                    deselectColumn(column);
+                }
+
+                columnPositionOffset++;
+            }
 
             return true;
         }
 
+        private void deselectColumn(Column column)
+        {
+            for(SQLCMD.KeyValuePair pair : column.entries)
+            {
+                pair.selected = false;
+            }
+        }
+
         @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY)
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
             int dx = (int) distanceX;
             int dy = (int) distanceY;
@@ -428,6 +463,21 @@ public class SQLGridView extends View
                 mScroller.forceFinished(true);
                 return true;
             }
+            return true;
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener
+    {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector)
+        {
+            mScaleFactor *= detector.getScaleFactor();
+
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+
+            redraw();
             return true;
         }
     }
