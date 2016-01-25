@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,6 +69,15 @@ public class SQLiteDatabaseListActivity extends AppCompatActivity
             public void onCommandResult(int commandCode, int exitCode, List<String> output)
             {
                 new ATParseOutput(output).execute();
+            }
+        });
+
+        lvDatabases.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                SQLCMDActivity.start(SQLiteDatabaseListActivity.this, mAdapter.getItem(position).getPath());
             }
         });
     }

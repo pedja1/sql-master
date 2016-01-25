@@ -424,7 +424,7 @@ public class SQLGridView extends View
 
     public void setData(List<List<SQLCMD.KeyValuePair>> newData)
     {
-        if (newData == null || newData.isEmpty())
+        if (newData == null)
             return;
         if (data == null)
             data = new ArrayList<>();

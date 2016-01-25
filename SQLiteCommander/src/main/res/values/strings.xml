@@ -23,4 +23,6 @@
     <string name="favorite_databases">Favorite databases: %s</string>
     <string name="viewed_databases">Viewed databases: %s</string>
     <string name="cloud">Cloud</string>
+    <string name="cant_read_database_file">Unable to read database file.</string>
+    <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to to modify database.</string>
 </resources>

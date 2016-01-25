@@ -1,6 +1,7 @@
 package com.afstd.sqlitecommander.app;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,8 @@ import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.post(new Runnable()
@@ -87,7 +90,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    public boolean onNavigationItemSelected(@IdRes int menuId)
+    {
+        navigationView.setCheckedItem(menuId);
+        return onNavigationItemSelected(navigationView.getMenu().findItem(menuId));
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
     {
