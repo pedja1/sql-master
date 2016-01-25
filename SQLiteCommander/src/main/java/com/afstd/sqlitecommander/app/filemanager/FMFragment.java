@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.SQLCMDActivity;
 import com.afstd.sqlitecommander.app.su.SUInstance;
 
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class FMFragment extends Fragment
                     }
                     else if(entry.getType() == FMEntry.TYPE_FILE || entry.getType() == FMEntry.TYPE_LINK)
                     {
-                        //TODO
+                        SQLCMDActivity.start(getActivity(), entry.getPath(), true);
                     }
 				}
 			});

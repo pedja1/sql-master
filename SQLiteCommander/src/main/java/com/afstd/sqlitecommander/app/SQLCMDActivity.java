@@ -11,14 +11,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlcmd.SQLCMDException;
 import com.afstd.sqlcmd.SQLGridView;
+import com.afstd.sqlitecommander.app.su.SUInstance;
 
 import java.io.File;
+import java.util.List;
+
+import eu.chainfire.libsuperuser.Shell;
 
 /**
  * Created by pedja on 17.1.16..
@@ -26,6 +31,10 @@ import java.io.File;
 public class SQLCMDActivity extends AppCompatActivity
 {
     public static final String INTENT_EXTRA_PATH = "path";
+    public static final String INTENT_EXTRA_VERIFY_DATABASE = "verify";
+    private File databaseFile;
+    private TextView tvError;
+    private ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,13 +46,16 @@ public class SQLCMDActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         String path = getIntent().getStringExtra(INTENT_EXTRA_PATH);
-        File databaseFile = new File(path);
+        databaseFile = new File(path);
 
         setTitle(databaseFile.getName());
         getSupportActionBar().setSubtitle(databaseFile.getAbsolutePath());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final TextView tvError = (TextView) findViewById(R.id.tvError);
+        tvError = (TextView) findViewById(R.id.tvError);
+        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
+
+        boolean shoudVerifyFile = getIntent().getBooleanExtra(INTENT_EXTRA_VERIFY_DATABASE, true);
 
         if(!databaseFile.canRead())
         {
@@ -57,7 +69,38 @@ public class SQLCMDActivity extends AppCompatActivity
             AndroidUtility.showToast(this, R.string.cant_write_database_file);
         }
 
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
+        if(!shoudVerifyFile)
+        {
+            setup();
+        }
+        else
+        {
+            SUInstance su = SUInstance.getInstance();
+            String ver = getApplicationInfo().nativeLibraryDir + "/libsqlite_verify.so";
+            su.getShell().addCommand(ver + " " + databaseFile.getAbsolutePath(), 0, new Shell.OnCommandResultListener()
+            {
+                @Override
+                public void onCommandResult(int commandCode, int exitCode, List<String> output)
+                {
+                    if(output != null && output.size() > 1 && AndroidUtility.parseInt(output.get(0).trim(), 0) == 1)
+                    {
+                        setup();
+                    }
+                    else
+                    {
+                        AndroidUtility.showToast(SQLCMDActivity.this, R.string.failed_to_verify_database);
+                        finish();
+                    }
+                }
+            });
+        }
+
+    }
+
+    private void setup()
+    {
+        pbLoading.setVisibility(View.GONE);
+        SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
 
         final SQLCMD sqlcmd = new SQLCMD(database);
 
@@ -97,8 +140,10 @@ public class SQLCMDActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public static void start(Activity activity, String path)
+    public static void start(Activity activity, String path, boolean verifyDatabase)
     {
-        activity.startActivity(new Intent(activity, SQLCMDActivity.class).putExtra(INTENT_EXTRA_PATH, path));
+        activity.startActivity(new Intent(activity, SQLCMDActivity.class)
+                .putExtra(INTENT_EXTRA_PATH, path)
+                .putExtra(INTENT_EXTRA_VERIFY_DATABASE, verifyDatabase));
     }
 }

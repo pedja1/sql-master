@@ -25,4 +25,5 @@
     <string name="cloud">Cloud</string>
     <string name="cant_read_database_file">Unable to read database file.</string>
     <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to to modify database.</string>
+    <string name="failed_to_verify_database">Failed to verify database file. Either file is not SQLite 3 database or some other error occured.</string>
 </resources>
