@@ -19,4 +19,8 @@
     <string name="scanning_installed_apps">Scanning installed applications</string>
     <string name="searching_databases">Searching for databases</string>
     <string name="no_databases">No databases found for %s</string>
+    <string name="installed_applications">Installed applications: %s</string>
+    <string name="favorite_databases">Favorite databases: %s</string>
+    <string name="viewed_databases">Viewed databases: %s</string>
+    <string name="cloud">Cloud</string>
 </resources>

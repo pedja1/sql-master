@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -43,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tvVersion.setText(getString(R.string.version, AndroidUtility.getVersionName(MainActivity.this.getApplicationContext())));
             }
         });
-        navigationView.setCheckedItem(R.id.nav_sqlite);
-        onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_sqlite));
+        navigationView.setCheckedItem(R.id.nav_overview);
+        onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_overview));
     }
 
     @Override
@@ -99,11 +100,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.content, FragmentSQLite.newInstance());
             transaction.commit();
         }
-        /*else if (id == R.id.nav_gallery)
+        else if (id == R.id.nav_overview)
         {
-
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentOverview.newInstance());
+            transaction.commit();
         }
-        else if (id == R.id.nav_slideshow)
+        /*else if (id == R.id.nav_slideshow)
         {
 
         }

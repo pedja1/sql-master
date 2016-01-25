@@ -51,19 +51,17 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile "com.android.support:cardview-v7:23.1.1"
     compile project(':volleyplus')
     /*compile("com.crashlytics.sdk.android:crashlytics:$crashliticsVersion@aar") {
         transitive = true;
     }*/
     compile "com.pedja1:font-widgets:1.0.1"
-    compile "com.android.support:cardview-v7:23.1.1"
     compile 'eu.chainfire:libsuperuser:1.0.0.201510071325'
     compile "de.greenrobot:eventbus:2.4.0"
     compile "com.af:android-utility:1.0.0.2"
 
     compile project (':lib')
-
-
 
     // Required -- JUnit 4 framework
     testCompile 'junit:junit:4.12'

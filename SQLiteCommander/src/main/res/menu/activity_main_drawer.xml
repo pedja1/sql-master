@@ -14,16 +14,20 @@
             android:id="@+id/nav_mysql"
             android:icon="@drawable/ic_menu_mysql"
             android:title="@string/my_sql"/>
-        <!--
+
         <item
             android:id="@+id/nav_history"
-            android:icon="@drawable/ic_menu_history"
+            android:icon="@drawable/ic_action_history"
             android:title="@string/history"/>
         <item
             android:id="@+id/nav_favorites"
-            android:icon="@drawable/ic_menu_favorites"
+            android:icon="@drawable/ic_action_favorite"
             android:title="@string/favorites"/>
-        -->
+        <item
+            android:id="@+id/nav_cloud"
+            android:icon="@drawable/ic_action_cloud"
+            android:title="@string/cloud"/>
+
     </group>
 
 
