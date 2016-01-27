@@ -9,15 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
-import com.afstd.sqlcmd.SQLCMDException;
+import com.afstd.sqlcmd.SQLCMDDefault;
 import com.afstd.sqlcmd.SQLGridView;
+import com.afstd.sqlitecommander.app.model.CommandHistory;
+import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.afstd.sqlitecommander.app.sqlite.SQLCMDRoot;
 import com.afstd.sqlitecommander.app.su.SUInstance;
 
 import java.io.File;
@@ -28,7 +32,7 @@ import eu.chainfire.libsuperuser.Shell;
 /**
  * Created by pedja on 17.1.16..
  */
-public class SQLCMDActivity extends AppCompatActivity
+public class SQLiteCMDActivity extends AppCompatActivity
 {
     public static final String INTENT_EXTRA_PATH = "path";
     public static final String INTENT_EXTRA_VERIFY_DATABASE = "verify";
@@ -57,18 +61,6 @@ public class SQLCMDActivity extends AppCompatActivity
 
         boolean shoudVerifyFile = getIntent().getBooleanExtra(INTENT_EXTRA_VERIFY_DATABASE, true);
 
-        if(!databaseFile.canRead())
-        {
-            AndroidUtility.showToast(this, R.string.cant_read_database_file);
-            finish();
-            return;
-        }
-
-        if(!databaseFile.canWrite())
-        {
-            AndroidUtility.showToast(this, R.string.cant_write_database_file);
-        }
-
         if(!shoudVerifyFile)
         {
             setup();
@@ -88,7 +80,7 @@ public class SQLCMDActivity extends AppCompatActivity
                     }
                     else
                     {
-                        AndroidUtility.showToast(SQLCMDActivity.this, R.string.failed_to_verify_database);
+                        AndroidUtility.showToast(SQLiteCMDActivity.this, R.string.failed_to_verify_database);
                         finish();
                     }
                 }
@@ -100,12 +92,38 @@ public class SQLCMDActivity extends AppCompatActivity
     private void setup()
     {
         pbLoading.setVisibility(View.GONE);
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
 
-        final SQLCMD sqlcmd = new SQLCMD(database);
+        final SQLCMD sqlcmd;
+        if(Shell.SU.available())
+        {
+            sqlcmd = new SQLCMDRoot(databaseFile.getAbsolutePath());
+        }
+        else
+        {
+            if(!databaseFile.canRead())
+            {
+                AndroidUtility.showToast(this, R.string.cant_read_database_file);
+                finish();
+                return;
+            }
+
+            if(!databaseFile.canWrite())
+            {
+                AndroidUtility.showToast(this, R.string.cant_write_database_file);
+            }
+            SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+            sqlcmd = new SQLCMDDefault(database);
+        }
 
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
-        final EditText etSqlCmd = (EditText) findViewById(R.id.etSqlCmd);
+        final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
+
+        String query = "SELECT * FROM cmd_history";
+        final List<CommandHistory> list = DatabaseManager.getInstance().getCommandHistory(query, null);
+
+        ArrayAdapter<CommandHistory> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+
+        etSqlCmd.setAdapter(mAdapter);
 
         Button btnExecute = (Button) findViewById(R.id.btnExecute);
         btnExecute.setOnClickListener(new View.OnClickListener()
@@ -113,16 +131,25 @@ public class SQLCMDActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                DatabaseManager.getInstance().insertCommandHistory(etSqlCmd.getText().toString());
+                list.add(new CommandHistory(etSqlCmd.getText().toString()));
+                pbLoading.setVisibility(View.VISIBLE);
                 tvError.setVisibility(View.GONE);
-                try
+
+                sqlcmd.executeSql(etSqlCmd.getText().toString(), new SQLCMD.OnResultListener()
                 {
-                    sqlGridView.setData(sqlcmd.executeSql(etSqlCmd.getText().toString()));
-                }
-                catch (SQLCMDException e)
-                {
-                    tvError.setText(e.getMessage());
-                    tvError.setVisibility(View.VISIBLE);
-                }
+                    @Override
+                    public void onResult(boolean success, List<List<SQLCMD.KeyValuePair>> data, String error)
+                    {
+                        sqlGridView.setData(data);
+                        if(error != null)
+                        {
+                            tvError.setText(error);
+                            tvError.setVisibility(View.VISIBLE);
+                        }
+                        pbLoading.setVisibility(View.GONE);
+                    }
+                });
             }
         });
     }
@@ -142,7 +169,7 @@ public class SQLCMDActivity extends AppCompatActivity
 
     public static void start(Activity activity, String path, boolean verifyDatabase)
     {
-        activity.startActivity(new Intent(activity, SQLCMDActivity.class)
+        activity.startActivity(new Intent(activity, SQLiteCMDActivity.class)
                 .putExtra(INTENT_EXTRA_PATH, path)
                 .putExtra(INTENT_EXTRA_VERIFY_DATABASE, verifyDatabase));
     }

@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".SQLiteDatabaseListActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".SQLCMDActivity"
+        <activity android:name=".SQLiteCMDActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

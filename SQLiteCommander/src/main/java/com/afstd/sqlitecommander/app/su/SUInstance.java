@@ -29,6 +29,7 @@ public class SUInstance
         Handler handler = new Handler(Looper.getMainLooper());
         Shell.Builder builder = new Shell.Builder();
         builder.setHandler(handler);
+        builder.setWantSTDERR(true);
         builder.useSU();
         shell = builder.open(new Shell.OnCommandResultListener()
         {

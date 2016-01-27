@@ -424,12 +424,15 @@ public class SQLGridView extends View
 
     public void setData(List<List<SQLCMD.KeyValuePair>> newData)
     {
-        if (newData == null)
-            return;
         if (data == null)
             data = new ArrayList<>();
-        mPaint.setTextSize(mTextSize);
         data.clear();
+        if (newData == null)
+        {
+            recalculateAndRedraw(false);
+            return;
+        }
+        mPaint.setTextSize(mTextSize);
         int offset = 0;
         for (List<SQLCMD.KeyValuePair> row : newData)
         {

@@ -77,7 +77,7 @@ public class SQLiteDatabaseListActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                SQLCMDActivity.start(SQLiteDatabaseListActivity.this, mAdapter.getItem(position).getPath(), false);
+                SQLiteCMDActivity.start(SQLiteDatabaseListActivity.this, mAdapter.getItem(position).getPath(), false);
             }
         });
     }
