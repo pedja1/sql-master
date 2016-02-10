@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
-import com.afstd.sqlcmd.SQLCMDDefault;
+import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlcmd.SQLGridView;
 import com.afstd.sqlitecommander.app.model.CommandHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
-import com.afstd.sqlitecommander.app.sqlite.SQLCMDRoot;
+import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.SUInstance;
 
 import java.io.File;
@@ -96,7 +96,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
         final SQLCMD sqlcmd;
         if(Shell.SU.available())
         {
-            sqlcmd = new SQLCMDRoot(databaseFile.getAbsolutePath());
+            sqlcmd = new SQLiteCMDRoot(databaseFile.getAbsolutePath());
         }
         else
         {
@@ -112,7 +112,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
                 AndroidUtility.showToast(this, R.string.cant_write_database_file);
             }
             SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
-            sqlcmd = new SQLCMDDefault(database);
+            sqlcmd = new SQLiteCMDDefault(database);
         }
 
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);

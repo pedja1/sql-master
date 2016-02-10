@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 
@@ -112,6 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, FragmentOverview.newInstance());
+            transaction.commit();
+        }
+        else if (id == R.id.nav_cloud)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentCloud.newInstance());
             transaction.commit();
         }
         /*else if (id == R.id.nav_slideshow)

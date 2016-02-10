@@ -1,2 +1,2 @@
-include ':lib', ':example', ':SQLiteCommander', ':volleyplus'
+include ':lib', ':SQLiteCommander', ':volleyplus'
 project(':volleyplus').projectDir = new File('./volleyplus/library')

@@ -23,7 +23,12 @@
     <string name="favorite_databases">Favorite databases: %s</string>
     <string name="viewed_databases">Viewed databases: %s</string>
     <string name="cloud">Cloud</string>
+    <string name="signed_in_fmt"><![CDATA[
+    Signed in as: <font color=\'#4CAF50\'>%s</font>
+    ]]></string>
+    <string name="signed_out">Please sign in to continue...</string>
     <string name="cant_read_database_file">Unable to read database file.</string>
-    <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to to modify database.</string>
+    <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to modify database.</string>
     <string name="failed_to_verify_database">Failed to verify database file. Either file is not SQLite 3 database or some other error occured.</string>
+    <string name="sign_on_required_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.</string>
 </resources>

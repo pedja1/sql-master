@@ -15,16 +15,16 @@ import eu.chainfire.libsuperuser.Shell;
 /**
  * Created by pedja on 16.1.16..
  */
-public class SQLCMDRoot extends SQLCMD
+public class SQLiteCMDRoot extends SQLCMD
 {
-    private static final String LOG_TAG = SQLCMDRoot.class.getName();
+    private static final String LOG_TAG = SQLiteCMDRoot.class.getName();
     private static final String HEADER_START = "header:";
     private static final String MESSAGE_START = "message:";
     private static final String ROW_START = "row:";
 
     private String databasePath;
 
-    public SQLCMDRoot(String databasePath)
+    public SQLiteCMDRoot(String databasePath)
     {
         this.databasePath = databasePath;
     }

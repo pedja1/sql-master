@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Created by pedja on 16.1.16..
  */
-public class SQLCMDDefault extends SQLCMD
+public class SQLiteCMDDefault extends SQLCMD
 {
     private SQLiteDatabase database;
 
-    public SQLCMDDefault(SQLiteDatabase database)
+    public SQLiteCMDDefault(SQLiteDatabase database)
     {
         this.database = database;
     }
