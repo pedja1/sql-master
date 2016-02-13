@@ -41,6 +41,15 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <style name="CloudCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="contentPadding">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
     <style name="OverviewButtonText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -51,6 +60,15 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:drawablePadding">5dp</item>
+    </style>
+
+    <style name="ButtonStyleRed" parent="Widget.AppCompat.Button.Small">
+        <item name="colorButtonNormal">@color/material_red</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ButtonStyleWhite" parent="Widget.AppCompat.Button.Small">
+        <item name="colorButtonNormal">@android:color/white</item>
     </style>
 
 </resources>

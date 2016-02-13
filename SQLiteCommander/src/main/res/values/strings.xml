@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SQL Commander</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -30,5 +30,33 @@
     <string name="cant_read_database_file">Unable to read database file.</string>
     <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to modify database.</string>
     <string name="failed_to_verify_database">Failed to verify database file. Either file is not SQLite 3 database or some other error occured.</string>
-    <string name="sign_on_required_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.</string>
+    <string name="login_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.</string>
+    <string name="enable_sync">Cloud Sync Enabled</string>
+    <string name="sync_history">Sync History</string>
+    <string name="sync_favorites">Sync Favorites</string>
+    <string name="sync_mysql">Sync MySQL Databases</string>
+    <string name="mysql_sync">Credentials are NOT encrypted!!!</string>
+    <string name="sync_query_history">Sync query history</string>
+    <string name="sync_settings">Sync Settings</string>
+    <string name="sync_settings_desc">Sync application settings</string>
+    <string name="last_sync"><![CDATA[
+    Last sync time: <font color=\'#4CAF50\'>%s</font>
+    ]]></string>
+    <string name="sync_now">Sync Now</string>
+    <string name="delete_remote">Delete Cloud Data</string>
+    <string name="failed_auth">Authentication failed.</string>
+    <string name="invalid_token">Failed to get access token</string>
+    <string name="warning">Warning!</string>
+    <string name="cancel">Cancel</string>
+    <string name="i_understand">I Understand</string>
+    <string name="my_sql_warning">We CAN NOT guaranty your data safety, all information is saved in plain format.\nYou should NOT include mysql databases in sync as it contains database credentials.\nFuture version may introduce data encryption.</string>
+    <string name="never">Never</string>
+    <string name="sync_status"><![CDATA[
+    Sync Status: <font color=\'#4CAF50\'>%s</font>
+    ]]></string>
+    <string name="checking_1">checking.</string>
+    <string name="checking_2">checking..</string>
+    <string name="checking_3" tools:ignore="TypographyEllipsis">checking...</string>
+    <string name="idle">Idle</string>
+    <string name="sync_data">Sync Data</string>
 </resources>

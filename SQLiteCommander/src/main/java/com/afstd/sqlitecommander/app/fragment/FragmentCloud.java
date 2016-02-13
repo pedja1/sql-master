@@ -1,18 +1,41 @@
 package com.afstd.sqlitecommander.app.fragment;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.af.androidutility.lib.AndroidUtility;
+import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.acm.AMUtility;
+import com.afstd.sqlitecommander.app.acm.SAccountAuthenticator;
+import com.afstd.sqlitecommander.app.bus.CommReceiverSync;
+import com.afstd.sqlitecommander.app.bus.SyncStatusResponseEvent;
+import com.afstd.sqlitecommander.app.model.AuthToken;
+import com.afstd.sqlitecommander.app.network.SRequestBuilder;
+import com.afstd.sqlitecommander.app.network.SRequestHandler;
+import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -20,14 +43,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.tehnicomsolutions.http.RequestBuilder;
+import com.tehnicomsolutions.http.ResponseHandler;
+import com.tehnicomsolutions.http.ResponseParser;
+import com.tehnicomsolutions.http.TSRequestManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by pedja on 21.1.16..
  */
-public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener
+public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener
 {
+    private SimpleDateFormat LAST_SYNC_FORMAT = new SimpleDateFormat("HH:mm dd.MM, yyyy", Locale.US);
+    public static final String ARG_REFRESH_TOKEN_KEY = "refresh_token";
+    public static final String ACCOUNT_TYPE = App.get().getString(R.string.account_type);
+    public static final String AUTH_TOKEN_TYPE = ACCOUNT_TYPE + ".LOGIN";
+    public static final String GRANT_TYPE = "https://accounts.google.com/o/oauth2/v2/auth";
+    private static final String GOOGLE_CLIENT_ID = "770914414372-2923i5l0agg2cjjj20ppo4m7frm2mref.apps.googleusercontent.com";
+
     public static FragmentCloud newInstance()
     {
         FragmentCloud fragment = new FragmentCloud();
@@ -36,21 +73,42 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
 
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView, tvLoginWarning;
+    private ScrollView svSettings;
     private SignInButton signInButton;
     private static final int RC_SIGN_IN = 9001;
     private ProgressDialog mProgressDialog;
+
+    private AccountManager mAccountManager;
+
+    private TSRequestManager mRequestManager;
+
+    private boolean mCheckChangeEnabled;
+    private CheckBox cbSyncHistory;
+    private CheckBox cbSyncQueryHistory;
+    private CheckBox cbSyncFavorites;
+    private CheckBox cbSyncMysql;
+    private CheckBox cbSyncSettings;
+
+    private Button btnDelete, btnSyncNow;
+
+    private TextView tvLastSyncTime, tvSyncStatus;
+
+    private LoadingAnimation loadingAnimation;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        mAccountManager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         View view = inflater.inflate(R.layout.fragment_cloud, container, false);
 
         mStatusTextView = (TextView) view.findViewById(R.id.header);
         tvLoginWarning = (TextView) view.findViewById(R.id.tvLoginWarning);
+        svSettings = (ScrollView) view.findViewById(R.id.svSettings);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("770914414372-2923i5l0agg2cjjj20ppo4m7frm2mref.apps.googleusercontent.com")
+                .requestIdToken(GOOGLE_CLIENT_ID)
+                .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -63,7 +121,92 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         signInButton.setScopes(gso.getScopeArray());
         signInButton.setOnClickListener(this);
 
+        btnDelete = (Button) view.findViewById(R.id.btnDelete);
+        btnSyncNow = (Button) view.findViewById(R.id.btnSyncNow);
+        btnDelete.setOnClickListener(this);
+        btnSyncNow.setOnClickListener(this);
+
+        tvLastSyncTime = (TextView) view.findViewById(R.id.tvLastSyncTime);
+        setLastSyncData();
+
+        tvSyncStatus = (TextView) view.findViewById(R.id.tvSyncStatus);
+        tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, getString(R.string.checking_1))));
+
+        loadingAnimation = new LoadingAnimation();
+        loadingAnimation.execute();
+
+        getActivity().sendBroadcast(new Intent(CommReceiverSync.INTENT_ACTION_STATUS_REQUEST));
+
+        //if no response from service within 5 seconds, show error
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(loadingAnimation != null)
+                    loadingAnimation.cancel(true);
+                tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, SyncStatusResponseEvent.SERVICE_NOT_RUNNING)));
+            }
+        }, 5000);
+
+        setupSettingsViews(view);
+
+        updateUI();
+
+        EventBus.getDefault().register(this);
         return view;
+    }
+
+    private void setLastSyncData()
+    {
+        //TODO sync service sets this pref. Since sync service is running in separate process, changes wont reflect here
+        long lastSyncTime = SettingsManager.getLastSyncTime();
+        tvLastSyncTime.setText(Html.fromHtml(getString(R.string.last_sync, lastSyncTime <= 0 ? getString(R.string.never) : LAST_SYNC_FORMAT.format(lastSyncTime))));
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(SyncStatusResponseEvent event)
+    {
+        if(loadingAnimation != null)
+            loadingAnimation.cancel(true);
+        tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, event)));
+        setLastSyncData();
+    }
+
+    private void setupSettingsViews(View view)
+    {
+        Switch sSwitch = (Switch) view.findViewById(R.id.cbSyncEnabled);
+        cbSyncHistory = (CheckBox) view.findViewById(R.id.cbSyncHistory);
+        cbSyncQueryHistory = (CheckBox) view.findViewById(R.id.cbSyncQueryHistory);
+        cbSyncFavorites = (CheckBox) view.findViewById(R.id.cbSyncFavorites);
+        cbSyncMysql = (CheckBox) view.findViewById(R.id.cbSyncMySql);
+        cbSyncSettings = (CheckBox) view.findViewById(R.id.cbSyncSettings);
+
+        mCheckChangeEnabled = false;
+
+        sSwitch.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncEnabled)));
+        cbSyncHistory.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncHistory)));
+        cbSyncQueryHistory.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncQueryHistory)));
+        cbSyncFavorites.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncFavorites)));
+        cbSyncMysql.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncMySql)));
+        cbSyncSettings.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncSettings)));
+
+        mCheckChangeEnabled = true;
+
+        sSwitch.setOnCheckedChangeListener(this);
+        cbSyncHistory.setOnCheckedChangeListener(this);
+        cbSyncQueryHistory.setOnCheckedChangeListener(this);
+        cbSyncFavorites.setOnCheckedChangeListener(this);
+        cbSyncMysql.setOnCheckedChangeListener(this);
+        cbSyncSettings.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -80,37 +223,16 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
             case R.id.btnLogin:
                 signIn();
                 break;
-        }
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone())
-        {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        }
-        else
-        {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-            showProgressDialog();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>()
-            {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult)
+            case R.id.btnSyncNow:
+                Account account = AMUtility.getAccount(SettingsManager.getActiveAccount());
+                if(account != null)
                 {
-                    hideProgressDialog();
-                    handleSignInResult(googleSignInResult);
+                    Bundle settingsBundle = new Bundle();
+                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+                    ContentResolver.requestSync(account, getString(R.string.content_authority), settingsBundle);
                 }
-            });
+                break;
         }
     }
 
@@ -129,22 +251,50 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
 
     private void handleSignInResult(GoogleSignInResult result)
     {
+        hideProgressDialog();
         if (result.isSuccess())
         {
-            // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            updateUI(true, acct);
-            //new ATLogin(this, acct).execute();
+            initRequestManager();
+            RequestBuilder builder = new SRequestBuilder(RequestBuilder.Method.POST, false);
+            builder.addParam("oauth").addParam("token");
+            builder.addParam("grant_type", GRANT_TYPE);
+            builder.addParam("client_id", SAccountAuthenticator.CLIENT_ID);
+            builder.addParam("client_secret", SAccountAuthenticator.CLIENT_SECRET);
+            builder.addParam("id_token", acct.getIdToken());
+            mRequestManager.execute(SRequestHandler.REQUEST_CODE_LOGIN, builder);
         }
         else
         {
-            // Signed out, show unauthenticated UI.
-            updateUI(false, null);
+            AndroidUtility.showToast(getActivity(), result.getStatus().getStatusMessage());
         }
+    }
+
+    private void initRequestManager()
+    {
+        mRequestManager = new TSRequestManager(getActivity(), false);
+        mRequestManager.setRequestHandler(new SRequestHandler(getActivity()));
+        mRequestManager.addResponseHandler(new ResponseHandler()
+        {
+            @Override
+            public void onResponse(int requestCode, int responseStatus, ResponseParser responseParser)
+            {
+                switch (requestCode)
+                {
+                    case SRequestHandler.REQUEST_CODE_LOGIN:
+                        if (responseStatus == ResponseParser.RESPONSE_STATUS_SUCCESS && responseParser.getParseObject() != null)
+                        {
+                            finishLogin(responseParser.getParseObject(AuthToken.class));
+                        }
+                        break;
+                }
+            }
+        });
     }
 
     private void signIn()
     {
+        showProgressDialog();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -169,58 +319,173 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         }
     }
 
-    private void updateUI(boolean signedIn, GoogleSignInAccount acct)
+    private void updateUI()
     {
-        if (signedIn)
+        String accountName = SettingsManager.getActiveAccount();
+        if (accountName != null)
         {
-            mStatusTextView.setText(Html.fromHtml(getString(R.string.signed_in_fmt, acct.getEmail())));
+            mStatusTextView.setText(Html.fromHtml(getString(R.string.signed_in_fmt, accountName)));
             signInButton.setVisibility(View.GONE);
             tvLoginWarning.setVisibility(View.GONE);
+            svSettings.setVisibility(View.VISIBLE);
         }
         else
         {
             mStatusTextView.setText(R.string.signed_out);
             signInButton.setVisibility(View.VISIBLE);
             tvLoginWarning.setVisibility(View.VISIBLE);
+            svSettings.setVisibility(View.GONE);
         }
     }
 
-    /*private static class ATLogin extends AsyncTask<String, Void, Boolean>
+    private void finishLogin(AuthToken token)
     {
-        private WeakReference<FragmentCloud> fragment;
-        private GoogleSignInAccount account;
-
-        public ATLogin(FragmentCloud fragment, GoogleSignInAccount account)
+        Account[] accounts = mAccountManager.getAccountsByType(ACCOUNT_TYPE);
+        boolean addingNewAccount = true;
+        for (Account account : accounts)
         {
-            this.fragment = new WeakReference<>(fragment);
-            this.account = account;
+            if (account.name.equals(token.accountName))
+            {
+                addingNewAccount = false;
+                break;
+            }
+        }
+        final Account account = new Account(token.accountName, ACCOUNT_TYPE);
+        if (addingNewAccount)
+        {
+            String authtokenType = AUTH_TOKEN_TYPE;
+            // Creating the account on the device and setting the auth token we got
+            // (Not setting the auth token will cause another call to the server to authenticate the user)
+            mAccountManager.addAccountExplicitly(account, null, null);
+            mAccountManager.setAuthToken(account, authtokenType, token.accessToken);
+            mAccountManager.setUserData(account, ARG_REFRESH_TOKEN_KEY, token.refreshToken);
+        }
+        else
+        {
+            mAccountManager.setPassword(account, null);
+            mAccountManager.setAuthToken(account, AUTH_TOKEN_TYPE, token.accessToken);
+            mAccountManager.setUserData(account, ARG_REFRESH_TOKEN_KEY, token.refreshToken);
+        }
+        SettingsManager.setActiveAccount(token.accountName);
+        //setAccountAuthenticatorResult(intent.getExtras());
+        updateUI();
+    }
+
+    @Override
+    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked)
+    {
+        if (!mCheckChangeEnabled)
+            return;
+        final SettingsManager.SyncKey key = SettingsManager.SyncKey.fromViewId(buttonView.getId());
+        if (key == SettingsManager.SyncKey.sync_mysql && isChecked)
+        {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final boolean[] saved = new boolean[1];
+            builder.setTitle(R.string.warning);
+            builder.setMessage(R.string.my_sql_warning);
+            builder.setNegativeButton(R.string.cancel, null);
+            builder.setPositiveButton(R.string.i_understand, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    saved[0] = true;
+                    SettingsManager.setSyncSetting(key, true);
+                }
+            });
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener()
+            {
+                @Override
+                public void onDismiss(DialogInterface dialog)
+                {
+                    if (saved[0])
+                        return;
+                    mCheckChangeEnabled = false;
+                    buttonView.setChecked(false);
+                    mCheckChangeEnabled = true;
+                }
+            });
+            builder.show();
+        }
+        else if (key != null)
+        {
+            SettingsManager.setSyncSetting(key, isChecked);
+        }
+        if (key == SettingsManager.SyncKey.sync_enabled)
+        {
+            if (isChecked)
+            {
+                cbSyncHistory.setEnabled(true);
+                cbSyncQueryHistory.setEnabled(true);
+                cbSyncFavorites.setEnabled(true);
+                cbSyncMysql.setEnabled(true);
+                cbSyncSettings.setEnabled(true);
+                btnSyncNow.setEnabled(true);
+            }
+            else
+            {
+                cbSyncHistory.setEnabled(false);
+                cbSyncQueryHistory.setEnabled(false);
+                cbSyncFavorites.setEnabled(false);
+                cbSyncMysql.setEnabled(false);
+                cbSyncSettings.setEnabled(false);
+                btnSyncNow.setEnabled(false);
+            }
+        }
+    }
+
+    private class LoadingAnimation extends AsyncTask<Void, Integer, Void>
+    {
+        private boolean canceled;
+
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+            int offset = 0;
+            while (true)
+            {
+                if(canceled)
+                    return null;
+                publishProgress(offset);
+                try
+                {
+                    Thread.sleep(700);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                offset++;
+            }
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values)
+        {
+            super.onProgressUpdate(values);
+            if(canceled)
+                return;
+
+            if (values[0] % 3 == 0)
+            {
+                tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, getString(R.string.checking_1))));
+            }
+            else if (values[0] % 3 == 1)
+            {
+                tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, getString(R.string.checking_2))));
+            }
+            else if (values[0] % 3 == 2)
+            {
+                tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, getString(R.string.checking_3))));
+            }
         }
 
         @Override
-        protected Boolean doInBackground(String... params)
+        protected void onCancelled()
         {
-            if(fragment.get() == null)return false;
-            String token;
-            try
-            {
-                token = GoogleAuthUtil.getToken(fragment.get().getActivity(), account.getEmail(), "https://www.googleapis.com/auth/userinfo.email");
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            catch (UserRecoverableAuthException userAuthEx)
-            {
-                // Start the user recoverable action using the intent returned by
-                // getIntent()
-                startActivityForResult(userAuthEx.getIntent(), REQUEST_CODE_GOOGLE_LOGIN);
-            }
-            catch (GoogleAuthException e)
-            {
-                e.printStackTrace();
-            }
-            return null;
+            super.onCancelled();
+            canceled = true;
         }
-    }*/
-
+    }
 }

@@ -1,5 +1,7 @@
 package com.afstd.sqlitecommander.app;
 
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -14,9 +16,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.afstd.sqlitecommander.app.acm.AMUtility;
+import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
+import com.afstd.sqlitecommander.app.utility.SettingsManager;
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -26,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,6 +59,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         navigationView.setCheckedItem(R.id.nav_overview);
         onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_overview));
+
+        Account account = AMUtility.getAccount(SettingsManager.getActiveAccount());
+        if(account != null)
+        {
+            ContentResolver.addPeriodicSync(account, getString(R.string.content_authority), Bundle.EMPTY, SSyncAdapter.SYNC_ADAPTER_INTERVAL);
+            ContentResolver.setSyncAutomatically(account, getString(R.string.content_authority), true);
+        }
     }
 
     @Override

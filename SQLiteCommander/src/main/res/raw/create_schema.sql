@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS _database (
+	_id TEXT PRIMARY KEY,
+
+);

@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS _database;
+
+DROP TABLE IF EXISTS history;
+
+DROP TABLE IF EXISTS query_history;
+
+DROP TABLE IF EXISTS favorites;
+
+DROP TABLE IF EXISTS data;
+
+
+
