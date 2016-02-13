@@ -35,8 +35,8 @@ public class SSyncAdapter extends AbstractThreadedSyncAdapter
             _id: {type: String, required: true},
             type: { type: String, required: true},
             database_uri: String,
-                    database_username: String,
-                database_password: String
+            database_username: String,
+            database_password: String
         }
     ],
     favorites: [String],

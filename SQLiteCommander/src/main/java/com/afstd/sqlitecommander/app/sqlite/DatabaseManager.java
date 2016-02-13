@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.af.androidutility.lib.FileUtility;
 import com.afstd.sqlitecommander.app.App;
-import com.afstd.sqlitecommander.app.model.CommandHistory;
+import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.model.QueryHistory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,16 +55,16 @@ public class DatabaseManager
         return mDatabase.delete(table, whereClause, whereArgs);
     }
 
-    public List<CommandHistory> getCommandHistory(String query, String[] args)
+    public List<QueryHistory> getQueryHistory(String query, String[] args)
     {
-        List<CommandHistory> his;
+        List<QueryHistory> his;
 
         Cursor cursor = mDatabase.rawQuery(query, args);
         his = new ArrayList<>();
         while (cursor.moveToNext())
         {
-            CommandHistory reportType = new CommandHistory();
-            reportType.command = cursor.getString(cursor.getColumnIndex("cmd"));
+            QueryHistory reportType = new QueryHistory();
+            reportType.command = cursor.getString(cursor.getColumnIndex("query"));
             his.add(reportType);
         }
         cursor.close();
@@ -73,10 +76,10 @@ public class DatabaseManager
         ContentValues values = new ContentValues();
         values.put("cmd", cmd);
 
-        long id = mDatabase.insertWithOnConflict("cmd_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        long id = mDatabase.insertWithOnConflict("query_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
         if (id == -1)
         {
-            mDatabase.update("cmd_history", values, "cmd = ?", new String[]{cmd});
+            mDatabase.update("query_history", values, "query = ?", new String[]{cmd});
         }
     }
 
@@ -90,7 +93,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 
@@ -102,8 +105,19 @@ class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String createCmdHistory = "CREATE TABLE cmd_history (cmd TEXT PRIMARY KEY)";
-        db.execSQL(createCmdHistory);
+        try
+        {
+            String create = FileUtility.readRawFile(App.get(), R.raw.create_schema);
+            String[] statements = create.split(";");
+            for (String statement : statements)
+            {
+                db.execSQL(statement);
+            }
+        }
+        catch (IOException e)
+        {
+            throw new IllegalStateException("Unable to create database. Error reading create schema file. Error message: " + e.getMessage());
+        }
 
         addDefaultHistory(db);
     }
@@ -121,8 +135,8 @@ class DatabaseHelper extends SQLiteOpenHelper
         for (String cmd : cmds)
         {
             ContentValues values = new ContentValues();
-            values.put("cmd", cmd);
-            db.insert("cmd_history", null, values);
+            values.put("query", cmd);
+            db.insert("query_history", null, values);
         }
 
         db.setTransactionSuccessful();
@@ -132,7 +146,19 @@ class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2)
     {
-        db.execSQL("DROP TABLE IF NOT EXIST cmd_history");
+        try
+        {
+            String drop = FileUtility.readRawFile(App.get(), R.raw.drop_schema);
+            String[] statements = drop.split(";");
+            for (String statement : statements)
+            {
+                db.execSQL(statement);
+            }
+        }
+        catch (IOException e)
+        {
+            throw new IllegalStateException("Unable to update database. Error reading create schema file. Error message: " + e.getMessage());
+        }
         onCreate(db);
     }
 }

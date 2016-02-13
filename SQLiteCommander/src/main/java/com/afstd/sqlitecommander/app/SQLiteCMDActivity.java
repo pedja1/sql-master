@@ -19,7 +19,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlcmd.SQLGridView;
-import com.afstd.sqlitecommander.app.model.CommandHistory;
+import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.SUInstance;
@@ -119,9 +119,9 @@ public class SQLiteCMDActivity extends AppCompatActivity
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
         String query = "SELECT * FROM cmd_history";
-        final List<CommandHistory> list = DatabaseManager.getInstance().getCommandHistory(query, null);
+        final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
 
-        ArrayAdapter<CommandHistory> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        ArrayAdapter<QueryHistory> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
 
         etSqlCmd.setAdapter(mAdapter);
 
@@ -132,7 +132,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 DatabaseManager.getInstance().insertCommandHistory(etSqlCmd.getText().toString());
-                list.add(new CommandHistory(etSqlCmd.getText().toString()));
+                list.add(new QueryHistory(etSqlCmd.getText().toString()));
                 pbLoading.setVisibility(View.VISIBLE);
                 tvError.setVisibility(View.GONE);
 

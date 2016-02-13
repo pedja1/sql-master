@@ -3,16 +3,16 @@ package com.afstd.sqlitecommander.app.model;
 /**
  * Created by pedja on 26.1.16..
  */
-public class CommandHistory
+public class QueryHistory
 {
     public String command;
 
-    public CommandHistory(String command)
+    public QueryHistory(String command)
     {
         this.command = command;
     }
 
-    public CommandHistory()
+    public QueryHistory()
     {
     }
 
