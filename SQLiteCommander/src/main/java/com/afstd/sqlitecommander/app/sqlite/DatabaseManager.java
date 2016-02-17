@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.af.androidutility.lib.FileUtility;
 import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 
 import java.io.IOException;
@@ -71,15 +72,87 @@ public class DatabaseManager
         return his;
     }
 
+    public List<DatabaseEntry> getDatabaseEntries(String query, String[] args)
+    {
+        List<DatabaseEntry> lis;
+
+        Cursor cursor = mDatabase.rawQuery(query, args);
+        lis = new ArrayList<>();
+        while (cursor.moveToNext())
+        {
+            DatabaseEntry databaseEntry = new DatabaseEntry();
+            databaseEntry.id = cursor.getString(cursor.getColumnIndex("id"));
+            databaseEntry.type = cursor.getString(cursor.getColumnIndex("type"));
+            databaseEntry.databaseUri = cursor.getString(cursor.getColumnIndex("database_uri"));
+            databaseEntry.databaseName = cursor.getString(cursor.getColumnIndex("database_name"));
+            databaseEntry.databaseUsername = cursor.getString(cursor.getColumnIndex("database_username"));
+            databaseEntry.databasePassword = cursor.getString(cursor.getColumnIndex("database_password"));
+            databaseEntry.databasePort = cursor.getInt(cursor.getColumnIndex("database_port"));
+            databaseEntry.isFavorite = cursor.getInt(cursor.getColumnIndex("is_favorite")) == 1;
+            databaseEntry.created = cursor.getLong(cursor.getColumnIndex("created"));
+            databaseEntry.accessed = cursor.getLong(cursor.getColumnIndex("accessed"));
+            lis.add(databaseEntry);
+        }
+        cursor.close();
+        return lis;
+    }
+
+    public int getCount(String query, String[] args)
+    {
+        Cursor cursor = mDatabase.rawQuery(query, args);
+        while (cursor.moveToNext())
+        {
+            if (cursor.getColumnCount() > 0)
+                return cursor.getInt(0);
+        }
+        cursor.close();
+        return 0;
+    }
+
     public void insertCommandHistory(String cmd)
     {
         ContentValues values = new ContentValues();
-        values.put("cmd", cmd);
+        values.put("query", cmd);
 
         long id = mDatabase.insertWithOnConflict("query_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
         if (id == -1)
         {
             mDatabase.update("query_history", values, "query = ?", new String[]{cmd});
+        }
+    }
+
+    public void insertDatabaseEntry(DatabaseEntry... databaseEntries)
+    {
+        if(databaseEntries == null)
+            return;
+        mDatabase.beginTransaction();
+        try
+        {
+            for (DatabaseEntry entry : databaseEntries)
+            {
+                ContentValues values = new ContentValues();
+                values.put("id", entry.id);
+                values.put("type", entry.type);
+                values.put("database_uri", entry.databaseUri);
+                values.put("database_name", entry.databaseName);
+                values.put("database_username", entry.databaseUsername);
+                values.put("database_password", entry.databasePassword);
+                values.put("database_port", entry.databasePort);
+                values.put("is_favorite", entry.isFavorite);
+                values.put("created", entry.created);
+                values.put("accessed", entry.accessed);
+
+                long id = mDatabase.insertWithOnConflict("_database", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1)
+                {
+                    mDatabase.update("_database", values, "id = ?", new String[]{entry.id});
+                }
+            }
+            mDatabase.setTransactionSuccessful();
+        }
+        finally
+        {
+            mDatabase.endTransaction();
         }
     }
 
@@ -93,7 +166,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 

@@ -2,14 +2,13 @@ package com.afstd.sqlitecommander.app.network;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.afstd.sqlitecommander.app.R;
 import com.tehnicomsolutions.http.RequestBuilder;
 import com.tehnicomsolutions.http.RequestHandler;
 import com.tehnicomsolutions.http.ResponseParser;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by pedja on 6.7.15. 08.58.
@@ -36,7 +35,7 @@ public class SRequestHandler implements RequestHandler
     }
 
     @Override
-    public ResponseParser handleRequest(int requestCode, @NotNull RequestBuilder requestBuilder, boolean sync)
+    public ResponseParser handleRequest(int requestCode, @NonNull RequestBuilder requestBuilder, boolean sync)
     {
         JSONParser parser = new JSONParser(SInternet.executeHttpRequest(activity, requestBuilder));
         switch (requestCode)
@@ -60,7 +59,7 @@ public class SRequestHandler implements RequestHandler
 
     }
 
-    public void handlePostRequest(int requestCode, @NotNull RequestBuilder builder, ResponseParser responseParser, boolean sync)
+    public void handlePostRequest(int requestCode, @NonNull RequestBuilder builder, ResponseParser responseParser, boolean sync)
     {
         if (showProgressDialog && !sync && this.activity != null && this.dialog != null)
         {
@@ -69,7 +68,7 @@ public class SRequestHandler implements RequestHandler
 
     }
 
-    public void handleRequestCancelled(int requestCode, @NotNull ResponseParser parser, boolean sync)
+    public void handleRequestCancelled(int requestCode, @NonNull ResponseParser parser, boolean sync)
     {
     }
 }

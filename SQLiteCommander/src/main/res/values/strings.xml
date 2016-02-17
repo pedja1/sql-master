@@ -59,4 +59,5 @@
     <string name="checking_3" tools:ignore="TypographyEllipsis">checking...</string>
     <string name="idle">Idle</string>
     <string name="sync_data">Sync Data</string>
+    <string name="no_databases_mysql">No Databases Found</string>
 </resources>

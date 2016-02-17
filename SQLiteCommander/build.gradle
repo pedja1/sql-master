@@ -63,7 +63,7 @@ dependencies {
     compile "com.pedja1:font-widgets:1.0.1"
     compile 'eu.chainfire:libsuperuser:1.0.0.201510071325'
     compile "de.greenrobot:eventbus:2.4.0"
-    compile "com.af:android-utility:1.0.0.2"
+    compile "com.af:android-utility:1.0.0.6"
 
     compile project (':lib')
 

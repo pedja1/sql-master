@@ -17,7 +17,7 @@ import com.afstd.sqlitecommander.app.appmanager.App;
 import com.afstd.sqlitecommander.app.filemanager.FMAdapter;
 import com.afstd.sqlitecommander.app.filemanager.FMEntry;
 import com.afstd.sqlitecommander.app.filemanager.FMUtils;
-import com.afstd.sqlitecommander.app.su.SUInstance;
+import com.afstd.sqlitecommander.app.su.ShellInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class SQLiteDatabaseListActivity extends AppCompatActivity
         setTitle(app.appLabel);
         tvError.setText(getString(R.string.no_databases, app.appLabel));
 
-        Shell.Interactive interactive = SUInstance.getInstance().getShell();
+        Shell.Interactive interactive = ShellInstance.getInstance().getShell();
         String ls = getApplicationInfo().nativeLibraryDir + "/libls.so";
         interactive.addCommand(String.format("%s -f \"%s\" %s", ls, SQLITE_FILE_HEADER_STRING, path), 0, new Shell.OnCommandResultListener()
         {

@@ -32,7 +32,7 @@ import android.widget.TextView;
 import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.SQLiteCMDActivity;
-import com.afstd.sqlitecommander.app.su.SUInstance;
+import com.afstd.sqlitecommander.app.su.ShellInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,7 +141,7 @@ public class FMFragment extends Fragment
 
 	private void ls(final String path, final boolean back)
 	{
-        Shell.Interactive interactive = SUInstance.getInstance().getShell();
+        Shell.Interactive interactive = ShellInstance.getInstance().getShell();
         String ls = App.get().getApplicationInfo().nativeLibraryDir + "/libls.so";
         interactive.addCommand(ls + " " + path, SU_COMMAND_CODE, new Shell.OnCommandResultListener()
         {

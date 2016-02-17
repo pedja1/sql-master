@@ -11,6 +11,7 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.afstd.sqlitecommander.app.App;
@@ -23,8 +24,6 @@ import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.tehnicomsolutions.http.Internet;
 import com.tehnicomsolutions.http.RequestBuilder;
 import com.tehnicomsolutions.http.ResponseParser;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -226,7 +225,7 @@ public class SAccountAuthenticator extends AbstractAccountAuthenticator
         return null;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Bundle getAccountRemovalAllowed(AccountAuthenticatorResponse response, Account account)
     {
@@ -235,7 +234,7 @@ public class SAccountAuthenticator extends AbstractAccountAuthenticator
         return result;
     }
 
-    public static String getAccessToken(@NotNull Activity activity)
+    public static String getAccessToken(@NonNull Activity activity)
     {
         AccountManager mAccountManager = AccountManager.get(App.get());
         //String authToken = mAccountManager.blockingGetAuthToken(account, LoginActivity.mAuthTokenType, true);

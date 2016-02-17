@@ -40,14 +40,6 @@
             <option value="$PROJECT_DIR$/volleyplus/library" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/SQLiteCommander" />
-            <option value="$PROJECT_DIR$/lib" />
-            <option value="$PROJECT_DIR$/volleyplus/library" />
-          </set>
-        </option>
       </GradleProjectSettings>
     </option>
   </component>
@@ -209,11 +201,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SQLCMD.iml" filepath="$PROJECT_DIR$/.idea/modules/SQLCMD.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SQLCMD.iml" filepath="$PROJECT_DIR$/.idea/modules/SQLCMD.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SQLiteCommander/SQLiteCommander.iml" filepath="$PROJECT_DIR$/.idea/modules/SQLiteCommander/SQLiteCommander.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" filepath="$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" filepath="$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" />
     </modules>
   </component>
@@ -222,15 +211,6 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="RunConfigurationProducerService">
-    <option name="ignoredProducers">
-      <set>
-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInPackageGradleConfigurationProducer" />
-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer" />
-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestMethodGradleConfigurationProducer" />
-      </set>
-    </option>
   </component>
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/SQLiteCommander/src/main/res/raw/create_schema.sql" dialect="SQLite" />
@@ -241,15 +221,14 @@
     <mapping directory="$PROJECT_DIR$/volleyplus" vcs="Git" />
   </component>
   <component name="libraryTable">
-    <library name="android-utility-1.0.0.2">
+    <library name="android-utility-1.0.0.6">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.af/android-utility/1.0.0.2/jars/libs/annotations.jar!/" />
-        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.af/android-utility/1.0.0.2/jars/classes.jar!/" />
-        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.af/android-utility/1.0.0.2/res" />
+        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.af/android-utility/1.0.0.6/res" />
+        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.af/android-utility/1.0.0.6/jars/classes.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.af/android-utility/1.0.0.2/6e26b239add0a3f51a747d3a47cedc811c385801/android-utility-1.0.0.2-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.af/android-utility/1.0.0.6/3e4c9af4108b127f83a5611e5f7f867584eaf240/android-utility-1.0.0.6-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="answers-1.3.6">

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlitecommander.app.App;
-import com.afstd.sqlitecommander.app.su.SUInstance;
+import com.afstd.sqlitecommander.app.su.ShellInstance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class SQLiteCMDRoot extends SQLCMD
     {
         if(listener == null)
             throw new IllegalStateException("Listener cannot be null");
-        Shell.Interactive shell = SUInstance.getInstance().getShell();
+        Shell.Interactive shell = ShellInstance.getInstance().getShell();
         String ver = App.get().getApplicationInfo().nativeLibraryDir + "/libsqlite_cmd.so";
         shell.addCommand(ver + " " + databasePath + " \"" + sql + "\"", 0, new Shell.OnCommandResultListener()
         {

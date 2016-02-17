@@ -10,27 +10,30 @@ import eu.chainfire.libsuperuser.Shell;
 /**
  * Created by pedja on 23.1.16..
  */
-public class SUInstance
+public class ShellInstance
 {
     private Shell.Interactive shell;
-    private static SUInstance instance;
+    private static ShellInstance instance;
 
-    public static synchronized SUInstance getInstance()
+    public static synchronized ShellInstance getInstance()
     {
         if(instance == null)
         {
-            instance = new SUInstance();
+            instance = new ShellInstance();
         }
         return instance;
     }
 
-    private SUInstance()
+    private ShellInstance()
     {
         Handler handler = new Handler(Looper.getMainLooper());
         Shell.Builder builder = new Shell.Builder();
         builder.setHandler(handler);
         builder.setWantSTDERR(true);
-        builder.useSU();
+        if(Shell.SU.available())
+            builder.useSU();
+        else
+            builder.useSH();
         shell = builder.open(new Shell.OnCommandResultListener()
         {
             @Override

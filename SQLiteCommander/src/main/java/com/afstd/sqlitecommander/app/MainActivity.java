@@ -19,6 +19,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlitecommander.app.acm.AMUtility;
 import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
+import com.afstd.sqlitecommander.app.fragment.FragmentMySQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
@@ -135,6 +136,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, FragmentCloud.newInstance());
+            transaction.commit();
+        }
+        else if (id == R.id.nav_mysql)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentMySQL.newInstance());
             transaction.commit();
         }
         /*else if (id == R.id.nav_slideshow)

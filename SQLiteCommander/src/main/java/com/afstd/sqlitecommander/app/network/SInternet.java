@@ -3,6 +3,8 @@ package com.afstd.sqlitecommander.app.network;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,9 +17,6 @@ import com.tehnicomsolutions.http.RequestBuilder;
 import com.tehnicomsolutions.http.TSHttp;
 import com.tehnicomsolutions.http.utility.MyTimer;
 import com.tehnicomsolutions.http.utility.TSHttpUtility;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -73,7 +72,7 @@ public class SInternet
     }
 
 
-    public static Response executeHttpRequest(@NotNull RequestBuilder requestBuilder)
+    public static Response executeHttpRequest(@NonNull RequestBuilder requestBuilder)
     {
         return executeHttpRequest(null, requestBuilder);
     }
@@ -85,7 +84,7 @@ public class SInternet
      * @param requestBuilder request builder object, used to build request. cannot be null
      * @return server response as string
      */
-    public static Response executeHttpRequest(@Nullable Activity activity, @NotNull RequestBuilder requestBuilder)
+    public static Response executeHttpRequest(@Nullable Activity activity, @NonNull RequestBuilder requestBuilder)
     {
         MyTimer timer = new MyTimer();
         Response response = new Response();

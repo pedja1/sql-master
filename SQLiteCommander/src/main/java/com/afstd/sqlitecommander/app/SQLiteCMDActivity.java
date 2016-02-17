@@ -22,7 +22,7 @@ import com.afstd.sqlcmd.SQLGridView;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
-import com.afstd.sqlitecommander.app.su.SUInstance;
+import com.afstd.sqlitecommander.app.su.ShellInstance;
 
 import java.io.File;
 import java.util.List;
@@ -67,7 +67,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
         }
         else
         {
-            SUInstance su = SUInstance.getInstance();
+            ShellInstance su = ShellInstance.getInstance();
             String ver = getApplicationInfo().nativeLibraryDir + "/libsqlite_verify.so";
             su.getShell().addCommand(ver + " " + databaseFile.getAbsolutePath(), 0, new Shell.OnCommandResultListener()
             {
@@ -118,7 +118,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
-        String query = "SELECT * FROM cmd_history";
+        String query = "SELECT * FROM query_history";
         final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
 
         ArrayAdapter<QueryHistory> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);

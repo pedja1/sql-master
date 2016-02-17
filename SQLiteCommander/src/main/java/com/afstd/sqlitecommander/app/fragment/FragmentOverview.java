@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.afstd.sqlitecommander.app.MainActivity;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 
 /**
  * Created by pedja on 21.1.16..
@@ -35,6 +36,9 @@ public class FragmentOverview extends Fragment implements View.OnClickListener
 
         PackageManager pm = getActivity().getPackageManager();
         tvAppCount.setText(getString(R.string.installed_applications, pm.getInstalledPackages(0).size()));
+
+        tvFavCount.setText(getString(R.string.favorite_databases, DatabaseManager.getInstance().getCount("SELECT COUNT(*) FROM _database WHERE is_favorite = 1", null)));
+        tvHistCount.setText(getString(R.string.viewed_databases, DatabaseManager.getInstance().getCount("SELECT COUNT(*) FROM  _database", null)));
 
         view.findViewById(R.id.btnSqlite).setOnClickListener(this);
         view.findViewById(R.id.btnMySql).setOnClickListener(this);

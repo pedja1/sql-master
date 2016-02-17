@@ -464,7 +464,7 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         protected void onProgressUpdate(Integer... values)
         {
             super.onProgressUpdate(values);
-            if(canceled)
+            if(canceled || !isAdded())
                 return;
 
             if (values[0] % 3 == 0)
