@@ -73,4 +73,5 @@
     <string name="username_required">Username is required</string>
     <string name="password_is_required">Password is required</string>
     <string name="add_mysql_database">Add new database</string>
+    <string name="comming_soon">Coming Soon ...</string>
 </resources>

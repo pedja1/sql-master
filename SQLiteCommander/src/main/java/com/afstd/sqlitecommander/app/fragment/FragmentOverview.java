@@ -45,6 +45,7 @@ public class FragmentOverview extends Fragment implements View.OnClickListener
         view.findViewById(R.id.btnFavorites).setOnClickListener(this);
         view.findViewById(R.id.btnHistory).setOnClickListener(this);
         view.findViewById(R.id.btnCloud).setOnClickListener(this);
+        view.findViewById(R.id.btnPostgreSql).setOnClickListener(this);
 
         return view;
     }
@@ -75,6 +76,9 @@ public class FragmentOverview extends Fragment implements View.OnClickListener
                 break;
             case R.id.btnCloud:
                 ((MainActivity)getActivity()).onNavigationItemSelected(R.id.nav_cloud);
+                break;
+            case R.id.btnPostgreSql:
+                ((MainActivity)getActivity()).onNavigationItemSelected(R.id.nav_postgresql);
                 break;
         }
     }
