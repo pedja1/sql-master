@@ -14,6 +14,10 @@
             android:id="@+id/nav_mysql"
             android:icon="@drawable/ic_menu_mysql"
             android:title="@string/my_sql"/>
+        <item
+            android:id="@+id/nav_postgresql"
+            android:icon="@drawable/ic_menu_postgressql"
+            android:title="@string/postgresql"/>
 
         <item
             android:id="@+id/nav_history"

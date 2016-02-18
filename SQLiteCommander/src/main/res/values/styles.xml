@@ -22,6 +22,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="AppTheme.NoActionBar.Dialog" parent="Theme.AppCompat.Light.Dialog"/>
+
     <style name="OverviewTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

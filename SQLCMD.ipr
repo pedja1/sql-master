@@ -433,6 +433,13 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="postgresql-9.2-1004.jdbc41">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/SQLiteCommander/libs/postgresql-9.2-1004.jdbc41.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="recyclerview-v7-23.1.1">
       <ANNOTATIONS>
         <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/annotations.zip!/" />

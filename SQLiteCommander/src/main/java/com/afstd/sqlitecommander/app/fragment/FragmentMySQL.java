@@ -1,5 +1,6 @@
 package com.afstd.sqlitecommander.app.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.RVArrayAdapter;
+import com.afstd.sqlitecommander.app.AddSQLConnectionActivity;
 import com.afstd.sqlitecommander.app.MySQLCMDActivity;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
@@ -95,7 +97,8 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         switch (v.getId())
         {
             case R.id.fabAdd:
-                addDummyData();
+                //addDummyData();
+                startActivity(new Intent(getActivity(), AddSQLConnectionActivity.class));
                 break;
         }
     }

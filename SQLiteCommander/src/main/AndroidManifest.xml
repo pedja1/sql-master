@@ -53,6 +53,9 @@
         <activity
             android:name=".MySQLCMDActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".AddSQLConnectionActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dialog"/>
 
 
         <service android:name=".acm.SAuthenticatorService">

@@ -67,6 +67,17 @@
 
     <android.support.v7.widget.CardView
         style="@style/OverviewButtonCard"
+        android:id="@+id/btnPostgreSql">
+
+        <com.pedja1.fontwidget.widget.FTextView
+            style="@style/OverviewButtonText"
+            android:text="@string/postgresql"
+            android:drawableLeft="@drawable/ic_menu_postgressql"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        style="@style/OverviewButtonCard"
         android:id="@+id/btnHistory">
 
         <com.pedja1.fontwidget.widget.FTextView

@@ -60,4 +60,11 @@
     <string name="idle">Idle</string>
     <string name="sync_data">Sync Data</string>
     <string name="no_databases_mysql">No Databases Found</string>
+    <string name="postgresql">PostgreSQL</string>
+    <string name="database_url_hint">Server hostmane or id address</string>
+    <string name="database_port_hint">Server port. Leave empty for default port</string>
+    <string name="database_name_hint">Database name</string>
+    <string name="database_username_hint">Database username</string>
+    <string name="database_password_hint">Database password</string>
+    <string name="save">Save</string>
 </resources>
