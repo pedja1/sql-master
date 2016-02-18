@@ -97,6 +97,28 @@ public class DatabaseManager
         return lis;
     }
 
+    public DatabaseEntry getDatabaseEntrie(String query, String[] args)
+    {
+        Cursor cursor = mDatabase.rawQuery(query, args);
+        DatabaseEntry databaseEntry = null;
+        if (cursor.moveToNext())
+        {
+            databaseEntry = new DatabaseEntry();
+            databaseEntry.id = cursor.getString(cursor.getColumnIndex("id"));
+            databaseEntry.type = cursor.getString(cursor.getColumnIndex("type"));
+            databaseEntry.databaseUri = cursor.getString(cursor.getColumnIndex("database_uri"));
+            databaseEntry.databaseName = cursor.getString(cursor.getColumnIndex("database_name"));
+            databaseEntry.databaseUsername = cursor.getString(cursor.getColumnIndex("database_username"));
+            databaseEntry.databasePassword = cursor.getString(cursor.getColumnIndex("database_password"));
+            databaseEntry.databasePort = cursor.getInt(cursor.getColumnIndex("database_port"));
+            databaseEntry.isFavorite = cursor.getInt(cursor.getColumnIndex("is_favorite")) == 1;
+            databaseEntry.created = cursor.getLong(cursor.getColumnIndex("created"));
+            databaseEntry.accessed = cursor.getLong(cursor.getColumnIndex("accessed"));
+        }
+        cursor.close();
+        return databaseEntry;
+    }
+
     public int getCount(String query, String[] args)
     {
         Cursor cursor = mDatabase.rawQuery(query, args);
@@ -166,7 +188,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.af.androidutility.lib.RVArrayAdapter;
+import com.afstd.sqlitecommander.app.MySQLCMDActivity;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
@@ -68,6 +70,15 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         mLoader = new ATLoadDatabases(this);
         mLoader.execute();
 
+        mAdapter.setOnItemClickListener(new RVArrayAdapter.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(Object item, int position)
+            {
+                MySQLCMDActivity.start(getActivity(), ((DatabaseEntry)item).id);
+            }
+        });
+
         return view;
     }
 
@@ -96,8 +107,10 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         entry.created = System.currentTimeMillis();
         entry.accessed = entry.created;
         entry.isFavorite = random.nextInt() % 2 == 0;
-        entry.databaseName = "test_database " + random.nextInt();
-        entry.databaseUri = "localhost";
+        entry.databaseName = "linpack";
+        entry.databaseUsername = "linpack";
+        entry.databasePassword = "Jop9~6c9";
+        entry.databaseUri = "pedjaapps.net";
         entry.id = UUID.randomUUID().toString();
         entry.type = DatabaseEntry.TYPE_MYSQL;
         databases.add(entry);

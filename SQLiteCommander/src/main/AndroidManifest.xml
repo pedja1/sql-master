@@ -50,6 +50,9 @@
         <activity
             android:name=".SQLiteCMDActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MySQLCMDActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
 
         <service android:name=".acm.SAuthenticatorService">

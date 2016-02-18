@@ -13,6 +13,7 @@ import com.af.androidutility.lib.RVArrayAdapter;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -32,17 +33,34 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position)
     {
-        DatabaseEntry databaseEntry = getItem(position);
+        final DatabaseEntry databaseEntry = getItem(position);
 
         ViewHolder holder = (ViewHolder) viewHolder;
 
         holder.ivIcon.setImageResource(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type) ? R.drawable.ic_menu_mysql : R.drawable.ic_menu_sqlite);
-        holder.text1.setText(databaseEntry.databaseName);
-        holder.text1.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort <= 0 ? DatabaseEntry.DEFAULT_PORT : databaseEntry.databasePort));
+        holder.text1.setText(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type) ? databaseEntry.databaseName : new File(databaseEntry.databaseUri).getName());
+        if (DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type))
+        {
+            holder.text1.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort <= 0 ? DatabaseEntry.DEFAULT_PORT : databaseEntry.databasePort));
+        }
+        else
+        {
+            holder.text1.setText(databaseEntry.databaseUri);
+        }
 
         holder.ivFavorite.setVisibility(databaseEntry.isFavorite ? View.VISIBLE : View.GONE);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(onItemClickListener != null)
+                    onItemClickListener.onItemClick(databaseEntry, position);
+            }
+        });
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder

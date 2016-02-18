@@ -31,7 +31,7 @@ public class MySQLCMD extends SQLCMD
     private MySQLThread mThread;
     private boolean mStarted;
 
-    public MySQLCMD(DatabaseEntry entry, MySQLThread.OnMySQLConnectListener listener)
+    public MySQLCMD(DatabaseEntry entry, OnMySQLConnectListener listener)
     {
         mThread = new MySQLThread(entry, listener);
     }
@@ -99,7 +99,7 @@ public class MySQLCMD extends SQLCMD
                     @Override
                     public void run()
                     {
-                        listener.onConnectionFailed();
+                        listener.onConnectionFailed(e instanceof SQLException ? ((SQLException)e).getErrorCode() : -1, e.getMessage());
                     }
                 });
                 return;
@@ -142,7 +142,7 @@ public class MySQLCMD extends SQLCMD
                     while (rs.next())
                     {
                         List<KeyValuePair> row = new ArrayList<>();
-                        for(int i = 0; i < rsmd.getColumnCount(); i++)
+                        for(int i = 1; i <= rsmd.getColumnCount(); i++)
                         {
                             KeyValuePair keyValuePair = new KeyValuePair(rsmd.getColumnName(i), rs.getString(i));
                             row.add(keyValuePair);
@@ -160,6 +160,7 @@ public class MySQLCMD extends SQLCMD
                 }
                 catch (final SQLException e)
                 {
+                    if(SettingsManager.DEBUG())e.printStackTrace();
                     //if code is <= 2000 it means its client error, connection error
                     if (e.getErrorCode() >= 2000)
                     {
@@ -169,7 +170,7 @@ public class MySQLCMD extends SQLCMD
                             @Override
                             public void run()
                             {
-                                listener.onConnectionFailed();
+                                listener.onConnectionFailed(e.getErrorCode(), e.getMessage());
                             }
                         });
                         mQuit = true;
@@ -220,11 +221,12 @@ public class MySQLCMD extends SQLCMD
                 this.listener = listener;
             }
         }
+    }
 
-        private interface OnMySQLConnectListener
-        {
-            void onConnected();
-            void onConnectionFailed();
-        }
+    public interface OnMySQLConnectListener
+    {
+        void onConnected();
+        /**TODO give me reason*/
+        void onConnectionFailed(int error, String errorMessage);
     }
 }
