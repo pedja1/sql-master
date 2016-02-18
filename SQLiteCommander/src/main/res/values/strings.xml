@@ -61,10 +61,16 @@
     <string name="sync_data">Sync Data</string>
     <string name="no_databases_mysql">No Databases Found</string>
     <string name="postgresql">PostgreSQL</string>
-    <string name="database_url_hint">Server hostmane or id address</string>
+    <string name="database_url_hint">Server hostmane or ip address</string>
     <string name="database_port_hint">Server port. Leave empty for default port</string>
     <string name="database_name_hint">Database name</string>
     <string name="database_username_hint">Database username</string>
     <string name="database_password_hint">Database password</string>
     <string name="save">Save</string>
+    <string name="sql_username_password_warning"><b>Warning</b>\nCredentials are NOT encrypted. While on non-rooted devices credentials are pretty secure, on rooted devices any application can read this information.\nBy default cloud synchronization of sensitive (non-sqlite) databases is disabled.</string>
+    <string name="database_name_is_required">Database name is required</string>
+    <string name="database_server_required">Database hostname/ip is required</string>
+    <string name="username_required">Username is required</string>
+    <string name="password_is_required">Password is required</string>
+    <string name="add_mysql_database">Add new database</string>
 </resources>

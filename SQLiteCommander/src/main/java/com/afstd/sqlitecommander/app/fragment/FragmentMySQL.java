@@ -1,5 +1,6 @@
 package com.afstd.sqlitecommander.app.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.RVArrayAdapter;
-import com.afstd.sqlitecommander.app.AddSQLConnectionActivity;
+import com.afstd.sqlitecommander.app.AddMySQLDatabase;
+import com.afstd.sqlitecommander.app.AddSQLDatabaseActivity;
 import com.afstd.sqlitecommander.app.MySQLCMDActivity;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
@@ -24,14 +26,14 @@ import com.android.volley.misc.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by pedja on 16.2.16..
  */
 public class FragmentMySQL extends Fragment implements View.OnClickListener
 {
+    private static final int REQUEST_CODE_ADD_DATABASE = 9001;
+
     public static FragmentMySQL newInstance()
     {
         Bundle args = new Bundle();
@@ -62,7 +64,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
 
-        mAdapter = new DatabaseListAdapter(getActivity(), databases = new ArrayList<>());
+        mAdapter = new DatabaseListAdapter(this, databases = new ArrayList<>());
 
         recyclerView.setAdapter(mAdapter);
 
@@ -77,7 +79,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
             @Override
             public void onItemClick(Object item, int position)
             {
-                MySQLCMDActivity.start(getActivity(), ((DatabaseEntry)item).id);
+                MySQLCMDActivity.start(getActivity(), ((DatabaseEntry) item).id);
             }
         });
 
@@ -87,7 +89,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
     @Override
     public void onDestroy()
     {
-        if(mLoader != null)
+        if (mLoader != null)
             mLoader.cancel(true);
     }
 
@@ -97,28 +99,9 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         switch (v.getId())
         {
             case R.id.fabAdd:
-                //addDummyData();
-                startActivity(new Intent(getActivity(), AddSQLConnectionActivity.class));
+                AddSQLDatabaseActivity.start(this, AddMySQLDatabase.class, null, REQUEST_CODE_ADD_DATABASE);
                 break;
         }
-    }
-
-    private void addDummyData()
-    {
-        Random random = new Random();
-        DatabaseEntry entry = new DatabaseEntry();
-        entry.created = System.currentTimeMillis();
-        entry.accessed = entry.created;
-        entry.isFavorite = random.nextInt() % 2 == 0;
-        entry.databaseName = "linpack";
-        entry.databaseUsername = "linpack";
-        entry.databasePassword = "Jop9~6c9";
-        entry.databaseUri = "pedjaapps.net";
-        entry.id = UUID.randomUUID().toString();
-        entry.type = DatabaseEntry.TYPE_MYSQL;
-        databases.add(entry);
-        DatabaseManager.getInstance().insertDatabaseEntry(entry);
-        mAdapter.notifyItemInserted(databases.size() - 1);
     }
 
     private static class ATLoadDatabases extends AsyncTask<Void, Void, List<DatabaseEntry>>
@@ -141,7 +124,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         @Override
         protected void onPreExecute()
         {
-            if(reference.get() == null)
+            if (reference.get() == null)
                 return;
             reference.get().tvError.setVisibility(View.GONE);
             reference.get().pbLoading.setVisibility(View.VISIBLE);
@@ -150,13 +133,34 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         @Override
         protected void onPostExecute(List<DatabaseEntry> databaseEntries)
         {
-            if(reference.get() == null)
+            if (reference.get() == null)
                 return;
             reference.get().pbLoading.setVisibility(View.GONE);
             reference.get().tvError.setVisibility(databaseEntries.isEmpty() ? View.VISIBLE : View.GONE);
             reference.get().databases.clear();
             reference.get().databases.addAll(databaseEntries);
             reference.get().mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case REQUEST_CODE_ADD_DATABASE:
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    String id = data.getStringExtra(AddMySQLDatabase.INTENT_EXTRA_DATABASE_ID);
+                    if (id != null)
+                    {
+                        DatabaseEntry entry = DatabaseManager.getInstance().getDatabaseEntrie("SELECT * FROM _database WHERE id = ?", new String[]{id});
+                        databases.add(entry);
+                        mAdapter.notifyItemInserted(databases.size() - 1);
+                    }
+                }
+                break;
         }
     }
 }

@@ -54,7 +54,8 @@
             android:name=".MySQLCMDActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".AddSQLConnectionActivity"
+            android:name=".AddMySQLDatabase"
+            android:label="@string/add_mysql_database"
             android:theme="@style/AppTheme.NoActionBar.Dialog"/>
 
 

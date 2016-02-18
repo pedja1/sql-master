@@ -161,7 +161,11 @@ public class DatabaseManager
                 values.put("database_password", entry.databasePassword);
                 values.put("database_port", entry.databasePort);
                 values.put("is_favorite", entry.isFavorite);
+                if(entry.created == null)
+                    entry.created = System.currentTimeMillis();
                 values.put("created", entry.created);
+                if(entry.accessed == null)
+                    entry.accessed = System.currentTimeMillis();
                 values.put("accessed", entry.accessed);
 
                 long id = mDatabase.insertWithOnConflict("_database", null, values, SQLiteDatabase.CONFLICT_IGNORE);
