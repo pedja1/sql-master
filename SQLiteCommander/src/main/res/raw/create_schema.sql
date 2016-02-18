@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS _database (
   id                TEXT PRIMARY KEY,
   type              TEXT NOT NULL,
   database_uri      TEXT NOT NULL,
-  database_name     TEXT NOT NULL,
+  database_name     TEXT,
   database_username TEXT    DEFAULT NULL,
   database_password TEXT    DEFAULT NULL,
   database_port     INTEGER DEFAULT 3360,

@@ -19,6 +19,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlcmd.SQLGridView;
+import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
@@ -26,6 +27,7 @@ import com.afstd.sqlitecommander.app.su.ShellInstance;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -114,6 +116,17 @@ public class SQLiteCMDActivity extends AppCompatActivity
             SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
             sqlcmd = new SQLiteCMDDefault(database);
         }
+
+        DatabaseEntry entry = DatabaseEntry.findWithUri(databaseFile.getAbsolutePath());
+        if(entry == null)
+        {
+            entry = new DatabaseEntry();
+            entry.id = UUID.randomUUID().toString();
+        }
+        entry.databaseUri = databaseFile.getAbsolutePath();
+        entry.accessed = System.currentTimeMillis();
+        entry.type = DatabaseEntry.TYPE_SQLITE;
+        DatabaseManager.getInstance().insertDatabaseEntry(entry);
 
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);

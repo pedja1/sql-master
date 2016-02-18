@@ -158,6 +158,13 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(R.string.cloud);
+    }
+
     private void setLastSyncData()
     {
         //TODO sync service sets this pref. Since sync service is running in separate process, changes wont reflect here

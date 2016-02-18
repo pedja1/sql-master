@@ -11,6 +11,7 @@ import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
+import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -176,6 +177,11 @@ public class DatabaseManager
             }
             mDatabase.setTransactionSuccessful();
         }
+        catch (Exception e)
+        {
+            if(SettingsManager.DEBUG())
+                e.printStackTrace();
+        }
         finally
         {
             mDatabase.endTransaction();
@@ -192,7 +198,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 

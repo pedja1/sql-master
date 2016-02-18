@@ -41,6 +41,13 @@ public class FragmentSQLite extends Fragment
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(R.string.sqlite);
+    }
+
     private class PagerAdapter extends FragmentPagerAdapter
     {
         private static final int PAGE_INDEX_APPS = 0;

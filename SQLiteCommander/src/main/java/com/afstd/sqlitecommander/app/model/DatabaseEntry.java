@@ -1,5 +1,7 @@
 package com.afstd.sqlitecommander.app.model;
 
+import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+
 /**
  * Created by pedja on 13.2.16..
  */
@@ -39,4 +41,12 @@ public class DatabaseEntry
     public boolean isFavorite;
     public Long created;
     public Long accessed;
+
+    public static DatabaseEntry findWithUri(String uri)
+    {
+        String query = "SELECT * FROM _database WHERE database_uri = ?";
+        String[] args = new String[]{uri};
+
+        return DatabaseManager.getInstance().getDatabaseEntrie(query, args);
+    }
 }

@@ -19,6 +19,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlitecommander.app.acm.AMUtility;
 import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
+import com.afstd.sqlitecommander.app.fragment.FragmentHistory;
 import com.afstd.sqlitecommander.app.fragment.FragmentMySQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
@@ -100,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        /*if (id == R.id.action_settings)
         {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -142,6 +143,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, FragmentMySQL.newInstance());
+            transaction.commit();
+        }
+        else if (id == R.id.nav_history)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentHistory.newInstance());
             transaction.commit();
         }
         /*else if (id == R.id.nav_slideshow)

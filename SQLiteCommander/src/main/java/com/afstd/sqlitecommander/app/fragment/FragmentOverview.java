@@ -50,6 +50,13 @@ public class FragmentOverview extends Fragment implements View.OnClickListener
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(R.string.app_name);
+    }
+
+    @Override
     public void onClick(View v)
     {
         switch (v.getId())
