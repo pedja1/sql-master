@@ -24,7 +24,7 @@ public class SettingsManager
 
     public enum KEY
     {
-        DEBUG, active_account, last_sync_time, syntax_highlight_theme;
+        DEBUG, active_account, last_sync_time, syntax_highlight_theme, sync_notification;
 
         private String mValue;
 
@@ -144,6 +144,11 @@ public class SettingsManager
                 return THEME_DJANGO;
         }
         return null;
+    }
+
+    public static boolean isShowSyncNotification()
+    {
+        return prefs.getBoolean(KEY.sync_notification.toString(), true);
     }
 
     public static void clearAllPrefs()

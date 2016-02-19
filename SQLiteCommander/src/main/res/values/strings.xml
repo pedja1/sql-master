@@ -30,7 +30,7 @@
     <string name="cant_read_database_file">Unable to read database file.</string>
     <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to modify database.</string>
     <string name="failed_to_verify_database">Failed to verify database file. Either file is not SQLite 3 database or some other error occured.</string>
-    <string name="login_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.</string>
+    <string name="login_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.\nOnly database information is backed-up, not whole database content</string>
     <string name="enable_sync">Cloud Sync Enabled</string>
     <string name="sync_history">Sync History</string>
     <string name="sync_favorites">Sync Favorites</string>
@@ -86,4 +86,6 @@
     <string name="cloud_sync_notification">Cloud Sync</string>
     <string name="cloud_sync_notif_summary">Show notification when cloud sync is in progress</string>
     <string name="action_search">Search</string>
+    <string name="sync_notification_title">Cloud Sync</string>
+    <string name="sync_notification_text">Cloud sync in progress...</string>
 </resources>
