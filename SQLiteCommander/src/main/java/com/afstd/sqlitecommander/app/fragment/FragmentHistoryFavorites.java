@@ -12,7 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.RVArrayAdapter;
+import com.afstd.sqlitecommander.app.MySQLCMDActivity;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.SQLiteCMDActivity;
 import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
@@ -25,16 +27,24 @@ import java.util.List;
 /**
  * Created by pedja on 16.2.16..
  */
-public class FragmentHistory extends Fragment
+public class FragmentHistoryFavorites extends Fragment
 {
-    public static FragmentHistory newInstance()
+    private static final String ARG_TYPE = "type";
+
+    public static final int TYPE_HISTORY = 0;
+    public static final int TYPE_FAVORITES = 1;
+
+    public static FragmentHistoryFavorites newInstance(int type)
     {
         Bundle args = new Bundle();
+        args.putInt(ARG_TYPE, type);
 
-        FragmentHistory fragment = new FragmentHistory();
+        FragmentHistoryFavorites fragment = new FragmentHistoryFavorites();
         fragment.setArguments(args);
         return fragment;
     }
+
+    private int type;
 
     private TextView tvError;
     private ProgressBar pbLoading;
@@ -48,6 +58,7 @@ public class FragmentHistory extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        type = getArguments().getInt(ARG_TYPE);
         View view = inflater.inflate(R.layout.fragment_history_favorites, container, false);
 
         tvError = (TextView) view.findViewById(R.id.tvError);
@@ -70,8 +81,15 @@ public class FragmentHistory extends Fragment
             @Override
             public void onItemClick(Object item, int position)
             {
-                //TODO by id
-                //MySQLCMDActivity.start(getActivity(), ((DatabaseEntry) item).id);
+                DatabaseEntry entry = (DatabaseEntry) item;
+                if(DatabaseEntry.TYPE_SQLITE.equals(entry.type))
+                {
+                    SQLiteCMDActivity.start(getActivity(), entry.databaseUri, true);
+                }
+                else
+                {
+                    MySQLCMDActivity.start(getActivity(), ((DatabaseEntry) item).id);
+                }
             }
         });
 
@@ -82,7 +100,7 @@ public class FragmentHistory extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.history);
+        getActivity().setTitle(type == TYPE_HISTORY ? R.string.history : R.string.favorites);
     }
 
     @Override
@@ -95,9 +113,9 @@ public class FragmentHistory extends Fragment
 
     private static class ATLoadDatabases extends AsyncTask<Void, Void, List<DatabaseEntry>>
     {
-        private WeakReference<FragmentHistory> reference;
+        private WeakReference<FragmentHistoryFavorites> reference;
 
-        ATLoadDatabases(FragmentHistory adapter)
+        ATLoadDatabases(FragmentHistoryFavorites adapter)
         {
             this.reference = new WeakReference<>(adapter);
         }
@@ -105,7 +123,17 @@ public class FragmentHistory extends Fragment
         @Override
         protected List<DatabaseEntry> doInBackground(Void... params)
         {
-            String query = "SELECT * FROM _database ORDER BY accessed DESC";
+            if(reference.get() == null)
+                return null;
+            String query;
+            if(reference.get().type == TYPE_FAVORITES)
+            {
+                query = "SELECT * FROM _database WHERE is_favorite = 1 ORDER BY accessed DESC";
+            }
+            else
+            {
+                query = "SELECT * FROM _database ORDER BY accessed DESC";
+            }
             String[] args = new String[0];
             return DatabaseManager.getInstance().getDatabaseEntries(query, args);
         }

@@ -2,6 +2,7 @@ package com.afstd.sqlitecommander.app;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -19,7 +20,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlitecommander.app.acm.AMUtility;
 import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
-import com.afstd.sqlitecommander.app.fragment.FragmentHistory;
+import com.afstd.sqlitecommander.app.fragment.FragmentHistoryFavorites;
 import com.afstd.sqlitecommander.app.fragment.FragmentMySQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentPostgreSQL;
@@ -155,14 +156,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_history)
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, FragmentHistory.newInstance());
+            transaction.replace(R.id.content, FragmentHistoryFavorites.newInstance(FragmentHistoryFavorites.TYPE_HISTORY));
             transaction.commit();
         }
-        /*else if (id == R.id.nav_slideshow)
+        else if (id == R.id.nav_favorites)
         {
-
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentHistoryFavorites.newInstance(FragmentHistoryFavorites.TYPE_FAVORITES));
+            transaction.commit();
         }
-        else if (id == R.id.nav_manage)
+        else if (id == R.id.nav_settings)
+        {
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+        /*else if (id == R.id.nav_manage)
         {
 
         }

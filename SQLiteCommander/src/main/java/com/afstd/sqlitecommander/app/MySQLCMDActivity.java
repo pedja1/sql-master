@@ -4,10 +4,8 @@ package com.afstd.sqlitecommander.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -18,17 +16,18 @@ import android.widget.TextView;
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlcmd.SQLGridView;
-import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.mysql.MySQLCMD;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.afstd.sqlitecommander.app.utility.SQLTextHighlighter;
+import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.util.List;
 
 /**
  * Created by pedja on 17.1.16..
  */
-public class MySQLCMDActivity extends AppCompatActivity
+public class MySQLCMDActivity extends SQLCMDActivity
 {
     public static final String INTENT_EXTRA_ID = "id";
     private TextView tvError;
@@ -48,27 +47,28 @@ public class MySQLCMDActivity extends AppCompatActivity
         }
 
         String query = "SELECT * FROM _database WHERE id = ?";
-        DatabaseEntry database = DatabaseManager.getInstance().getDatabaseEntrie(query, new String[]{id});
+        entry = DatabaseManager.getInstance().getDatabaseEntrie(query, new String[]{id});
 
-        if (database == null)
+        if (entry == null)
         {
             fail();
             return;
         }
+        invalidateOptionsMenu();
 
         setContentView(R.layout.activity_sqlcmd);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setTitle(database.databaseName);
-        getSupportActionBar().setSubtitle(database.databaseUri);
+        setTitle(entry.databaseName);
+        getSupportActionBar().setSubtitle(entry.databaseUri);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvError = (TextView) findViewById(R.id.tvError);
         pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
 
-        sqlcmd = new MySQLCMD(database, new MySQLCMD.OnMySQLConnectListener()
+        sqlcmd = new MySQLCMD(entry, new MySQLCMD.OnMySQLConnectListener()
         {
             @Override
             public void onConnected()
@@ -108,6 +108,9 @@ public class MySQLCMDActivity extends AppCompatActivity
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
+        SQLTextHighlighter highlighter = new SQLTextHighlighter(etSqlCmd, SettingsManager.getSyntaxHighlightTheme());
+        highlighter.highlightTextChanges();
+
         String query = "SELECT * FROM query_history";
         final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
 
@@ -143,19 +146,6 @@ public class MySQLCMDActivity extends AppCompatActivity
                 });
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public static void start(Activity activity, String id)

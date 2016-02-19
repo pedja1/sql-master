@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/look_and_feel">
+        <com.afstd.sqlitecommander.app.view.SpannableListPreference
+            android:entryValues="@array/syntaxThemeValues"
+            android:entries="@array/syntaxThemeEntries"
+            android:title="@string/syntax_highlight_theme"
+            android:key="syntax_highlight_theme"
+            android:defaultValue="default"
+            />
+    </PreferenceCategory>
+
+    <!--
+    <PreferenceCategory android:title="@string/prefs_push_cat">
+        <CheckBoxPreference
+            android:title="@string/prefs_push_title"
+            android:summary="@string/prefs_push_summary"
+            android:key="push"
+            android:layout="@layout/preference_layout"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/prefs_font">
+        <ListPreference
+            android:entryValues="@array/fontValues"
+            android:entries="@array/fontEntries"
+            android:title="@string/prefs_font_title"
+            android:key="font"
+            android:defaultValue="1"
+            android:layout="@layout/preference_layout"
+            />
+    </PreferenceCategory>
+    -->
+</PreferenceScreen>

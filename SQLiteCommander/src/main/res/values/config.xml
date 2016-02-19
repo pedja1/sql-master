@@ -2,4 +2,16 @@
 <resources>
     <string name="account_type">com.afstd.sqlcommander</string>
     <string name="content_authority">com.afstd.sqlcommander.provider</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_django">Django</string>
+
+    <string-array name="syntaxThemeEntries">
+        <item>@string/theme_default</item>
+        <item>@string/theme_django</item>
+    </string-array>
+
+    <string-array name="syntaxThemeValues">
+        <item>default</item>
+        <item>django</item>
+    </string-array>
 </resources>

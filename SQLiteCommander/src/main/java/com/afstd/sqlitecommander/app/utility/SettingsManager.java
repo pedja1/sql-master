@@ -6,6 +6,10 @@ import android.preference.PreferenceManager;
 import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.BuildConfig;
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.syntaxhighlight.Theme;
+
+import static com.afstd.sqlitecommander.app.SettingsActivity.PrefsFragment.THEME_DEFAULT;
+import static com.afstd.sqlitecommander.app.SettingsActivity.PrefsFragment.THEME_DJANGO;
 
 
 /**
@@ -20,7 +24,7 @@ public class SettingsManager
 
     public enum KEY
     {
-        DEBUG, active_account, last_sync_time;
+        DEBUG, active_account, last_sync_time, syntax_highlight_theme;
 
         private String mValue;
 
@@ -122,6 +126,24 @@ public class SettingsManager
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(KEY.last_sync_time.toString(), lastSyncTime);
         editor.apply();
+    }
+
+    public static String getSyntaxHighlightThemeKey()
+    {
+        return prefs.getString(KEY.syntax_highlight_theme.toString(), "default");
+    }
+
+    public static Theme getSyntaxHighlightTheme()
+    {
+        String key = getSyntaxHighlightThemeKey();
+        switch (key)
+        {
+            case "default":
+                return THEME_DEFAULT;
+            case "django":
+                return THEME_DJANGO;
+        }
+        return null;
     }
 
     public static void clearAllPrefs()

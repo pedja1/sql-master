@@ -74,4 +74,7 @@
     <string name="password_is_required">Password is required</string>
     <string name="add_mysql_database">Add new database</string>
     <string name="comming_soon">Coming Soon ...</string>
+    <string name="look_and_feel"><![CDATA[Look & Feel]]></string>
+    <string name="syntax_highlight_theme">Syntax Highlight Theme</string>
+    <string name="action_add_favorite">Add to favorites</string>
 </resources>

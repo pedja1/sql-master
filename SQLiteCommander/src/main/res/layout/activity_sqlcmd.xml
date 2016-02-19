@@ -27,14 +27,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <AutoCompleteTextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="SQL"
                 android:id="@+id/etSqlCmd"
-                android:layout_weight="1"
                 tools:ignore="HardcodedText"/>
 
             <Button
@@ -42,7 +41,9 @@
                 android:layout_height="wrap_content"
                 android:text="Execute"
                 tools:ignore="HardcodedText"
-                android:id="@+id/btnExecute"/>
+                android:id="@+id/btnExecute"
+                android:layout_gravity="right"
+                app:theme="@style/ButtonStyleGreen"/>
         </LinearLayout>
 
         <TextView

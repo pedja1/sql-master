@@ -5,15 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -30,17 +22,11 @@ import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
-import com.afstd.syntaxhighlight.ParseResult;
-import com.afstd.syntaxhighlight.Theme;
-import com.afstd.syntaxhighlighter.SyntaxHighlighterParser;
-import com.afstd.syntaxhighlighter.brush.BrushSql;
-import com.afstd.syntaxhighlighter.theme.ThemeDefault;
+import com.afstd.sqlitecommander.app.utility.SQLTextHighlighter;
+import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -48,7 +34,7 @@ import eu.chainfire.libsuperuser.Shell;
 /**
  * Created by pedja on 17.1.16..
  */
-public class SQLiteCMDActivity extends AppCompatActivity
+public class SQLiteCMDActivity extends SQLCMDActivity
 {
     public static final String INTENT_EXTRA_PATH = "path";
     public static final String INTENT_EXTRA_VERIFY_DATABASE = "verify";
@@ -131,7 +117,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
             sqlcmd = new SQLiteCMDDefault(database);
         }
 
-        DatabaseEntry entry = DatabaseEntry.findWithUri(databaseFile.getAbsolutePath());
+        entry = DatabaseEntry.findWithUri(databaseFile.getAbsolutePath());
         if (entry == null)
         {
             entry = new DatabaseEntry();
@@ -141,103 +127,14 @@ public class SQLiteCMDActivity extends AppCompatActivity
         entry.accessed = System.currentTimeMillis();
         entry.type = DatabaseEntry.TYPE_SQLITE;
         DatabaseManager.getInstance().insertDatabaseEntry(entry);
+        invalidateOptionsMenu();
 
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
-        final SyntaxHighlighterParser parser = new SyntaxHighlighterParser(new BrushSql());
-        final Theme theme = new ThemeDefault();
+        SQLTextHighlighter highlighter = new SQLTextHighlighter(etSqlCmd, SettingsManager.getSyntaxHighlightTheme());
+        highlighter.highlightTextChanges();
 
-        etSqlCmd.addTextChangedListener(new TextWatcher()
-        {
-            boolean calbackDisaabled = false;
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-                if(calbackDisaabled)
-                    return;
-                calbackDisaabled = true;
-                //TODO to many for loops for each key type, optimize
-                List<ParseResult> results = parser.parse(null, s.toString());
-                Map<String, List<ParseResult>> styleList = new HashMap<>();
-
-                for (ParseResult parseResult : results)
-                {
-                    String styleKeysString = parseResult.getStyleKeysString();
-                    List<ParseResult> _styleList = styleList.get(styleKeysString);
-                    if (_styleList == null)
-                    {
-                        _styleList = new ArrayList<>();
-                        styleList.put(styleKeysString, _styleList);
-                    }
-                    _styleList.add(parseResult);
-                }
-
-                //s.clearSpans();
-                clearSpans(s);
-                for (String key : styleList.keySet())
-                {
-                    List<ParseResult> posList = styleList.get(key);
-
-                    for (ParseResult pos : posList)
-                    {
-                        List<Object> spans = theme.getStyle(key).newSpans();
-                        for(Object span : spans)
-                        {
-                            s.setSpan(span, pos.getOffset(), pos.getOffset() + pos.getLength(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                    }
-                }
-                calbackDisaabled = false;
-            }
-
-            private void clearSpans( Editable e )
-            {
-                // remove foreground color spans
-                {
-                    ForegroundColorSpan spans[] = e.getSpans(
-                            0,
-                            e.length(),
-                            ForegroundColorSpan.class );
-
-                    for( int n = spans.length; n-- > 0; )
-                        e.removeSpan( spans[n] );
-                }
-
-                // remove background color spans
-                {
-                    BackgroundColorSpan spans[] = e.getSpans(
-                            0,
-                            e.length(),
-                            BackgroundColorSpan.class );
-
-                    for( int n = spans.length; n-- > 0; )
-                        e.removeSpan( spans[n] );
-                }
-                // remove style spans
-                {
-                    StyleSpan spans[] = e.getSpans(
-                            0,
-                            e.length(),
-                            StyleSpan.class );
-
-                    for( int n = spans.length; n-- > 0; )
-                        e.removeSpan( spans[n] );
-                }
-            }
-        });
         String query = "SELECT * FROM query_history";
         final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
 
@@ -272,19 +169,6 @@ public class SQLiteCMDActivity extends AppCompatActivity
                 });
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public static void start(Activity activity, String path, boolean verifyDatabase)
