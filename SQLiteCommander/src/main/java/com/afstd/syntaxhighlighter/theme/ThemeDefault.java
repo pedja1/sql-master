@@ -36,7 +36,7 @@ public class ThemeDefault extends Theme
     {
         super();
 
-        setHighlightedBackground(0xe0e0e0);
+        setHighlightedBackground(0xffe0e0e0);
 
         Style style = new Style();
         style.setBold(true);
@@ -48,7 +48,7 @@ public class ThemeDefault extends Theme
         setPlain(style);
 
         style = new Style();
-        style.setColor(0x008200);
+        style.setColor(0xff008200);
         addStyle("comments", style);
 
         style = new Style();
@@ -57,7 +57,7 @@ public class ThemeDefault extends Theme
 
         style = new Style();
         style.setBold(true);
-        style.setColor(0x006699);
+        style.setColor(0xff006699);
         addStyle("keyword", style);
 
         style = new Style();
@@ -65,24 +65,24 @@ public class ThemeDefault extends Theme
         addStyle("preprocessor", style);
 
         style = new Style();
-        style.setColor(0xaa7700);
+        style.setColor(0xffaa7700);
         addStyle("variable", style);
 
         style = new Style();
-        style.setColor(0x009900);
+        style.setColor(0xff009900);
         addStyle("value", style);
 
         style = new Style();
-        style.setColor(0xff1493);
+        style.setColor(0xffff1493);
         addStyle("functions", style);
 
         style = new Style();
-        style.setColor(0x0066cc);
+        style.setColor(0xff0066cc);
         addStyle("constants", style);
 
         style = new Style();
         style.setBold(true);
-        style.setColor(0x006699);
+        style.setColor(0xff006699);
         addStyle("script", style);
 
         style = new Style();
@@ -93,7 +93,7 @@ public class ThemeDefault extends Theme
         addStyle("color3", style);
 
         style = new Style();
-        style.setColor(0xff1493);
+        style.setColor(0xffff1493);
         addStyle("color2", style);
 
         style = new Style();

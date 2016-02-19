@@ -21,6 +21,14 @@
 package com.afstd.syntaxhighlight;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The style used by {@link Theme} as those of CSS styles.
@@ -29,16 +37,6 @@ import android.graphics.Color;
  */
 public class Style implements Cloneable
 {
-
-    /**
-     * It indicate whether the {@link #attributeSet} has updated after any style
-     * changes.
-     */
-    protected boolean changed;
-    /**
-     * The {@link AttributeSet} representation of this style.
-     */
-    //protected SimpleAttributeSet attributeSet;
     /**
      * Font bold.
      */
@@ -46,11 +44,11 @@ public class Style implements Cloneable
     /**
      * Font color.
      */
-    protected int color;
+    protected int color = -1;
     /**
      * The background color, null means no background color is set.
      */
-    protected int background;
+    protected int background = -1;
     /**
      * Font underline.
      */
@@ -75,9 +73,6 @@ public class Style implements Cloneable
      */
     public Style()
     {
-        changed = true;
-        //attributeSet = null;
-
         bold = false;
         color = Color.BLACK;
         background = -1;
@@ -90,23 +85,29 @@ public class Style implements Cloneable
      *
      * @return the {@link AttributeSet}
      */
-    /*public SimpleAttributeSet getAttributeSet()
+    public List<Object> newSpans()
     {
-        if (changed)
+        List<Object> spans = new ArrayList<>();
+        if (bold && italic)
         {
-            attributeSet = new SimpleAttributeSet();
-            StyleConstants.setBold(attributeSet, bold);
-            StyleConstants.setForeground(attributeSet, color);
-            if (background != null)
-            {
-                StyleConstants.setBackground(attributeSet, background);
-            }
-            StyleConstants.setUnderline(attributeSet, underline);
-            StyleConstants.setItalic(attributeSet, italic);
-            changed = false;
+            spans.add(new StyleSpan(Typeface.BOLD_ITALIC));
         }
-        return attributeSet;
-    }*/
+        else
+        {
+            if (bold)
+                spans.add(new StyleSpan(Typeface.BOLD));
+            if (italic)
+                spans.add(new StyleSpan(Typeface.ITALIC));
+        }
+        if (underline)
+            spans.add(new UnderlineSpan());
+        if (color >= 0)
+            spans.add(new ForegroundColorSpan(color));
+        if (background >= 0)
+            spans.add(new BackgroundColorSpan(background));
+
+        return spans;
+    }
 
     /**
      * Get the background color.
@@ -125,7 +126,6 @@ public class Style implements Cloneable
      */
     public void setBackground(int background)
     {
-        changed = true;
         this.background = background;
     }
 
@@ -136,7 +136,6 @@ public class Style implements Cloneable
 
     public void setBold(boolean bold)
     {
-        changed = true;
         this.bold = bold;
     }
 
@@ -147,7 +146,6 @@ public class Style implements Cloneable
 
     public void setColor(int color)
     {
-        changed = true;
         this.color = color;
     }
 
@@ -158,7 +156,6 @@ public class Style implements Cloneable
 
     public void setItalic(boolean italic)
     {
-        changed = true;
         this.italic = italic;
     }
 
@@ -169,7 +166,6 @@ public class Style implements Cloneable
 
     public void setUnderline(boolean underline)
     {
-        changed = true;
         this.underline = underline;
     }
 

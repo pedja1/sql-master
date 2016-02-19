@@ -35,69 +35,69 @@ public class ThemeDjango extends Theme
   public ThemeDjango() {
     super();
 
-    setHighlightedBackground(0x233729);
+    setHighlightedBackground(0xff233729);
 
     Style style = new Style();
     style.setBold(true);
     addStyle("bold", style);
 
     style = new Style();
-    style.setColor(0xf8f8f8);
+    style.setColor(0xfff8f8f8);
     addStyle("plain", style);
     setPlain(style);
 
     style = new Style();
     style.setItalic(true);
-    style.setColor(0x336442);
+    style.setColor(0xff336442);
     addStyle("comments", style);
 
     style = new Style();
-    style.setColor(0x9df39f);
+    style.setColor(0xff9df39f);
     addStyle("string", style);
 
     style = new Style();
     style.setBold(true);
-    style.setColor(0x96dd3b);
+    style.setColor(0xff96dd3b);
     addStyle("keyword", style);
 
     style = new Style();
-    style.setColor(0x91bb9e);
+    style.setColor(0xff91bb9e);
     addStyle("preprocessor", style);
 
     style = new Style();
-    style.setColor(0xffaa3e);
+    style.setColor(0xffffaa3e);
     addStyle("variable", style);
 
     style = new Style();
-    style.setColor(0xf7e741);
+    style.setColor(0xfff7e741);
     addStyle("value", style);
 
     style = new Style();
-    style.setColor(0xffaa3e);
+    style.setColor(0xffffaa3e);
     addStyle("functions", style);
 
     style = new Style();
-    style.setColor(0xe0e8ff);
+    style.setColor(0xffe0e8ff);
     addStyle("constants", style);
 
     style = new Style();
     style.setBold(true);
-    style.setColor(0x96dd3b);
+    style.setColor(0xff96dd3b);
     addStyle("script", style);
 
     style = new Style();
     addStyle("scriptBackground", style);
 
     style = new Style();
-    style.setColor(0xeb939a);
+    style.setColor(0xffeb939a);
     addStyle("color3", style);
 
     style = new Style();
-    style.setColor(0x91bb9e);
+    style.setColor(0xff91bb9e);
     addStyle("color2", style);
 
     style = new Style();
-    style.setColor(0xedef7d);
+    style.setColor(0xffedef7d);
     addStyle("color3", style);
   }
 }

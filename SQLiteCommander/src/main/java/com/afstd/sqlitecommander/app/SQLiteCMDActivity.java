@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,12 +31,16 @@ import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.syntaxhighlight.ParseResult;
+import com.afstd.syntaxhighlight.Theme;
 import com.afstd.syntaxhighlighter.SyntaxHighlighterParser;
 import com.afstd.syntaxhighlighter.brush.BrushSql;
+import com.afstd.syntaxhighlighter.theme.ThemeDjango;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -69,7 +77,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
 
         boolean shoudVerifyFile = getIntent().getBooleanExtra(INTENT_EXTRA_VERIFY_DATABASE, true);
 
-        if(!shoudVerifyFile)
+        if (!shoudVerifyFile)
         {
             setup();
         }
@@ -82,7 +90,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
                 @Override
                 public void onCommandResult(int commandCode, int exitCode, List<String> output)
                 {
-                    if(output != null && output.size() > 1 && AndroidUtility.parseInt(output.get(0).trim(), 0) == 1)
+                    if (output != null && output.size() > 1 && AndroidUtility.parseInt(output.get(0).trim(), 0) == 1)
                     {
                         setup();
                     }
@@ -102,20 +110,20 @@ public class SQLiteCMDActivity extends AppCompatActivity
         pbLoading.setVisibility(View.GONE);
 
         final SQLCMD sqlcmd;
-        if(Shell.SU.available())
+        if (Shell.SU.available())
         {
             sqlcmd = new SQLiteCMDRoot(databaseFile.getAbsolutePath());
         }
         else
         {
-            if(!databaseFile.canRead())
+            if (!databaseFile.canRead())
             {
                 AndroidUtility.showToast(this, R.string.cant_read_database_file);
                 finish();
                 return;
             }
 
-            if(!databaseFile.canWrite())
+            if (!databaseFile.canWrite())
             {
                 AndroidUtility.showToast(this, R.string.cant_write_database_file);
             }
@@ -124,7 +132,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
         }
 
         DatabaseEntry entry = DatabaseEntry.findWithUri(databaseFile.getAbsolutePath());
-        if(entry == null)
+        if (entry == null)
         {
             entry = new DatabaseEntry();
             entry.id = UUID.randomUUID().toString();
@@ -138,9 +146,11 @@ public class SQLiteCMDActivity extends AppCompatActivity
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
         final SyntaxHighlighterParser parser = new SyntaxHighlighterParser(new BrushSql());
+        final Theme theme = new ThemeDjango();
 
         etSqlCmd.addTextChangedListener(new TextWatcher()
         {
+            boolean calbackDisaabled = false;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
@@ -156,11 +166,83 @@ public class SQLiteCMDActivity extends AppCompatActivity
             @Override
             public void afterTextChanged(Editable s)
             {
+                if(calbackDisaabled)
+                    return;
+                calbackDisaabled = true;
+                //etSqlCmd.removeTextChangedListener(this);
+                //TODO to many for loops for each key type, optimize
                 List<ParseResult> results = parser.parse(null, s.toString());
-                System.out.println(Arrays.toString(results.toArray()));
+                Map<String, List<ParseResult>> styleList = new HashMap<>();
+
+                for (ParseResult parseResult : results)
+                {
+                    String styleKeysString = parseResult.getStyleKeysString();
+                    List<ParseResult> _styleList = styleList.get(styleKeysString);
+                    if (_styleList == null)
+                    {
+                        _styleList = new ArrayList<>();
+                        styleList.put(styleKeysString, _styleList);
+                    }
+                    _styleList.add(parseResult);
+                }
+
+                //s.clearSpans();
+                clearSpans(s);
+                //SpannableStringBuilder builder = new SpannableStringBuilder(s.toString());
+                for (String key : styleList.keySet())
+                {
+                    List<ParseResult> posList = styleList.get(key);
+
+                    for (ParseResult pos : posList)
+                    {
+                        List<Object> spans = theme.getStyle(key).newSpans();
+                        for(Object span : spans)
+                        {
+                            s.setSpan(span, pos.getOffset(), pos.getOffset() + pos.getLength(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                    }
+                }
+                //etSqlCmd.setText(builder);
+                calbackDisaabled = false;
+                //etSqlCmd.addTextChangedListener(this);
+                System.out.println("afterTextChanged");
+            }
+
+            private void clearSpans( Editable e )
+            {
+                // remove foreground color spans
+                {
+                    ForegroundColorSpan spans[] = e.getSpans(
+                            0,
+                            e.length(),
+                            ForegroundColorSpan.class );
+
+                    for( int n = spans.length; n-- > 0; )
+                        e.removeSpan( spans[n] );
+                }
+
+                // remove background color spans
+                {
+                    BackgroundColorSpan spans[] = e.getSpans(
+                            0,
+                            e.length(),
+                            BackgroundColorSpan.class );
+
+                    for( int n = spans.length; n-- > 0; )
+                        e.removeSpan( spans[n] );
+                }
+                // remove style spans
+                {
+                    StyleSpan spans[] = e.getSpans(
+                            0,
+                            e.length(),
+                            StyleSpan.class );
+
+                    for( int n = spans.length; n-- > 0; )
+                        e.removeSpan( spans[n] );
+                }
             }
         });
-
         String query = "SELECT * FROM query_history";
         final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
 
@@ -185,7 +267,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
                     public void onResult(boolean success, List<List<SQLCMD.KeyValuePair>> data, String error)
                     {
                         sqlGridView.setData(data);
-                        if(error != null)
+                        if (error != null)
                         {
                             tvError.setText(error);
                             tvError.setVisibility(View.VISIBLE);
