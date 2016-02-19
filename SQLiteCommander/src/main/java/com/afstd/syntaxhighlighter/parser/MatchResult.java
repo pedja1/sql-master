@@ -22,115 +22,131 @@ package com.afstd.syntaxhighlighter.parser;
 
 /**
  * Matched result, it will be generated when parsing the content.
- * 
+ *
  * @author Chan Wai Shing <cws1989@gmail.com>
  */
-public class MatchResult {
+public class MatchResult
+{
 
-  /**
-   * The position in the document for this matched result.
-   */
-  private int offset;
-  /**
-   * The length of the matched result.
-   */
-  private int length;
-  /**
-   * The style key for this matched result, see {@link syntaxhighlighter.theme}.
-   */
-  private String styleKey;
-  /**
-   * Indicate whether this match should be bolded or not.
-   * This will override the 'bold' setting of the style (by styleKey).
-   * If it is null, there will be nothing done on the 'bold' of the style.
-   */
-  private Boolean bold;
+    /**
+     * The position in the document for this matched result.
+     */
+    private int offset;
+    /**
+     * The length of the matched result.
+     */
+    private int length;
+    /**
+     * The style key for this matched result, see {@link syntaxhighlighter.theme}.
+     */
+    private String styleKey;
+    /**
+     * Indicate whether this match should be bolded or not.
+     * This will override the 'bold' setting of the style (by styleKey).
+     * If it is null, there will be nothing done on the 'bold' of the style.
+     */
+    private Boolean bold;
 
-  /**
-   * Constructor.
-   * 
-   * @param offset the position in the document for this matched result
-   * @param length the length of the matched result.
-   * @param styleKey the style key for this matched result, cannot be null, see 
-   * {@link syntaxhighlighter.theme}
-   * @param bold indicate whether this match should be bolded or not, for 
-   * details see {@link #bold}
-   */
-  protected MatchResult(int offset, int length, String styleKey, Boolean bold) {
-    if (styleKey == null) {
-      throw new NullPointerException("argument 'styleKey' cannot be null");
+    /**
+     * Constructor.
+     *
+     * @param offset   the position in the document for this matched result
+     * @param length   the length of the matched result.
+     * @param styleKey the style key for this matched result, cannot be null, see
+     *                 {@link syntaxhighlighter.theme}
+     * @param bold     indicate whether this match should be bolded or not, for
+     *                 details see {@link #bold}
+     */
+    protected MatchResult(int offset, int length, String styleKey, Boolean bold)
+    {
+        if (styleKey == null)
+        {
+            throw new NullPointerException("argument 'styleKey' cannot be null");
+        }
+        this.offset = offset;
+        this.length = length;
+        this.styleKey = styleKey;
+        this.bold = bold;
     }
-    this.offset = offset;
-    this.length = length;
-    this.styleKey = styleKey;
-    this.bold = bold;
-  }
 
-  /**
-   * The position in the document for this matched result.
-   * @return the offset in the document
-   */
-  public int getOffset() {
-    return offset;
-  }
+    /**
+     * The position in the document for this matched result.
+     *
+     * @return the offset in the document
+     */
+    public int getOffset()
+    {
+        return offset;
+    }
 
-  /**
-   * The position in the document for this matched result.
-   * @param offset the offset in the document
-   */
-  public void setOffset(int offset) {
-    this.offset = offset;
-  }
+    /**
+     * The position in the document for this matched result.
+     *
+     * @param offset the offset in the document
+     */
+    public void setOffset(int offset)
+    {
+        this.offset = offset;
+    }
 
-  /**
-   * The length of the matched result.
-   * @return the length
-   */
-  public int getLength() {
-    return length;
-  }
+    /**
+     * The length of the matched result.
+     *
+     * @return the length
+     */
+    public int getLength()
+    {
+        return length;
+    }
 
-  /**
-   * The length of the matched result.
-   * @param length the length
-   */
-  public void setLength(int length) {
-    this.length = length;
-  }
+    /**
+     * The length of the matched result.
+     *
+     * @param length the length
+     */
+    public void setLength(int length)
+    {
+        this.length = length;
+    }
 
-  /**
-   * The style key for this matched result, see {@link syntaxhighlighter.theme}.
-   * @return the style key
-   */
-  public String getStyleKey() {
-    return styleKey;
-  }
+    /**
+     * The style key for this matched result, see {@link syntaxhighlighter.theme}.
+     *
+     * @return the style key
+     */
+    public String getStyleKey()
+    {
+        return styleKey;
+    }
 
-  /**
-   * Indicate whether this match should be bolded or not.
-   * This will override the 'bold' setting of the style (by styleKey).
-   * If it is null, there will be nothing done on the 'bold' of the style.
-   * @return true to bold, false not bold, null means not set (no action to 
-   * take)
-   */
-  public Boolean isBold() {
-    return bold;
-  }
+    /**
+     * Indicate whether this match should be bolded or not.
+     * This will override the 'bold' setting of the style (by styleKey).
+     * If it is null, there will be nothing done on the 'bold' of the style.
+     *
+     * @return true to bold, false not bold, null means not set (no action to
+     * take)
+     */
+    public Boolean isBold()
+    {
+        return bold;
+    }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
 
-    sb.append("[");
-    sb.append(offset);
-    sb.append(", ");
-    sb.append(length);
-    sb.append(", ");
-    sb.append(styleKey);
-    sb.append(", ");
-    sb.append(bold);
-    sb.append("]");
+        sb.append("[");
+        sb.append(offset);
+        sb.append(", ");
+        sb.append(length);
+        sb.append(", ");
+        sb.append(styleKey);
+        sb.append(", ");
+        sb.append(bold);
+        sb.append("]");
 
-    return sb.toString();
-  }
+        return sb.toString();
+    }
 }

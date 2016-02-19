@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,15 +19,19 @@ import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
-import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlcmd.SQLGridView;
+import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
+import com.afstd.syntaxhighlight.ParseResult;
+import com.afstd.syntaxhighlighter.SyntaxHighlighterParser;
+import com.afstd.syntaxhighlighter.brush.BrushSql;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -130,6 +136,30 @@ public class SQLiteCMDActivity extends AppCompatActivity
 
         final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
+
+        final SyntaxHighlighterParser parser = new SyntaxHighlighterParser(new BrushSql());
+
+        etSqlCmd.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                List<ParseResult> results = parser.parse(null, s.toString());
+                System.out.println(Arrays.toString(results.toArray()));
+            }
+        });
 
         String query = "SELECT * FROM query_history";
         final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);

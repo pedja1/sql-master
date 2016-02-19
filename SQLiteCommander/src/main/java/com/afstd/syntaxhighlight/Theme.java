@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.swing.text.SimpleAttributeSet;
-
 /**
  * Theme for the {@link SyntaxHighlighterPane} and
  * {@link JTextComponentRowHeader}.
@@ -117,7 +115,7 @@ public class Theme
      * @param styleKeys the style keys with keys separated by space
      * @return the combined {@link AttributeSet}
      */
-    public SimpleAttributeSet getStylesAttributeSet(String styleKeys)
+    /*public SimpleAttributeSet getStylesAttributeSet(String styleKeys)
     {
         if (styleKeys.indexOf(' ') != -1)
         {
@@ -133,7 +131,7 @@ public class Theme
         {
             return getStyle(styleKeys).getAttributeSet();
         }
-    }
+    }*/
 
     /**
      * Add style.

@@ -18,18 +18,19 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-package syntaxhighlighter.theme;
+package com.afstd.syntaxhighlighter.theme;
 
-import java.awt.Color;
-import java.awt.Font;
-import syntaxhighlight.Style;
-import syntaxhighlight.Theme;
+import android.graphics.Color;
+
+import com.afstd.syntaxhighlight.Style;
+import com.afstd.syntaxhighlight.Theme;
 
 /**
  * Midnight theme.
  * @author Chan Wai Shing <cws1989@gmail.com>
  */
-public class ThemeMidnight extends Theme {
+public class ThemeMidnight extends Theme
+{
 
   public ThemeMidnight() {
     super();
@@ -37,77 +38,67 @@ public class ThemeMidnight extends Theme {
     // Midnight SyntaxHighlighter theme based on theme by J.D. Myers
     // http://webdesign.lsnjd.com/
 
-    setFont(new Font("Consolas", Font.PLAIN, 12));
-    setBackground(Color.decode("0x0f192a"));
-
-    setHighlightedBackground(Color.decode("0x253e5a"));
-
-    setGutterText(Color.decode("0xafafaf"));
-    setGutterBorderColor(Color.decode("0x435a5f"));
-    setGutterBorderWidth(3);
-    setGutterTextFont(new Font("Verdana", Font.PLAIN, 11));
-    setGutterTextPaddingLeft(7);
-    setGutterTextPaddingRight(7);
+    setHighlightedBackground(0x253e5a);
 
     Style style = new Style();
     style.setBold(true);
     addStyle("bold", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xd1edff"));
+    style.setColor(0xd1edff);
     addStyle("plain", style);
     setPlain(style);
 
     style = new Style();
-    style.setColor(Color.decode("0x428bdd"));
+    style.setColor(0x428bdd);
     addStyle("comments", style);
 
     style = new Style();
-    style.setColor(Color.decode("0x1dc116"));
+    style.setColor(0x1dc116);
     addStyle("string", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xb43d3d"));
+    style.setColor(0xb43d3d);
     addStyle("keyword", style);
 
     style = new Style();
-    style.setColor(Color.decode("0x8aa6c1"));
+    style.setColor(0x8aa6c1);
     addStyle("preprocessor", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xffaa3e"));
+    style.setColor(0xffaa3e);
     addStyle("variable", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xf7e741"));
+    style.setColor(0xf7e741);
     addStyle("value", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xffaa3e"));
+    style.setColor(0xffaa3e);
     addStyle("functions", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xe0e8ff"));
+    style.setColor(0xe0e8ff);
     addStyle("constants", style);
 
     style = new Style();
     style.setBold(true);
-    style.setColor(Color.decode("0xb43d3d"));
+    style.setColor(0xb43d3d);
     addStyle("script", style);
 
     style = new Style();
     addStyle("scriptBackground", style);
 
     style = new Style();
-    style.setColor(Color.decode("0xf8bb00"));
+    style.setColor(0xf8bb00);
     addStyle("color3", style);
 
     style = new Style();
-    style.setColor(Color.white);
+    style.setColor(Color.WHITE);
     addStyle("color2", style);
 
     style = new Style();
-    style.setColor(Color.decode("0x0ffaa3e"));
+    style.setColor(0x0ffaa3e);
     addStyle("color3", style);
   }
 }

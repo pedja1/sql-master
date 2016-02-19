@@ -23,7 +23,7 @@ package com.afstd.syntaxhighlight;
 import android.graphics.Color;
 
 /**
- * The style used by {@link syntaxhiglight.Theme} as those of CSS styles.
+ * The style used by {@link Theme} as those of CSS styles.
  *
  * @author Chan Wai Shing <cws1989@gmail.com>
  */
@@ -38,7 +38,7 @@ public class Style implements Cloneable
     /**
      * The {@link AttributeSet} representation of this style.
      */
-    protected SimpleAttributeSet attributeSet;
+    //protected SimpleAttributeSet attributeSet;
     /**
      * Font bold.
      */
@@ -76,7 +76,7 @@ public class Style implements Cloneable
     public Style()
     {
         changed = true;
-        attributeSet = null;
+        //attributeSet = null;
 
         bold = false;
         color = Color.BLACK;
@@ -90,7 +90,7 @@ public class Style implements Cloneable
      *
      * @return the {@link AttributeSet}
      */
-    public SimpleAttributeSet getAttributeSet()
+    /*public SimpleAttributeSet getAttributeSet()
     {
         if (changed)
         {
@@ -106,7 +106,7 @@ public class Style implements Cloneable
             changed = false;
         }
         return attributeSet;
-    }
+    }*/
 
     /**
      * Get the background color.
