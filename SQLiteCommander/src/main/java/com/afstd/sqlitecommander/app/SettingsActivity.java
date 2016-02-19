@@ -1,6 +1,7 @@
 package com.afstd.sqlitecommander.app;
 
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,6 @@ import com.afstd.syntaxhighlighter.theme.ThemeDjango;
  */
 public class SettingsActivity extends AppCompatActivity
 {
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -52,45 +52,11 @@ public class SettingsActivity extends AppCompatActivity
 
             mHighlighter = new SQLTextHighlighter();
 
-            //final CheckBoxPreference cbpCyr = (CheckBoxPreference) findPreference("lang_cyr");
-            //final CheckBoxPreference cbpLat = (CheckBoxPreference) findPreference("lang_lat");
+            final CheckBoxPreference cbpDebug = (CheckBoxPreference) findPreference("DEBUG");
+            cbpDebug.setDefaultValue(SettingsManager.DEBUG());
+
             final SpannableListPreference lpFont = (SpannableListPreference) findPreference("syntax_highlight_theme");
             lpFont.setSummary(getSyntaxHighlightThemeDisplay(SettingsManager.getSyntaxHighlightThemeKey()));
-
-            /*cbpCyr.setChecked(Language.SERBIAN_CYRILLIC.equals(SettingsManager.getLanguage()));
-            cbpLat.setChecked(Language.SERBIAN_LATIN.equals(SettingsManager.getLanguage()));
-
-            cbpCyr.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    if ((boolean) newValue)
-                    {
-                        SettingsManager.setLanguage(Language.SERBIAN_CYRILLIC);
-                        cbpLat.setChecked(false);
-                        cbpCyr.setChecked(true);
-                        askToRestart();
-                    }
-                    return false;
-                }
-            });
-
-            cbpLat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    if ((boolean) newValue)
-                    {
-                        SettingsManager.setLanguage(Language.SERBIAN_LATIN);
-                        cbpCyr.setChecked(false);
-                        cbpLat.setChecked(true);
-                        askToRestart();
-                    }
-                    return false;
-                }
-            });*/
 
             lpFont.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {

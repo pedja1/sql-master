@@ -10,25 +10,27 @@
             />
     </PreferenceCategory>
 
-    <!--
-    <PreferenceCategory android:title="@string/prefs_push_cat">
+    <PreferenceCategory android:title="@string/notifications">
         <CheckBoxPreference
-            android:title="@string/prefs_push_title"
-            android:summary="@string/prefs_push_summary"
-            android:key="push"
-            android:layout="@layout/preference_layout"
+            android:title="@string/update_notifications"
+            android:summary="@string/update_notifications_summary"
+            android:key="update_notifications"
+            android:defaultValue="true"
+            />
+        <CheckBoxPreference
+            android:title="@string/cloud_sync_notification"
+            android:summary="@string/cloud_sync_notif_summary"
+            android:key="sync_notification"
+            android:defaultValue="true"
             />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/prefs_font">
-        <ListPreference
-            android:entryValues="@array/fontValues"
-            android:entries="@array/fontEntries"
-            android:title="@string/prefs_font_title"
-            android:key="font"
-            android:defaultValue="1"
-            android:layout="@layout/preference_layout"
+    <PreferenceCategory android:title="@string/other">
+        <CheckBoxPreference
+            android:title="@string/debug"
+            android:summary="@string/debug_summary"
+            android:key="DEBUG"
             />
     </PreferenceCategory>
-    -->
+
 </PreferenceScreen>

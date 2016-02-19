@@ -77,4 +77,12 @@
     <string name="look_and_feel"><![CDATA[Look & Feel]]></string>
     <string name="syntax_highlight_theme">Syntax Highlight Theme</string>
     <string name="action_add_favorite">Add to favorites</string>
+    <string name="other">Other</string>
+    <string name="debug">Debug</string>
+    <string name="debug_summary">Enables logging</string>
+    <string name="notifications">Notifications</string>
+    <string name="update_notifications">Update notifications</string>
+    <string name="update_notifications_summary">Show notification when new version is available.</string>
+    <string name="cloud_sync_notification">Cloud Sync</string>
+    <string name="cloud_sync_notif_summary">Show notification when cloud sync is in progress</string>
 </resources>

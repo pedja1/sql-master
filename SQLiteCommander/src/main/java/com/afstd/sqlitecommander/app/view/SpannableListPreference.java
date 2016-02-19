@@ -76,7 +76,7 @@ public class SpannableListPreference extends DialogPreference
 
     public SpannableListPreference(Context context, AttributeSet attrs)
     {
-        this(context, attrs, /*R.attr.dialogPreferenceStyle*/0);
+        this(context, attrs, android.R.attr.dialogPreferenceStyle);
     }
 
     public SpannableListPreference(Context context)
@@ -191,6 +191,10 @@ public class SpannableListPreference extends DialogPreference
 
     /**
      * Sets the summary for this Preference with a CharSequence.
+     * If the summary has a
+     * {@linkplain java.lang.String#format String formatting}
+     * marker in it (i.e. "%s" or "%1$s"), then the current entry
+     * value will be substituted in its place when it's retrieved.
      *
      * @param summary The summary for the preference.
      */
