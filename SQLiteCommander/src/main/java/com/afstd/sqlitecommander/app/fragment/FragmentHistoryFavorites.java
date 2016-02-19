@@ -86,7 +86,7 @@ public class FragmentHistoryFavorites extends Fragment
                 {
                     SQLiteCMDActivity.start(getActivity(), entry.databaseUri, true);
                 }
-                else
+                else if(DatabaseEntry.TYPE_MYSQL.equals(entry.type))
                 {
                     MySQLCMDActivity.start(getActivity(), ((DatabaseEntry) item).id);
                 }

@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -25,14 +26,24 @@ import com.afstd.sqlitecommander.app.fragment.FragmentMySQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentPostgreSQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
+import com.afstd.sqlitecommander.app.model.DatabaseEntry;
+import com.afstd.sqlitecommander.app.model.DatabaseSearchResult;
+import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.crashlytics.android.Crashlytics;
+import com.quinny898.library.persistentsearch.SearchBox;
+import com.quinny898.library.persistentsearch.SearchResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchBox.SearchListener
 {
     private NavigationView navigationView;
+
+    private SearchBox mSearchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,6 +53,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mSearchBox = (SearchBox) findViewById(R.id.searchbox);
+        mSearchBox.setSearchListener(this);
+
+        List<DatabaseEntry> entries = DatabaseManager.getInstance().getDatabaseEntries("SELECT * FROM _database", new String[0]);
+        for(DatabaseEntry entry : entries)
+        {
+            DatabaseSearchResult option = new DatabaseSearchResult(entry);
+            mSearchBox.addSearchable(option);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -65,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_overview));
 
         Account account = AMUtility.getAccount(SettingsManager.getActiveAccount());
-        if(account != null)
+        if (account != null)
         {
             ContentResolver.addPeriodicSync(account, getString(R.string.content_authority), Bundle.EMPTY, SSyncAdapter.SYNC_ADAPTER_INTERVAL);
             ContentResolver.setSyncAutomatically(account, getString(R.string.content_authority), true);
@@ -103,10 +124,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings)
+        if (id == R.id.action_search)
         {
+            mSearchBox.revealFromMenuItem(R.id.action_search, this);
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -185,5 +207,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == SearchBox.VOICE_RECOGNITION_CODE && resultCode == RESULT_OK)
+        {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            mSearchBox.populateEditText(matches.get(0));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSearchOpened()
+    {
+
+    }
+
+    @Override
+    public void onSearchCleared()
+    {
+
+    }
+
+    @Override
+    public void onSearchClosed()
+    {
+        mSearchBox.hideCircularly(this);
+    }
+
+    @Override
+    public void onSearchTermChanged(String s)
+    {
+
+    }
+
+    @Override
+    public void onSearch(String s)
+    {
+
+    }
+
+    @Override
+    public void onResultClick(SearchResult searchResult)
+    {
+        DatabaseEntry entry = ((DatabaseSearchResult)searchResult).getEntry();
+        if(DatabaseEntry.TYPE_SQLITE.equals(entry.type))
+        {
+            SQLiteCMDActivity.start(this, entry.databaseUri, true);
+        }
+        else if(DatabaseEntry.TYPE_MYSQL.equals(entry.type))
+        {
+            MySQLCMDActivity.start(this, entry.id);
+        }
     }
 }

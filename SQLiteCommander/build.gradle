@@ -15,6 +15,7 @@ repositories {
     jcenter()
     maven { url 'http://maven.android-forever.com' }
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 android {
@@ -68,6 +69,7 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.201510071325'
     compile "de.greenrobot:eventbus:2.4.0"
     compile "com.af:android-utility:1.0.0.6"
+    compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'
 
     compile project (':lib')
 

@@ -1,5 +1,9 @@
 package com.afstd.sqlitecommander.app.model;
 
+import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
+
+import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 
 /**
@@ -48,5 +52,24 @@ public class DatabaseEntry
         String[] args = new String[]{uri};
 
         return DatabaseManager.getInstance().getDatabaseEntrie(query, args);
+    }
+
+    @DrawableRes
+    public int getIconResource()
+    {
+        if(TextUtils.isEmpty(type))
+            return R.drawable.ic_menu_sql;
+
+        switch (type)
+        {
+            case TYPE_MYSQL:
+                return R.drawable.ic_menu_mysql;
+            case TYPE_SQLITE:
+                return R.drawable.ic_menu_sqlite;
+            case TYPE_POSTGRESQL:
+                return R.drawable.ic_menu_postgressql;
+            default:
+                return R.drawable.ic_menu_sql;
+        }
     }
 }

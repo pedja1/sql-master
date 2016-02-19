@@ -62,19 +62,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
         else
         {
             holder.ivEdit.setVisibility(View.VISIBLE);
-            if(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type))
-            {
-                holder.ivIcon.setImageResource(R.drawable.ic_menu_mysql);
-            }
-            else if(DatabaseEntry.TYPE_POSTGRESQL.equals(databaseEntry.type))
-            {
-                holder.ivIcon.setImageResource(R.drawable.ic_menu_postgressql);
-            }
-            //TODO other types
-            else
-            {
-                holder.ivIcon.setImageResource(R.drawable.ic_menu_sql);
-            }
+            holder.ivIcon.setImageResource(databaseEntry.getIconResource());
             holder.text1.setText(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type) ? databaseEntry.databaseName : new File(databaseEntry.databaseUri).getName());
             holder.text2.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort <= 0 ? DatabaseEntry.MYSQL_DEFAULT_PORT : databaseEntry.databasePort));
         }
