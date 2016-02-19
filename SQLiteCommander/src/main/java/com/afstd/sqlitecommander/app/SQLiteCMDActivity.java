@@ -34,7 +34,7 @@ import com.afstd.syntaxhighlight.ParseResult;
 import com.afstd.syntaxhighlight.Theme;
 import com.afstd.syntaxhighlighter.SyntaxHighlighterParser;
 import com.afstd.syntaxhighlighter.brush.BrushSql;
-import com.afstd.syntaxhighlighter.theme.ThemeDjango;
+import com.afstd.syntaxhighlighter.theme.ThemeDefault;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -146,7 +146,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
         final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
 
         final SyntaxHighlighterParser parser = new SyntaxHighlighterParser(new BrushSql());
-        final Theme theme = new ThemeDjango();
+        final Theme theme = new ThemeDefault();
 
         etSqlCmd.addTextChangedListener(new TextWatcher()
         {
@@ -169,7 +169,6 @@ public class SQLiteCMDActivity extends AppCompatActivity
                 if(calbackDisaabled)
                     return;
                 calbackDisaabled = true;
-                //etSqlCmd.removeTextChangedListener(this);
                 //TODO to many for loops for each key type, optimize
                 List<ParseResult> results = parser.parse(null, s.toString());
                 Map<String, List<ParseResult>> styleList = new HashMap<>();
@@ -188,7 +187,6 @@ public class SQLiteCMDActivity extends AppCompatActivity
 
                 //s.clearSpans();
                 clearSpans(s);
-                //SpannableStringBuilder builder = new SpannableStringBuilder(s.toString());
                 for (String key : styleList.keySet())
                 {
                     List<ParseResult> posList = styleList.get(key);
@@ -202,10 +200,7 @@ public class SQLiteCMDActivity extends AppCompatActivity
                         }
                     }
                 }
-                //etSqlCmd.setText(builder);
                 calbackDisaabled = false;
-                //etSqlCmd.addTextChangedListener(this);
-                System.out.println("afterTextChanged");
             }
 
             private void clearSpans( Editable e )

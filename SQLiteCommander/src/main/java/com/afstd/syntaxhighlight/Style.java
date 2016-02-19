@@ -44,11 +44,11 @@ public class Style implements Cloneable
     /**
      * Font color.
      */
-    protected int color = -1;
+    protected Integer color;
     /**
      * The background color, null means no background color is set.
      */
-    protected int background = -1;
+    protected Integer background;
     /**
      * Font underline.
      */
@@ -74,8 +74,8 @@ public class Style implements Cloneable
     public Style()
     {
         bold = false;
-        color = Color.BLACK;
-        background = -1;
+        color = null;
+        background = null;
         underline = false;
         italic = false;
     }
@@ -101,9 +101,9 @@ public class Style implements Cloneable
         }
         if (underline)
             spans.add(new UnderlineSpan());
-        if (color >= 0)
+        if (color != null)
             spans.add(new ForegroundColorSpan(color));
-        if (background >= 0)
+        if (background != null)
             spans.add(new BackgroundColorSpan(background));
 
         return spans;
