@@ -18,6 +18,7 @@ import com.tehnicomsolutions.http.ResponseParser;
 public class SRequestHandler implements RequestHandler
 {
     public static final int REQUEST_CODE_LOGIN = 1002;
+    public static final int REQUEST_CODE_DELETE = 1003;
 
     private ProgressDialog dialog;
     private Activity activity;

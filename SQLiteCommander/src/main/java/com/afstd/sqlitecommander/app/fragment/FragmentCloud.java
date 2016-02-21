@@ -234,6 +234,12 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
                     ContentResolver.requestSync(account, getString(R.string.content_authority), settingsBundle);
                 }
                 break;
+            case R.id.btnCloud:
+                initRequestManager();
+                RequestBuilder builder = new SRequestBuilder(RequestBuilder.Method.DELETE, true);
+                builder.addParam("sync");
+                mRequestManager.execute(SRequestHandler.REQUEST_CODE_DELETE, builder);
+                break;
         }
     }
 
@@ -273,24 +279,27 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
 
     private void initRequestManager()
     {
-        mRequestManager = new TSRequestManager(getActivity(), false);
-        mRequestManager.setRequestHandler(new SRequestHandler(getActivity()));
-        mRequestManager.addResponseHandler(new ResponseHandler()
+        if (mRequestManager == null)
         {
-            @Override
-            public void onResponse(int requestCode, int responseStatus, ResponseParser responseParser)
+            mRequestManager = new TSRequestManager(getActivity(), false);
+            mRequestManager.setRequestHandler(new SRequestHandler(getActivity()));
+            mRequestManager.addResponseHandler(new ResponseHandler()
             {
-                switch (requestCode)
+                @Override
+                public void onResponse(int requestCode, int responseStatus, ResponseParser responseParser)
                 {
-                    case SRequestHandler.REQUEST_CODE_LOGIN:
-                        if (responseStatus == ResponseParser.RESPONSE_STATUS_SUCCESS && responseParser.getParseObject() != null)
-                        {
-                            finishLogin(responseParser.getParseObject(AuthToken.class));
-                        }
-                        break;
+                    switch (requestCode)
+                    {
+                        case SRequestHandler.REQUEST_CODE_LOGIN:
+                            if (responseStatus == ResponseParser.RESPONSE_STATUS_SUCCESS && responseParser.getParseObject() != null)
+                            {
+                                finishLogin(responseParser.getParseObject(AuthToken.class));
+                            }
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void signIn()
