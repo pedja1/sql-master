@@ -65,6 +65,10 @@
             android:name=".AddMySQLDatabase"
             android:label="@string/add_mysql_database"
             android:theme="@style/AppTheme.NoActionBar.Dialog"/>
+        <activity
+            android:name=".SetPasswordActivity"
+            android:label="@string/password"
+            android:theme="@style/AppTheme.NoActionBar.Dialog"/>
 
 
         <service android:name=".acm.SAuthenticatorService">

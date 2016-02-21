@@ -34,8 +34,8 @@
     <string name="enable_sync">Cloud Sync Enabled</string>
     <string name="sync_history">Sync History</string>
     <string name="sync_favorites">Sync Favorites</string>
-    <string name="sync_mysql">Sync MySQL Databases</string>
-    <string name="mysql_sync">Credentials are NOT encrypted!!!</string>
+    <string name="sync_credentials">Sync Database Credentials</string>
+    <string name="sync_credentials_desc">Credentials are encrypted</string>
     <string name="sync_query_history">Sync query history</string>
     <string name="sync_settings">Sync Settings</string>
     <string name="sync_settings_desc">Sync application settings</string>
@@ -88,4 +88,14 @@
     <string name="action_search">Search</string>
     <string name="sync_notification_title">Cloud Sync</string>
     <string name="sync_notification_text">Cloud sync in progress...</string>
+    <string name="set_password_info"><b>Enter your password.</b>\nIf this is first time that you are using SQL Commander then enter new password.\nIf you already used SQL Commander before then you must enter your old password or existing backup wont work.</string>
+    <string name="set_password_warning"><b>WARNING</b>\nYour device is root-ed\nEncryption key generated from your password is stored in applications private folder.\nEncryption key is used to encrypt sensitive information (like database credentials)\nNormally this encryption key is accessible only from this application.\nHowever, on root-ed device, any application can potentially get your encryption key.\nMake sure that you trust all your apps that are given root access.</string>
+    <string name="password">Password</string>
+    <string name="set_password">Set Password</string>
+    <string name="pasword_short">password must be min 8 characters long.</string>
+    <string name="password_number">Password must contain at least one number.</string>
+    <string name="password_uppercase">Password must contain at leas one uppercase character.</string>
+    <string name="password_lowercase">Password must contain at leas one lowercase character.</string>
+    <string name="sync_databases">Sync Databases</string>
+    <string name="sync_databases_warning">Only database configuration is synchronized (server, username, password...), not actual database contents</string>
 </resources>

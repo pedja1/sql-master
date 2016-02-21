@@ -109,18 +109,70 @@
                         android:padding="5dp"
                         android:gravity="center_vertical">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="@string/sync_history"
-                            android:textColor="@android:color/black"/>
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_databases"
+                                android:textColor="@android:color/black"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_databases_warning"
+                                android:textSize="12sp"
+                                android:textColor="@color/material_red"
+                                android:fontFamily="sans-serif-light"/>
+                        </LinearLayout>
+
 
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:id="@+id/cbSyncHistory"/>
+                            android:id="@+id/cbSyncDatabases"
+                            android:checked="true"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_credentials"
+                                android:textColor="@android:color/black"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_credentials_desc"
+                                android:textSize="12sp"
+                                android:textColor="@color/colorAccent"
+                                android:fontFamily="sans-serif-light"/>
+                        </LinearLayout>
+
+
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/cbSyncCredentials"
+                            android:checked="true"/>
 
                     </LinearLayout>
 
@@ -142,62 +194,6 @@
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:id="@+id/cbSyncQueryHistory"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sync_favorites"
-                            android:textColor="@android:color/black"/>
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:id="@+id/cbSyncFavorites"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:gravity="center_vertical">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sync_mysql"
-                                android:textColor="@android:color/black"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/mysql_sync"
-                                android:textSize="12sp"
-                                android:textColor="@color/material_red"
-                                android:fontFamily="sans-serif-light"/>
-                        </LinearLayout>
-
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/cbSyncMySql"/>
 
                     </LinearLayout>
 

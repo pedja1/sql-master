@@ -128,11 +128,11 @@ public class FragmentHistoryFavorites extends Fragment
             String query;
             if(reference.get().type == TYPE_FAVORITES)
             {
-                query = "SELECT * FROM _database WHERE is_favorite = 1 ORDER BY accessed DESC";
+                query = "SELECT * FROM _database WHERE is_favorite = 1  AND deleted != 1 ORDER BY accessed DESC";
             }
             else
             {
-                query = "SELECT * FROM _database ORDER BY accessed DESC";
+                query = "SELECT * FROM _database WHERE deleted != 1 ORDER BY accessed DESC";
             }
             String[] args = new String[0];
             return DatabaseManager.getInstance().getDatabaseEntries(query, args);

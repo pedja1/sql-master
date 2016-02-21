@@ -42,7 +42,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
 
         String id = getIntent().getStringExtra(INTENT_EXTRA_DATABASE_ID);
         if(id != null)
-            entry = DatabaseManager.getInstance().getDatabaseEntrie("SELECT * FROM _database WHERE id = ?", new String[]{id});
+            entry = DatabaseManager.getInstance().getDatabaseEntry("SELECT * FROM _database WHERE id = ?", new String[]{id});
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 

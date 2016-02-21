@@ -96,7 +96,7 @@ public class SQLiteCMDActivity extends SQLCMDActivity
         pbLoading.setVisibility(View.GONE);
 
         final SQLCMD sqlcmd;
-        if (Shell.SU.available())
+        if (ShellInstance.getInstance().isSu())
         {
             sqlcmd = new SQLiteCMDRoot(databaseFile.getAbsolutePath());
         }
@@ -148,7 +148,7 @@ public class SQLiteCMDActivity extends SQLCMDActivity
             @Override
             public void onClick(View v)
             {
-                DatabaseManager.getInstance().insertCommandHistory(etSqlCmd.getText().toString());
+                DatabaseManager.getInstance().insertQueryHistory(etSqlCmd.getText().toString());
                 list.add(new QueryHistory(etSqlCmd.getText().toString()));
                 pbLoading.setVisibility(View.VISIBLE);
                 tvError.setVisibility(View.GONE);

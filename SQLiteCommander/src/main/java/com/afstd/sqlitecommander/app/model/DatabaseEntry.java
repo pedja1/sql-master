@@ -42,16 +42,20 @@ public class DatabaseEntry
      * Used only for MySQL, password for database*/
     public String databasePassword;
 
+    /**
+     * if this database has been deleted*/
+    public boolean deleted;
+
     public boolean isFavorite;
     public Long created;
     public Long accessed;
 
     public static DatabaseEntry findWithUri(String uri)
     {
-        String query = "SELECT * FROM _database WHERE database_uri = ?";
+        String query = "SELECT * FROM _database WHERE database_uri = ? AND deleted != 1";
         String[] args = new String[]{uri};
 
-        return DatabaseManager.getInstance().getDatabaseEntrie(query, args);
+        return DatabaseManager.getInstance().getDatabaseEntry(query, args);
     }
 
     @DrawableRes
@@ -72,4 +76,28 @@ public class DatabaseEntry
                 return R.drawable.ic_menu_sql;
         }
     }
+
+    /*{
+        try
+        {
+            AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.keys(SettingsManager.getEc());
+            String encryptedUsername = cursor.getString(cursor.getColumnIndex("database_username"));
+            String encryptedPassword = cursor.getString(cursor.getColumnIndex("database_password"));
+            if (!TextUtils.isEmpty(encryptedUsername))
+            {
+                AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new AesCbcWithIntegrity.CipherTextIvMac(encryptedUsername);
+                databaseEntry.databaseUsername = AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys);
+            }
+            if (!TextUtils.isEmpty(encryptedPassword))
+            {
+                AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new AesCbcWithIntegrity.CipherTextIvMac(encryptedPassword);
+                databaseEntry.databasePassword = AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys);
+            }
+        }
+        catch (GeneralSecurityException | UnsupportedEncodingException e)
+        {
+            if(SettingsManager.DEBUG())e.printStackTrace();
+            //fail silently
+        }
+    }*/
 }

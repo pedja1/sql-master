@@ -28,6 +28,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        resValue "string", "tray__authority", "${applicationId}.tray"
     }
     buildTypes {
         release {
@@ -70,6 +71,7 @@ dependencies {
     compile "de.greenrobot:eventbus:2.4.0"
     compile "com.af:android-utility:1.0.0.6"
     compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'
+    compile 'net.grandcentrix.tray:tray:1.0.0-rc3'
 
     compile project (':lib')
 

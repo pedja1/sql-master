@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,10 +81,9 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
     private TSRequestManager mRequestManager;
 
     private boolean mCheckChangeEnabled;
-    private CheckBox cbSyncHistory;
+    private CheckBox cbSyncDatabases;
     private CheckBox cbSyncQueryHistory;
-    private CheckBox cbSyncFavorites;
-    private CheckBox cbSyncMysql;
+    private CheckBox cbSyncCredentials;
     private CheckBox cbSyncSettings;
 
     private Button btnDelete, btnSyncNow;
@@ -191,28 +188,25 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
     private void setupSettingsViews(View view)
     {
         Switch sSwitch = (Switch) view.findViewById(R.id.cbSyncEnabled);
-        cbSyncHistory = (CheckBox) view.findViewById(R.id.cbSyncHistory);
+        cbSyncDatabases = (CheckBox) view.findViewById(R.id.cbSyncDatabases);
         cbSyncQueryHistory = (CheckBox) view.findViewById(R.id.cbSyncQueryHistory);
-        cbSyncFavorites = (CheckBox) view.findViewById(R.id.cbSyncFavorites);
-        cbSyncMysql = (CheckBox) view.findViewById(R.id.cbSyncMySql);
+        cbSyncCredentials = (CheckBox) view.findViewById(R.id.cbSyncCredentials);
         cbSyncSettings = (CheckBox) view.findViewById(R.id.cbSyncSettings);
 
         mCheckChangeEnabled = false;
 
         sSwitch.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncEnabled)));
-        cbSyncHistory.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncHistory)));
+        cbSyncDatabases.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncDatabases)));
         cbSyncQueryHistory.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncQueryHistory)));
-        cbSyncFavorites.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncFavorites)));
-        cbSyncMysql.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncMySql)));
+        cbSyncCredentials.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncCredentials)));
         cbSyncSettings.setChecked(SettingsManager.getSyncSetting(SettingsManager.SyncKey.fromViewId(R.id.cbSyncSettings)));
 
         mCheckChangeEnabled = true;
 
         sSwitch.setOnCheckedChangeListener(this);
-        cbSyncHistory.setOnCheckedChangeListener(this);
+        cbSyncDatabases.setOnCheckedChangeListener(this);
         cbSyncQueryHistory.setOnCheckedChangeListener(this);
-        cbSyncFavorites.setOnCheckedChangeListener(this);
-        cbSyncMysql.setOnCheckedChangeListener(this);
+        cbSyncCredentials.setOnCheckedChangeListener(this);
         cbSyncSettings.setOnCheckedChangeListener(this);
     }
 
@@ -384,37 +378,7 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         if (!mCheckChangeEnabled)
             return;
         final SettingsManager.SyncKey key = SettingsManager.SyncKey.fromViewId(buttonView.getId());
-        if (key == SettingsManager.SyncKey.sync_mysql && isChecked)
-        {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            final boolean[] saved = new boolean[1];
-            builder.setTitle(R.string.warning);
-            builder.setMessage(R.string.my_sql_warning);
-            builder.setNegativeButton(R.string.cancel, null);
-            builder.setPositiveButton(R.string.i_understand, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    saved[0] = true;
-                    SettingsManager.setSyncSetting(key, true);
-                }
-            });
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener()
-            {
-                @Override
-                public void onDismiss(DialogInterface dialog)
-                {
-                    if (saved[0])
-                        return;
-                    mCheckChangeEnabled = false;
-                    buttonView.setChecked(false);
-                    mCheckChangeEnabled = true;
-                }
-            });
-            builder.show();
-        }
-        else if (key != null)
+        if (key != null)
         {
             SettingsManager.setSyncSetting(key, isChecked);
         }
@@ -422,19 +386,17 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         {
             if (isChecked)
             {
-                cbSyncHistory.setEnabled(true);
+                cbSyncDatabases.setEnabled(true);
                 cbSyncQueryHistory.setEnabled(true);
-                cbSyncFavorites.setEnabled(true);
-                cbSyncMysql.setEnabled(true);
+                cbSyncCredentials.setEnabled(true);
                 cbSyncSettings.setEnabled(true);
                 btnSyncNow.setEnabled(true);
             }
             else
             {
-                cbSyncHistory.setEnabled(false);
+                cbSyncDatabases.setEnabled(false);
                 cbSyncQueryHistory.setEnabled(false);
-                cbSyncFavorites.setEnabled(false);
-                cbSyncMysql.setEnabled(false);
+                cbSyncCredentials.setEnabled(false);
                 cbSyncSettings.setEnabled(false);
                 btnSyncNow.setEnabled(false);
             }

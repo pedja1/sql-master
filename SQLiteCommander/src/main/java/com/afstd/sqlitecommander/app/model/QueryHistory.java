@@ -5,11 +5,11 @@ package com.afstd.sqlitecommander.app.model;
  */
 public class QueryHistory
 {
-    public String command;
+    public String query;
 
-    public QueryHistory(String command)
+    public QueryHistory(String query)
     {
-        this.command = command;
+        this.query = query;
     }
 
     public QueryHistory()
@@ -19,6 +19,6 @@ public class QueryHistory
     @Override
     public String toString()
     {
-        return command;//used for autocomplete, DON'T edit
+        return query;//used for autocomplete, DON'T edit
     }
 }

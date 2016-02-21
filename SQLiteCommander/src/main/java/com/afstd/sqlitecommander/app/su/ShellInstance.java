@@ -15,6 +15,8 @@ public class ShellInstance
     private Shell.Interactive shell;
     private static ShellInstance instance;
 
+    private boolean isSu;
+
     public static synchronized ShellInstance getInstance()
     {
         if(instance == null)
@@ -27,19 +29,25 @@ public class ShellInstance
     private ShellInstance()
     {
         Handler handler = new Handler(Looper.getMainLooper());
-        Shell.Builder builder = new Shell.Builder();
+        final Shell.Builder builder = new Shell.Builder();
         builder.setHandler(handler);
         builder.setWantSTDERR(true);
-        if(Shell.SU.available())
-            builder.useSU();
-        else
-            builder.useSH();
+        builder.useSU();
         shell = builder.open(new Shell.OnCommandResultListener()
         {
             @Override
             public void onCommandResult(int commandCode, int exitCode, List<String> output)
             {
-                System.out.println();
+                if (exitCode != Shell.OnCommandResultListener.SHELL_RUNNING)
+                {
+                    builder.useSH();
+                    shell = builder.open();
+                    isSu = false;
+                }
+                else
+                {
+                    isSu = true;
+                }
             }
         });
     }
@@ -47,5 +55,10 @@ public class ShellInstance
     public Shell.Interactive getShell()
     {
         return shell;
+    }
+
+    public boolean isSu()
+    {
+        return isSu;
     }
 }

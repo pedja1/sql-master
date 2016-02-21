@@ -124,7 +124,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
         @Override
         protected List<DatabaseEntry> doInBackground(Void... params)
         {
-            String query = "SELECT * FROM _database WHERE type = ?";
+            String query = "SELECT * FROM _database WHERE type = ? AND deleted != 1";
             String[] args = new String[]{DatabaseEntry.TYPE_MYSQL};
             return DatabaseManager.getInstance().getDatabaseEntries(query, args);
         }
@@ -163,7 +163,7 @@ public class FragmentMySQL extends Fragment implements View.OnClickListener
                     String id = data.getStringExtra(AddMySQLDatabase.INTENT_EXTRA_DATABASE_ID);
                     if (id != null)
                     {
-                        DatabaseEntry entry = DatabaseManager.getInstance().getDatabaseEntrie("SELECT * FROM _database WHERE id = ?", new String[]{id});
+                        DatabaseEntry entry = DatabaseManager.getInstance().getDatabaseEntry("SELECT * FROM _database WHERE id = ?", new String[]{id});
                         databases.add(entry);
                         mAdapter.notifyItemInserted(databases.size() - 1);
                     }

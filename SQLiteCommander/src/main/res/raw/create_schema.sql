@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS _database (
   database_port     INTEGER DEFAULT 3360,
   is_favorite       INTEGER,
   created           INTEGER,
-  accessed          INTEGER
+  accessed          INTEGER,
+  deleted           INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS query_history (

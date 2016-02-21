@@ -45,7 +45,7 @@ import static com.tehnicomsolutions.http.Internet.Response;
 
 public class SInternet
 {
-    public static final String API_REQUEST_URL = "http://sqlcmdcloud.n551jk.com:3000/";
+    public static final String API_REQUEST_URL = "https://pedjaapps.net:3000/";
     /**
      * HTTP connection timeout
      * */
@@ -92,7 +92,7 @@ public class SInternet
         try
         {
             String authToken = null;
-            if (activity != null && (requestBuilder instanceof SRequestBuilder && ((SRequestBuilder)requestBuilder).requiresAuthentication))//we only pass activity if we have authorization
+            if ((requestBuilder instanceof SRequestBuilder && ((SRequestBuilder)requestBuilder).requiresAuthentication))//we only pass activity if we have authorization
             //activity is used to start login activity
             {
                 //check if login is already in progress and block if so
@@ -134,7 +134,7 @@ public class SInternet
                     //TODO force login
                     return response;
                 }
-                requestBuilder.addParam("accessToken", authToken, true);
+                requestBuilder.addParam("access_token", authToken, true);
             }
             HttpURLConnection conn = (HttpURLConnection) new URL(requestBuilder.getRequestUrl()).openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
@@ -233,7 +233,7 @@ public class SInternet
             response.responseData = readStreamToString(is = response.code < 400 ? conn.getInputStream() : conn.getErrorStream());
             response.responseMessage = response.code < 400 ? null : conn.getResponseMessage();
 
-            if (activity != null)
+            if ((requestBuilder instanceof SRequestBuilder && ((SRequestBuilder)requestBuilder).requiresAuthentication))
             {
                 boolean authTokenExpired = response.code == 401;
                 if (authTokenExpired)//token expired, clear it and request new one

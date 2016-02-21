@@ -66,7 +66,7 @@ public class DatabaseManager
         while (cursor.moveToNext())
         {
             QueryHistory reportType = new QueryHistory();
-            reportType.command = cursor.getString(cursor.getColumnIndex("query"));
+            reportType.query = cursor.getString(cursor.getColumnIndex("query"));
             his.add(reportType);
         }
         cursor.close();
@@ -92,13 +92,14 @@ public class DatabaseManager
             databaseEntry.isFavorite = cursor.getInt(cursor.getColumnIndex("is_favorite")) == 1;
             databaseEntry.created = cursor.getLong(cursor.getColumnIndex("created"));
             databaseEntry.accessed = cursor.getLong(cursor.getColumnIndex("accessed"));
+            databaseEntry.deleted = cursor.getInt(cursor.getColumnIndex("deleted")) == 1;
             lis.add(databaseEntry);
         }
         cursor.close();
         return lis;
     }
 
-    public DatabaseEntry getDatabaseEntrie(String query, String[] args)
+    public DatabaseEntry getDatabaseEntry(String query, String[] args)
     {
         Cursor cursor = mDatabase.rawQuery(query, args);
         DatabaseEntry databaseEntry = null;
@@ -115,6 +116,7 @@ public class DatabaseManager
             databaseEntry.isFavorite = cursor.getInt(cursor.getColumnIndex("is_favorite")) == 1;
             databaseEntry.created = cursor.getLong(cursor.getColumnIndex("created"));
             databaseEntry.accessed = cursor.getLong(cursor.getColumnIndex("accessed"));
+            databaseEntry.deleted = cursor.getInt(cursor.getColumnIndex("deleted")) == 1;
         }
         cursor.close();
         return databaseEntry;
@@ -132,7 +134,7 @@ public class DatabaseManager
         return 0;
     }
 
-    public void insertCommandHistory(String cmd)
+    public void insertQueryHistory(String cmd)
     {
         ContentValues values = new ContentValues();
         values.put("query", cmd);
@@ -142,6 +144,13 @@ public class DatabaseManager
         {
             mDatabase.update("query_history", values, "query = ?", new String[]{cmd});
         }
+    }
+
+    public void insertDatabaseEntry(List<DatabaseEntry> databaseEntries)
+    {
+        if(databaseEntries == null)
+            return;
+        insertDatabaseEntry(databaseEntries.toArray(new DatabaseEntry[databaseEntries.size()]));
     }
 
     public void insertDatabaseEntry(DatabaseEntry... databaseEntries)
@@ -162,6 +171,7 @@ public class DatabaseManager
                 values.put("database_password", entry.databasePassword);
                 values.put("database_port", entry.databasePort);
                 values.put("is_favorite", entry.isFavorite);
+                values.put("deleted", entry.deleted);
                 if(entry.created == null)
                     entry.created = System.currentTimeMillis();
                 values.put("created", entry.created);
@@ -188,6 +198,44 @@ public class DatabaseManager
         }
     }
 
+    public void insertQueryHistory(List<String> queryHistory)
+    {
+        if(queryHistory == null)
+            return;
+        insertQueryHistory(queryHistory.toArray(new String[queryHistory.size()]));
+    }
+
+    public void insertQueryHistory(String... queryHistory)
+    {
+        if(queryHistory == null)
+            return;
+        mDatabase.beginTransaction();
+        try
+        {
+            for (String query : queryHistory)
+            {
+                ContentValues values = new ContentValues();
+                values.put("query", query);
+
+                long id = mDatabase.insertWithOnConflict("query_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1)
+                {
+                    mDatabase.update("query_history", values, "query = ?", new String[]{query});
+                }
+            }
+            mDatabase.setTransactionSuccessful();
+        }
+        catch (Exception e)
+        {
+            if(SettingsManager.DEBUG())
+                e.printStackTrace();
+        }
+        finally
+        {
+            mDatabase.endTransaction();
+        }
+    }
+
     public void clearDatabase()
     {
         mDatabaseHelper.onUpgrade(mDatabase, DatabaseHelper.DATABASE_VERSION, DatabaseHelper.DATABASE_VERSION);
@@ -198,7 +246,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 

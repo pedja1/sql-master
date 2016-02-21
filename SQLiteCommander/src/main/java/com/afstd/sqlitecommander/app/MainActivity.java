@@ -1,6 +1,7 @@
 package com.afstd.sqlitecommander.app;
 
 import android.accounts.Account;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -29,18 +31,23 @@ import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.DatabaseSearchResult;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
+import com.android.volley.misc.AsyncTask;
 import com.crashlytics.android.Crashlytics;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchBox.SearchListener
 {
+    private static final int REQUEST_CODE_SET_PASSWORD = 1004;
     private NavigationView navigationView;
 
     private SearchBox mSearchBox;
@@ -57,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mSearchBox = (SearchBox) findViewById(R.id.searchbox);
         mSearchBox.setSearchListener(this);
 
-        List<DatabaseEntry> entries = DatabaseManager.getInstance().getDatabaseEntries("SELECT * FROM _database", new String[0]);
-        for(DatabaseEntry entry : entries)
+        List<DatabaseEntry> entries = DatabaseManager.getInstance().getDatabaseEntries("SELECT * FROM _database WHERE deleted != 1", new String[0]);
+        for (DatabaseEntry entry : entries)
         {
             DatabaseSearchResult option = new DatabaseSearchResult(entry);
             mSearchBox.addSearchable(option);
@@ -91,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ContentResolver.addPeriodicSync(account, getString(R.string.content_authority), Bundle.EMPTY, SSyncAdapter.SYNC_ADAPTER_INTERVAL);
             ContentResolver.setSyncAutomatically(account, getString(R.string.content_authority), true);
         }
+
+        new ATCheckRoot(this).execute();
     }
 
     @Override
@@ -135,8 +144,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public boolean onNavigationItemSelected(@IdRes int menuId)
     {
-        navigationView.setCheckedItem(menuId);
-        return onNavigationItemSelected(navigationView.getMenu().findItem(menuId));
+        boolean ret = onNavigationItemSelected(navigationView.getMenu().findItem(menuId));
+        if (ret)
+            navigationView.setCheckedItem(menuId);
+        return ret;
     }
 
     @Override
@@ -159,9 +170,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_cloud)
         {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, FragmentCloud.newInstance());
-            transaction.commit();
+            if (TextUtils.isEmpty(SettingsManager.getEc()))
+            {
+                showSetPasswordDialog();
+                return false;
+            }
+            else
+            {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.content, FragmentCloud.newInstance());
+                transaction.commit();
+            }
         }
         else if (id == R.id.nav_mysql)
         {
@@ -209,6 +228,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    private void showSetPasswordDialog()
+    {
+        startActivityForResult(new Intent(this, SetPasswordActivity.class), REQUEST_CODE_SET_PASSWORD);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -216,6 +240,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             mSearchBox.populateEditText(matches.get(0));
+        }
+        if (requestCode == REQUEST_CODE_SET_PASSWORD && resultCode == RESULT_OK)
+        {
+            onNavigationItemSelected(R.id.nav_cloud);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -253,14 +281,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onResultClick(SearchResult searchResult)
     {
-        DatabaseEntry entry = ((DatabaseSearchResult)searchResult).getEntry();
-        if(DatabaseEntry.TYPE_SQLITE.equals(entry.type))
+        DatabaseEntry entry = ((DatabaseSearchResult) searchResult).getEntry();
+        if (DatabaseEntry.TYPE_SQLITE.equals(entry.type))
         {
             SQLiteCMDActivity.start(this, entry.databaseUri, true);
         }
-        else if(DatabaseEntry.TYPE_MYSQL.equals(entry.type))
+        else if (DatabaseEntry.TYPE_MYSQL.equals(entry.type))
         {
             MySQLCMDActivity.start(this, entry.id);
+        }
+    }
+
+    private static class ATCheckRoot extends AsyncTask<Void, Void, Boolean>
+    {
+        ProgressDialog progressDialog;
+        private WeakReference<MainActivity> reference;
+
+        ATCheckRoot(MainActivity activity)
+        {
+            this.reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            if (reference.get() == null)
+                return;
+            progressDialog = new ProgressDialog(reference.get());
+            progressDialog.setMessage(reference.get().getString(R.string.please_wait));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            Shell.SU.available();
+            ShellInstance.getInstance();//this checks if su is available an creates su shell
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean)
+        {
+            if (reference.get() != null && progressDialog.isShowing())
+                progressDialog.dismiss();
         }
     }
 }

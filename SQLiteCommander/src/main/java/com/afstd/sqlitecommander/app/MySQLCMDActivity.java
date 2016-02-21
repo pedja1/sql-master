@@ -47,7 +47,7 @@ public class MySQLCMDActivity extends SQLCMDActivity
         }
 
         String query = "SELECT * FROM _database WHERE id = ?";
-        entry = DatabaseManager.getInstance().getDatabaseEntrie(query, new String[]{id});
+        entry = DatabaseManager.getInstance().getDatabaseEntry(query, new String[]{id});
 
         if (entry == null)
         {
@@ -125,7 +125,7 @@ public class MySQLCMDActivity extends SQLCMDActivity
             @Override
             public void onClick(View v)
             {
-                DatabaseManager.getInstance().insertCommandHistory(etSqlCmd.getText().toString());
+                DatabaseManager.getInstance().insertQueryHistory(etSqlCmd.getText().toString());
                 list.add(new QueryHistory(etSqlCmd.getText().toString()));
                 pbLoading.setVisibility(View.VISIBLE);
                 tvError.setVisibility(View.GONE);

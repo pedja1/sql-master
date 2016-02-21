@@ -67,6 +67,17 @@ public class SettingsActivity extends AppCompatActivity
                     return true;
                 }
             });
+
+            final CheckBoxPreference cbpSyncNotification = (CheckBoxPreference) findPreference("sync_notification");
+            cbpSyncNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    SettingsManager.setShowSyncNotification((Boolean) newValue);
+                    return true;
+                }
+            });
         }
 
         private Spannable getSyntaxHighlightThemeDisplay(String key)
