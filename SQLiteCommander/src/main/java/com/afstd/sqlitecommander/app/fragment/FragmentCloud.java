@@ -61,7 +61,7 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
     public static final String ACCOUNT_TYPE = App.get().getString(R.string.account_type);
     public static final String AUTH_TOKEN_TYPE = ACCOUNT_TYPE + ".LOGIN";
     public static final String GRANT_TYPE = "https://accounts.google.com/o/oauth2/v2/auth";
-    private static final String GOOGLE_CLIENT_ID = "770914414372-2923i5l0agg2cjjj20ppo4m7frm2mref.apps.googleusercontent.com";
+        private static final String GOOGLE_CLIENT_ID = "770914414372-2923i5l0agg2cjjj20ppo4m7frm2mref.apps.googleusercontent.com";
 
     public static FragmentCloud newInstance()
     {
@@ -234,7 +234,7 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
                     ContentResolver.requestSync(account, getString(R.string.content_authority), settingsBundle);
                 }
                 break;
-            case R.id.btnCloud:
+            case R.id.btnDelete:
                 initRequestManager();
                 RequestBuilder builder = new SRequestBuilder(RequestBuilder.Method.DELETE, true);
                 builder.addParam("sync");

@@ -123,7 +123,7 @@ public class SAccountAuthenticator extends AbstractAccountAuthenticator
         RequestBuilder builder = new SRequestBuilder(RequestBuilder.Method.POST, false);
         builder.setRequestUrl(SInternet.API_REQUEST_URL);
 
-        builder.addParam("auth").addParam("token");
+        builder.addParam("oauth").addParam("token");
         builder.addParam("client_id", CLIENT_ID);
         builder.addParam("client_secret", CLIENT_SECRET);
         builder.addParam("username", account.name);
