@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="linpack"
+                android:text="n/a"
                 android:textColor="@android:color/black"
                 android:id="@+id/text1"
                 android:textSize="16sp"/>
@@ -48,10 +48,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="pedjaapps.net:3306"
                 android:fontFamily="sans-serif-light"
                 android:textColor="@android:color/black"
                 android:id="@+id/text2"
+                android:text="n/a"
                 android:textSize="12sp"/>
 
         </LinearLayout>

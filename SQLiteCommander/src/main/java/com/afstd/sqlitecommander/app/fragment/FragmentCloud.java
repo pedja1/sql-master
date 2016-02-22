@@ -109,7 +109,6 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -143,7 +142,8 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
             {
                 if(loadingAnimation != null)
                     loadingAnimation.cancel(true);
-                tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, SyncStatusResponseEvent.SERVICE_NOT_RUNNING)));
+                if(isAdded())
+                    tvSyncStatus.setText(Html.fromHtml(getString(R.string.sync_status, SyncStatusResponseEvent.SERVICE_NOT_RUNNING)));
             }
         }, 5000);
 
@@ -174,6 +174,10 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
     {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if(mGoogleApiClient != null)
+        {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @SuppressWarnings("unused")

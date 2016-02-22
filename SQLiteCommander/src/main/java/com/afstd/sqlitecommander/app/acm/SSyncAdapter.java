@@ -171,6 +171,7 @@ public class SSyncAdapter extends AbstractThreadedSyncAdapter
                 builder.setRequestBody(jsonObject.toString());
 
                 if(SettingsManager.DEBUG()) Log.d("sync", "sending request");
+                if(SettingsManager.DEBUG()) Log.d("sync", "json: " + jsonObject.toString());
                 JSONParser parser = new JSONParser(SInternet.executeHttpRequest(builder));
                 parser.parseSyncResponse();
             }

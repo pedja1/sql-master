@@ -15,14 +15,26 @@ import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 public class DatabaseManager
 {
     private static DatabaseManager instance;
     private static DatabaseHelper mDatabaseHelper;
     private SQLiteDatabase mDatabase;
+
+    static final String MYSQL_TEST_DATABASE_ID = "1";
+    static final String SQLITE_TEST_DATABASE_ID = "2";
+    public final static Set<String> EXCLUDE_DATABASE_IDS;
+
+    static
+    {
+        EXCLUDE_DATABASE_IDS = new HashSet<>();
+        EXCLUDE_DATABASE_IDS.add(MYSQL_TEST_DATABASE_ID);
+        EXCLUDE_DATABASE_IDS.add(SQLITE_TEST_DATABASE_ID);
+    }
 
     public static synchronized DatabaseManager getInstance()
     {
@@ -279,10 +291,25 @@ class DatabaseHelper extends SQLiteOpenHelper
 
     private void addTestDatabase(SQLiteDatabase db)
     {
-        String cmd = "INSERT INTO _database " +
-                "(id, type, database_uri, database_name, database_username, database_password) " +
-                "VALUES('" + UUID.randomUUID().toString() + "', 'mysql', 'pedjaapps.net', 'sqlcmd_public_test', 'guest', 'guest')";
-        db.execSQL(cmd);
+        db.beginTransaction();
+        try
+        {
+            String cmd = "INSERT INTO _database " +
+                    "(id, type, database_uri, database_name, database_username, database_password, is_favorite) " +
+                    "VALUES('" + DatabaseManager.MYSQL_TEST_DATABASE_ID + "', 'mysql', 'pedjaapps.net', 'sqlcmd_public_test', 'guest', 'guest', 1)";
+            db.execSQL(cmd);
+
+            cmd = "INSERT INTO _database " +
+                    "(id, type, database_uri, is_favorite) " +
+                    "VALUES('" + DatabaseManager.SQLITE_TEST_DATABASE_ID + "', 'sqlite', '" + db.getPath() + "', 1)";
+            db.execSQL(cmd);
+
+            db.setTransactionSuccessful();
+        }
+        finally
+        {
+            db.endTransaction();
+        }
     }
 
     private void addDefaultHistory(SQLiteDatabase db)
