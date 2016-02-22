@@ -22,6 +22,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.x;
+
 /**
  * Created by pedja on 16.1.16..
  */
@@ -478,6 +480,8 @@ public class SQLGridView extends View
         @Override
         public boolean onSingleTapUp(MotionEvent e)
         {
+            if(data == null)
+                return false;
             // This is absolute coordinate on screen not taking scroll into account.
             int x = (int) e.getX();
             int y = (int) e.getY();
