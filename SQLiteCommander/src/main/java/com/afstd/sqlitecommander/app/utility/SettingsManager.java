@@ -1,9 +1,5 @@
 package com.afstd.sqlitecommander.app.utility;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.BuildConfig;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.syntaxhighlight.Theme;
@@ -24,10 +20,6 @@ import static com.tehnicomsolutions.http.TSHttp.getContext;
 public class SettingsManager
 {
     /**
-     * Normal android shared preferences, used for internal purposes (no multi-process support)
-     */
-    private static final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.get());
-    /**
      * Tray preferences
      * multi-process is supported
      */
@@ -36,37 +28,25 @@ public class SettingsManager
     public enum Key
     {
         DEBUG(true, boolean.class, BuildConfig.DEBUG), active_account(false, String.class, null),
-        last_sync_time(true, long.class, 0L, true), syntax_highlight_theme(true, String.class, "default"),
-        sync_notification(true, boolean.class, true), ec("T+Ieae0g1mHEcFa+tXGc/VnE9V47gKiqthrcVbLJfQo=", false, String.class, null, true);
+        last_sync_time(true, long.class, 0L), syntax_highlight_theme(true, String.class, "default"),
+        sync_notification(true, boolean.class, true), ec("T+Ieae0g1mHEcFa+tXGc/VnE9V47gKiqthrcVbLJfQo=", false, String.class, null);
 
         private final String mValue;
         private final boolean mSyncable;
         private final Class mClass;
         private final Object mDefault;
-        private final boolean appPreferences;
 
         Key(boolean syncable, Class _class, Object defaultValue)
         {
-            this(null, syncable, _class, defaultValue, false);
-        }
-
-        Key(boolean syncable, Class _class, Object defaultValue, boolean appPreferences)
-        {
-            this(null, syncable, _class, defaultValue, appPreferences);
+            this(null, syncable, _class, defaultValue);
         }
 
         Key(String mValue, boolean syncable, Class _class, Object defaultValue)
-        {
-            this(mValue, syncable, _class, defaultValue, false);
-        }
-
-        Key(String mValue, boolean syncable, Class _class, Object defaultValue, boolean appPreferences)
         {
             this.mValue = mValue;
             this.mSyncable = syncable;
             mClass = _class;
             this.mDefault = defaultValue;
-            this.appPreferences = appPreferences;
         }
 
         public boolean isSyncable()
@@ -82,11 +62,6 @@ public class SettingsManager
         public Object getDefault()
         {
             return mDefault;
-        }
-
-        public boolean isAppPreferences()
-        {
-            return appPreferences;
         }
 
         @Override
@@ -141,14 +116,12 @@ public class SettingsManager
 
     public static boolean DEBUG()
     {
-        return prefs.getBoolean(Key.DEBUG.toString(), BuildConfig.DEBUG);
+        return appPreferences.getBoolean(Key.DEBUG.toString(), BuildConfig.DEBUG);
     }
 
     public static void DEBUG(boolean debug)
     {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(Key.DEBUG.toString(), debug);
-        editor.apply();
+        appPreferences.put(Key.DEBUG.toString(), debug);
     }
 
     public static boolean getSyncSetting(SyncKey key)
@@ -169,58 +142,23 @@ public class SettingsManager
         if(key.getKeyClass() == boolean.class)
         {
             //TODO i dont like this casting
-            if(key.isAppPreferences())
-            {
-                return (T)(Boolean)appPreferences.getBoolean(key.toString(), (boolean) key.getDefault());
-            }
-            else
-            {
-                return (T) (Boolean) prefs.getBoolean(key.toString(), (boolean) key.getDefault());
-            }
+            return (T)(Boolean)appPreferences.getBoolean(key.toString(), (boolean) key.getDefault());
         }
         else if(key.getKeyClass() == String.class)
         {
-            if(key.isAppPreferences())
-            {
-                return (T)appPreferences.getString(key.toString(), (String) key.getDefault());
-            }
-            else
-            {
-                return (T) prefs.getString(key.toString(), (String) key.getDefault());
-            }
+            return (T)appPreferences.getString(key.toString(), (String) key.getDefault());
         }
         else if(key.getKeyClass() == long.class)
         {
-            if(key.isAppPreferences())
-            {
-                return (T)(Long)appPreferences.getLong(key.toString(), (long) key.getDefault());
-            }
-            else
-            {
-                return (T) (Long)prefs.getLong(key.toString(), (long) key.getDefault());
-            }
+            return (T)(Long)appPreferences.getLong(key.toString(), (long) key.getDefault());
         }
         else if(key.getKeyClass() == int.class)
         {
-            if(key.isAppPreferences())
-            {
-                return (T)(Integer)appPreferences.getInt(key.toString(), (int) key.getDefault());
-            }
-            else
-            {
-                return (T) (Integer)prefs.getInt(key.toString(), (int) key.getDefault());
-            }
+            return (T)(Integer)appPreferences.getInt(key.toString(), (int) key.getDefault());
         }
         else if(key.getKeyClass() == float.class)
         {
-            if(key.isAppPreferences())
-            {
-                return (T)(Float)appPreferences.getFloat(key.toString(), (float) key.getDefault());
-            }
-            else
-            {
-                return (T) (Float)prefs.getFloat(key.toString(), (float) key.getDefault());
-            }
+            return (T)(Float)appPreferences.getFloat(key.toString(), (float) key.getDefault());
         }
         throw new IllegalStateException(String.format("key type '%s' is not supported", key.getDefault()));
     }
@@ -228,83 +166,37 @@ public class SettingsManager
     @SuppressWarnings("ConstantConditions")
     public static void setSetting(Key key, Object value)
     {
-        SharedPreferences.Editor editor = null;
-        if(!key.isAppPreferences())
-        {
-            editor = prefs.edit();
-        }
         if(key.getKeyClass() == boolean.class)
         {
-            if(key.isAppPreferences())
-            {
-                appPreferences.put(key.toString(), (boolean) value);
-            }
-            else
-            {
-                editor.putBoolean(key.toString(), (boolean) value);
-            }
+            appPreferences.put(key.toString(), (boolean) value);
         }
         else if(key.getKeyClass() == String.class)
         {
-            if(key.isAppPreferences())
-            {
-                appPreferences.put(key.toString(), (String) value);
-            }
-            else
-            {
-                editor.putString(key.toString(), (String) value);
-            }
+            appPreferences.put(key.toString(), (String) value);
         }
         else if(key.getKeyClass() == long.class)
         {
-            if(key.isAppPreferences())
-            {
-                appPreferences.put(key.toString(), (long) value);
-            }
-            else
-            {
-                editor.putLong(key.toString(), (long) value);
-            }
+            appPreferences.put(key.toString(), (long) value);
         }
         else if(key.getKeyClass() == float.class)
         {
-            if(key.isAppPreferences())
-            {
-                appPreferences.put(key.toString(), (float) value);
-            }
-            else
-            {
-                editor.putFloat(key.toString(), (float) value);
-            }
+            appPreferences.put(key.toString(), (float) value);
         }
         else if(key.getKeyClass() == int.class)
         {
-            if(key.isAppPreferences())
-            {
-                appPreferences.put(key.toString(), (int) value);
-            }
-            else
-            {
-                editor.putInt(key.toString(), (int) value);
-            }
-        }
-        if(key.isAppPreferences())
-        {
-            editor.apply();
+            appPreferences.put(key.toString(), (int) value);
         }
         //throw new IllegalStateException(String.format("key type '%s' is not supported", key.getDefault()));
     }
 
     public static String getActiveAccount()
     {
-        return prefs.getString(Key.active_account.toString(), (String) Key.active_account.getDefault());
+        return appPreferences.getString(Key.active_account.toString(), (String) Key.active_account.getDefault());
     }
 
     public static void setActiveAccount(String account)
     {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(Key.active_account.toString(), account);
-        editor.apply();
+        appPreferences.put(Key.active_account.toString(), account);
     }
 
     public static long getLastSyncTime()
@@ -319,7 +211,7 @@ public class SettingsManager
 
     public static String getSyntaxHighlightThemeKey()
     {
-        return prefs.getString(Key.syntax_highlight_theme.toString(), (String) Key.syntax_highlight_theme.getDefault());
+        return appPreferences.getString(Key.syntax_highlight_theme.toString(), (String) Key.syntax_highlight_theme.getDefault());
     }
 
     public static Theme getSyntaxHighlightTheme()
@@ -357,10 +249,6 @@ public class SettingsManager
 
     public static void clearAllPrefs()
     {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
-        editor.apply();
-
         appPreferences.clear();
     }
 }

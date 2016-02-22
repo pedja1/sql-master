@@ -163,12 +163,12 @@ public class JSONParser extends ResponseParser
             //databases
             if(SettingsManager.getSyncSetting(SettingsManager.SyncKey.sync_databases))
             {
-                JSONArray jDatabases = jsonObject.optJSONArray("databases");
+                JSONArray jDatabases = jData.optJSONArray("databases");
                 if(jDatabases != null)
                 {
                     List<DatabaseEntry> entries = new ArrayList<>();
 
-                    for(int i = 0; i < entries.size(); i++)
+                    for(int i = 0; i < jDatabases.length(); i++)
                     {
                         JSONObject jDatabase = jDatabases.optJSONObject(i);
                         DatabaseEntry databaseEntry = new DatabaseEntry();
@@ -193,31 +193,37 @@ public class JSONParser extends ResponseParser
                     DatabaseManager.getInstance().rawQueryNoResult("DELETE FROM _database WHERE deleted = 1", null);
                 }
             }
-        }
 
-        //settings
-        if(SettingsManager.getSyncSetting(SettingsManager.SyncKey.sync_settings))
-        {
-            JSONObject jSettings = jsonObject.optJSONObject("settings");
-            if(jSettings != null)
+            //settings
+            if(SettingsManager.getSyncSetting(SettingsManager.SyncKey.sync_settings))
             {
-                for(SettingsManager.SyncKey key : SettingsManager.SyncKey.values())
+                JSONObject jSettings = jData.optJSONObject("settings");
+                if(jSettings != null)
                 {
-                    if(!key.isSyncable() && jSettings.has(key.toString()))
-                        continue;
-                    boolean enabled = jSettings.optBoolean(key.toString());
-                    SettingsManager.setSyncSetting(key, enabled);
-                }
+                    for(SettingsManager.SyncKey key : SettingsManager.SyncKey.values())
+                    {
+                        if(!key.isSyncable() || !jSettings.has(key.toString()))
+                            continue;
+                        boolean enabled = jSettings.optBoolean(key.toString());
+                        SettingsManager.setSyncSetting(key, enabled);
+                    }
 
-                for(SettingsManager.Key key : SettingsManager.Key.values())
-                {
-                    if(!key.isSyncable() && jSettings.has(key.toString()))
-                        continue;
-                    SettingsManager.setSetting(key, jSettings.opt(key.toString()));
+                    for(SettingsManager.Key key : SettingsManager.Key.values())
+                    {
+                        if(!key.isSyncable() || !jSettings.has(key.toString()))
+                            continue;
+                        if(key.getKeyClass() == long.class)
+                        {
+                            SettingsManager.setSetting(key, jSettings.optLong(key.toString()));
+                        }
+                        else
+                        {
+                            SettingsManager.setSetting(key, jSettings.opt(key.toString()));
+                        }
+                    }
                 }
             }
         }
-
     }
 
     private void decryptCredentials(DatabaseEntry entry, JSONObject jDatabase)

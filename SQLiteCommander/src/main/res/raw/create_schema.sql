@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS _database (
   database_name     TEXT,
   database_username TEXT    DEFAULT NULL,
   database_password TEXT    DEFAULT NULL,
-  database_port     INTEGER DEFAULT 3360,
+  database_port     INTEGER DEFAULT 3306,
   is_favorite       INTEGER,
   created           INTEGER,
   accessed          INTEGER,

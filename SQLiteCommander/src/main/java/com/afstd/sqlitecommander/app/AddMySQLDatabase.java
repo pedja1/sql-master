@@ -4,6 +4,7 @@ import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.mysql.MySQLCMD;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -33,9 +34,10 @@ public class AddMySQLDatabase extends AddSQLDatabaseActivity
         {
             Class.forName(MySQLCMD.JDBC_DRIVER);
             int port = databaseEntry.databasePort <= 0 ? MYSQL_DEFAULT_PORT : databaseEntry.databasePort;
-            DriverManager.getConnection(String.format("jdbc:mysql://%s:%d/%s",
+            Connection conn = DriverManager.getConnection(String.format("jdbc:mysql://%s:%d/%s",
                     databaseEntry.databaseUri, port, databaseEntry.databaseName),
                     databaseEntry.databaseUsername, databaseEntry.databasePassword);
+            conn.close();
         }
         catch (ClassNotFoundException | SQLException e)
         {
