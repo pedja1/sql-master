@@ -175,6 +175,7 @@ public class JSONParser extends ResponseParser
                         databaseEntry.id = jDatabase.optString("_id");
                         databaseEntry.type = jDatabase.optString("type");
                         databaseEntry.databaseUri = jDatabase.optString("database_uri");
+                        databaseEntry.databaseName = jDatabase.optString("database_name");
 
                         if(TextUtils.isEmpty(databaseEntry.id) || TextUtils.isEmpty(databaseEntry.type) || TextUtils.isEmpty(databaseEntry.databaseUri))
                         {
