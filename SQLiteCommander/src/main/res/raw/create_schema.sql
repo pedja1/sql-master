@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS _database (
 );
 
 CREATE TABLE IF NOT EXISTS query_history (
-  query TEXT PRI
+  query TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS setting (

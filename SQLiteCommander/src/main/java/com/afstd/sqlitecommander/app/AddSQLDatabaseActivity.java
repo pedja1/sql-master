@@ -96,12 +96,12 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
             etUsername.requestFocus();
             return;
         }
-        if(TextUtils.isEmpty(etPassword.getText()))
+        /*if(TextUtils.isEmpty(etPassword.getText()))
         {
             etPassword.setError(getString(R.string.password_is_required));
             etPassword.requestFocus();
             return;
-        }
+        }*/
 
         if(entry == null)
         {

@@ -98,4 +98,5 @@
     <string name="password_lowercase">Password must contain at leas one lowercase character.</string>
     <string name="sync_databases">Sync Databases</string>
     <string name="sync_databases_warning">Only database configuration is synchronized (server, username, password...), not actual database contents</string>
+    <string name="query_ok">Query OK, %d rows affected</string>
 </resources>

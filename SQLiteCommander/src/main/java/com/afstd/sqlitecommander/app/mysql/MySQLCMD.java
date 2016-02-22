@@ -6,8 +6,11 @@ import android.os.Process;
 import android.support.annotation.NonNull;
 
 import com.afstd.sqlcmd.SQLCMD;
+import com.afstd.sqlitecommander.app.App;
+import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
+import com.mysql.jdbc.Messages;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -134,29 +137,53 @@ public class MySQLCMD extends SQLCMD
                 try
                 {
                     Statement st = conn.createStatement();
-                    ResultSet rs = st.executeQuery(query.query);
-                    ResultSetMetaData rsmd = rs.getMetaData();
 
-                    final List<List<KeyValuePair>> result = new ArrayList<>();
-
-                    while (rs.next())
+                    try
                     {
-                        List<KeyValuePair> row = new ArrayList<>();
-                        for(int i = 1; i <= rsmd.getColumnCount(); i++)
+                        ResultSet rs = st.executeQuery(query.query);
+                        ResultSetMetaData rsmd = rs.getMetaData();
+
+                        final List<List<KeyValuePair>> result = new ArrayList<>();
+
+                        while (rs.next())
                         {
-                            KeyValuePair keyValuePair = new KeyValuePair(rsmd.getColumnName(i), rs.getString(i));
-                            row.add(keyValuePair);
+                            List<KeyValuePair> row = new ArrayList<>();
+                            for(int i = 1; i <= rsmd.getColumnCount(); i++)
+                            {
+                                KeyValuePair keyValuePair = new KeyValuePair(rsmd.getColumnName(i), rs.getString(i));
+                                row.add(keyValuePair);
+                            }
+                            result.add(row);
                         }
-                        result.add(row);
+                        mainThreadHandler.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                query.listener.onResult(true, result, null);
+                            }
+                        });
                     }
-                    mainThreadHandler.post(new Runnable()
+                    catch (SQLException e)
                     {
-                        @Override
-                        public void run()
+                        if(Messages.getString("Statement.57").equals(e.getMessage()))
                         {
-                            query.listener.onResult(true, result, null);
+                            final int rowsAffected = st.executeUpdate(query.query);
+                            mainThreadHandler.post(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    query.listener.onResult(true, null, App.get().getString(R.string.query_ok, rowsAffected));
+                                }
+                            });
                         }
-                    });
+                        else
+                        {
+                            throw e;
+                        }
+                    }
+
                 }
                 catch (final SQLException e)
                 {

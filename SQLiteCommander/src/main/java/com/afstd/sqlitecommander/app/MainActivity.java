@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private SearchBox mSearchBox;
+    private boolean passwordSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (requestCode == REQUEST_CODE_SET_PASSWORD && resultCode == RESULT_OK)
         {
-            onNavigationItemSelected(R.id.nav_cloud);
+            passwordSet = true;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -327,5 +328,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (reference.get() != null && progressDialog.isShowing())
                 progressDialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onResumeFragments()
+    {
+        if(passwordSet)
+        {
+            onNavigationItemSelected(R.id.nav_cloud);
+            passwordSet = false;
+        }
+        super.onResumeFragments();
+
     }
 }

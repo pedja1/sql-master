@@ -246,7 +246,7 @@ public class DatabaseManager
 class DatabaseHelper extends SQLiteOpenHelper
 {
     // Database Version
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 8;
     // Database Name
     public static final String DATABASE_NAME = "internal.db";
 
@@ -299,7 +299,7 @@ class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2)
     {
-        try
+        /*try
         {
             String drop = FileUtility.readRawFile(App.get(), R.raw.drop_schema);
             String[] statements = drop.split(";");
@@ -312,6 +312,7 @@ class DatabaseHelper extends SQLiteOpenHelper
         {
             throw new IllegalStateException("Unable to update database. Error reading create schema file. Error message: " + e.getMessage());
         }
-        onCreate(db);
+        onCreate(db);*/
+        //TODO do nothing for now
     }
 }
