@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +60,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
             holder.text1.setText(new File(databaseEntry.databaseUri).getName());//todo new file each time?
             holder.text2.setText(databaseEntry.databaseUri);
             holder.ivEdit.setVisibility(View.GONE);
+            holder.ivCredWarning.setVisibility(View.GONE);
         }
         else
         {
@@ -65,7 +68,22 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
             holder.ivIcon.setImageResource(databaseEntry.getIconResource());
             holder.text1.setText(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type) ? databaseEntry.databaseName : new File(databaseEntry.databaseUri).getName());
             holder.text2.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort <= 0 ? DatabaseEntry.MYSQL_DEFAULT_PORT : databaseEntry.databasePort));
+
+            holder.ivCredWarning.setVisibility(hasCredentials(databaseEntry) ? View.GONE : View.VISIBLE);
         }
+
+        holder.ivCredWarning.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.warning);
+                builder.setMessage(R.string.empty_credentials_warning);
+                builder.setNegativeButton(R.string.ok, null);
+                builder.show();
+            }
+        });
 
         holder.ivFavorite.setVisibility(databaseEntry.isFavorite ? View.VISIBLE : View.GONE);
 
@@ -99,6 +117,11 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
         });
     }
 
+    private boolean hasCredentials(DatabaseEntry databaseEntry)
+    {
+        return !TextUtils.isEmpty(databaseEntry.databaseUsername);
+    }
+
     private Class<? extends AddSQLDatabaseActivity> getClassForType(String type)
     {
         if(type == null)
@@ -114,7 +137,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
 
     private class ViewHolder extends RecyclerView.ViewHolder
     {
-        ImageView ivIcon, ivFavorite, ivEdit;
+        ImageView ivIcon, ivFavorite, ivEdit, ivCredWarning;
         TextView text1, text2;
 
         ViewHolder(View itemView)
@@ -123,6 +146,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
             ivIcon = (ImageView) itemView.findViewById(R.id.ivIcon);
             ivFavorite = (ImageView) itemView.findViewById(R.id.ivFavorite);
             ivEdit = (ImageView) itemView.findViewById(R.id.ivEdit);
+            ivCredWarning = (ImageView) itemView.findViewById(R.id.ivCredWarning);
             text1 = (TextView) itemView.findViewById(R.id.text1);
             text2 = (TextView) itemView.findViewById(R.id.text2);
         }

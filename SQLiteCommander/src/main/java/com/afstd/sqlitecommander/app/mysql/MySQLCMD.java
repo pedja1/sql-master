@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MySQLCMD extends SQLCMD
 {
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final int MYSQL_DEFAULT_PORT = 3306;
 
     private MySQLThread mThread;

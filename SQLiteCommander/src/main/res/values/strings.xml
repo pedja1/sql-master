@@ -99,4 +99,9 @@
     <string name="sync_databases">Sync Databases</string>
     <string name="sync_databases_warning">Only database configuration is synchronized (server, username, password...), not actual database contents</string>
     <string name="query_ok">Query OK, %d rows affected</string>
+    <string name="empty_credentials_warning">Database is missing username and/or password.\nThis can happen when you restore backup that cannot be decrypted (you entered dfferent password than the one used to encrypt database).</string>
+    <string name="ok">OK</string>
+    <string name="test_connection">Test Connection</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="connection_successfull">Connection succesfull</string>
 </resources>

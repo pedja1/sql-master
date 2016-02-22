@@ -1,6 +1,7 @@
 package com.afstd.sqlitecommander.app;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +16,9 @@ import android.widget.EditText;
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.android.volley.misc.AsyncTask;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 
@@ -73,36 +76,103 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
             case R.id.btnSave:
                 save();
                 break;
+            case R.id.btnTest:
+                if(!informationIsValid())
+                    break;
+                initDatabaseEntry();
+                new ATTestConnection(this, entry).execute();
+                break;
+        }
+    }
+
+    private static class ATTestConnection extends AsyncTask<Void, Void, Boolean>
+    {
+        private WeakReference<AddSQLDatabaseActivity> reference;
+        private ProgressDialog progressDialog;
+        private DatabaseEntry entry;
+
+        ATTestConnection(AddSQLDatabaseActivity activity, DatabaseEntry entry)
+        {
+            reference = new WeakReference<>(activity);
+            this.entry = entry;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            if(reference.get() == null)
+                return;
+            progressDialog = new ProgressDialog(reference.get());
+            progressDialog.setMessage(reference.get().getString(R.string.please_wait));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            if(reference.get() == null)
+                return null;
+            return reference.get().testConnection(entry);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean)
+        {
+            if(progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+            if(reference.get() == null || aBoolean == null)
+                return;
+            AndroidUtility.showMessageAlertDialog(reference.get(), aBoolean ? R.string.connection_successfull : R.string.connection_failed, 0, null);
         }
     }
 
     private void save()
     {
-        if(TextUtils.isEmpty(etName.getText()))
-        {
-            etName.setError(getString(R.string.database_name_is_required));
-            etName.requestFocus();
+        if(!informationIsValid())
             return;
-        }
+
+        initDatabaseEntry();
+
+        DatabaseManager.getInstance().insertDatabaseEntry(entry);
+
+        Intent data = new Intent();
+        data.putExtra(INTENT_EXTRA_DATABASE_ID, entry.id);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    private boolean informationIsValid()
+    {
         if(TextUtils.isEmpty(etDatabaseUrl.getText()))
         {
             etDatabaseUrl.setError(getString(R.string.database_server_required));
             etDatabaseUrl.requestFocus();
-            return;
+            return false;
+        }
+        if(TextUtils.isEmpty(etName.getText()))
+        {
+            etName.setError(getString(R.string.database_name_is_required));
+            etName.requestFocus();
+            return false;
         }
         if(TextUtils.isEmpty(etUsername.getText()))
         {
             etUsername.setError(getString(R.string.username_required));
             etUsername.requestFocus();
-            return;
+            return false;
         }
         /*if(TextUtils.isEmpty(etPassword.getText()))
         {
             etPassword.setError(getString(R.string.password_is_required));
             etPassword.requestFocus();
-            return;
+            return false;
         }*/
+        return true;
+    }
 
+    private void initDatabaseEntry()
+    {
         if(entry == null)
         {
             entry = new DatabaseEntry();
@@ -114,17 +184,13 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         entry.type = getDatabaseType();
         entry.databaseUsername = etUsername.getText().toString();
         entry.databasePassword = etPassword.getText().toString();
-
-        DatabaseManager.getInstance().insertDatabaseEntry(entry);
-
-        Intent data = new Intent();
-        data.putExtra(INTENT_EXTRA_DATABASE_ID, entry.id);
-        setResult(RESULT_OK, data);
-        finish();
     }
 
     protected abstract int getDefaultDatabasePort();
     protected abstract String getDatabaseType();
+    /**
+     * This method is called on worker thread, you must return if connection is valid*/
+    protected abstract boolean testConnection(DatabaseEntry entry);
 
     public static void start(@NonNull Activity activity, Class<? extends AddSQLDatabaseActivity> _class, @Nullable String databaseId, int requestCode)
     {
