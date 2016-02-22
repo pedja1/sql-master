@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS _database (
   is_favorite       INTEGER,
   created           INTEGER,
   accessed          INTEGER,
-  deleted           INTEGER
+  deleted           INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS query_history (
