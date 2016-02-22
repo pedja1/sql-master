@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.view.MenuItem;
 
 import com.afstd.sqlitecommander.app.utility.SQLTextHighlighter;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
@@ -34,6 +35,19 @@ public class SettingsActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction().replace(R.id.flContent, new PrefsFragment()).commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static class PrefsFragment extends PreferenceFragment
