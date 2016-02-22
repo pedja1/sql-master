@@ -2,6 +2,7 @@ package com.afstd.sqlitecommander.app.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +19,7 @@ import com.afstd.sqlitecommander.app.AddMySQLDatabase;
 import com.afstd.sqlitecommander.app.AddSQLDatabaseActivity;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
+import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 
 import java.io.File;
 import java.util.List;
@@ -85,6 +87,15 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
             }
         });
 
+        holder.ivDelete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                removeItemDialog(position);
+            }
+        });
+
         holder.ivFavorite.setVisibility(databaseEntry.isFavorite ? View.VISIBLE : View.GONE);
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
@@ -117,6 +128,38 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
         });
     }
 
+    public void removeItemDialog(final int position)
+    {
+        final boolean[] canceled = {true};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.delete);
+        builder.setMessage(R.string.delete_database);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                canceled[0] = false;
+                DatabaseEntry databaseEntry = getItem(position);
+                databaseEntry.deleted = true;
+                DatabaseManager.getInstance().insertDatabaseEntry(databaseEntry);
+                remove(databaseEntry);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
+            @Override
+            public void onDismiss(DialogInterface dialog)
+            {
+                if(canceled[0])notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, null);
+        builder.show();
+    }
+
     private boolean hasCredentials(DatabaseEntry databaseEntry)
     {
         return !TextUtils.isEmpty(databaseEntry.databaseUsername);
@@ -137,7 +180,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
 
     private class ViewHolder extends RecyclerView.ViewHolder
     {
-        ImageView ivIcon, ivFavorite, ivEdit, ivCredWarning;
+        ImageView ivIcon, ivFavorite, ivEdit, ivCredWarning, ivDelete;
         TextView text1, text2;
 
         ViewHolder(View itemView)
@@ -147,6 +190,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseEntry>
             ivFavorite = (ImageView) itemView.findViewById(R.id.ivFavorite);
             ivEdit = (ImageView) itemView.findViewById(R.id.ivEdit);
             ivCredWarning = (ImageView) itemView.findViewById(R.id.ivCredWarning);
+            ivDelete = (ImageView) itemView.findViewById(R.id.ivDelete);
             text1 = (TextView) itemView.findViewById(R.id.text1);
             text2 = (TextView) itemView.findViewById(R.id.text2);
         }

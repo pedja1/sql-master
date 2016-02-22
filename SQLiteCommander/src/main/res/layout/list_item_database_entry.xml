@@ -79,6 +79,13 @@
                 android:src="@drawable/ic_action_report_problem"
                 android:padding="7dp"
                 android:id="@+id/ivCredWarning"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_delete"
+                android:padding="7dp"
+                android:id="@+id/ivDelete"/>
         </LinearLayout>
     </LinearLayout>
 

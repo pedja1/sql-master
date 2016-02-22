@@ -114,6 +114,7 @@ public class SSyncAdapter extends AbstractThreadedSyncAdapter
                     {
                         JSONObject jDatabase = new JSONObject();
 
+                        jDatabase.put("_id", entry.id);
                         if(entry.deleted)
                         {
                             jDatabase.put("deleted", true);
@@ -121,7 +122,6 @@ public class SSyncAdapter extends AbstractThreadedSyncAdapter
                         else
                         {
                             encryptCredentials(entry, jDatabase);
-                            jDatabase.put("_id", entry.id);
                             jDatabase.put("type", entry.type);
                             jDatabase.put("database_uri", entry.databaseUri);
                             jDatabase.put("database_name", entry.databaseName);

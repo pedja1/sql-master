@@ -104,4 +104,6 @@
     <string name="test_connection">Test Connection</string>
     <string name="connection_failed">Connection failed</string>
     <string name="connection_successfull">Connection succesfull</string>
+    <string name="delete">Delete</string>
+    <string name="delete_database">Are you sure you want to delete this entry.</string>
 </resources>
