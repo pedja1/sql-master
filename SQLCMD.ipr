@@ -412,6 +412,14 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="play-services-ads-8.4.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/jars/classes.jar!/" />
+        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/res" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="play-services-auth-8.4.0">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth/8.4.0/jars/classes.jar!/" />
