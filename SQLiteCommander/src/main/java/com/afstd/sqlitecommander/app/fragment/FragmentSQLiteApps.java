@@ -91,10 +91,6 @@ public class FragmentSQLiteApps extends Fragment
         static final int PROGRESS_SHOW = 2;
         static final int PROGRESS_UPDATE = 3;
 
-        ATLoadApps()
-        {
-        }
-
         boolean canceled = false;
 
         @Override
