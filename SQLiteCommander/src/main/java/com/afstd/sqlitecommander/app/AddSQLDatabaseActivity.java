@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.af.androidutility.lib.DisplayManager;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.android.volley.misc.AsyncTask;
@@ -44,10 +45,26 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         setContentView(R.layout.activity_add_sql_connection);
 
         String id = getIntent().getStringExtra(INTENT_EXTRA_DATABASE_ID);
-        if(id != null)
+        if (id != null)
             entry = DatabaseManager.getInstance().getDatabaseEntry("SELECT * FROM _database WHERE id = ?", new String[]{id});
 
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        DisplayManager displayManager = new DisplayManager(this);
+        if (AndroidUtility.isLandscape(this))
+        {
+            //noinspection SuspiciousNameCombination
+            width = displayManager.screenHeight;
+        }
+        else
+        {
+            if (AndroidUtility.isTablet(this))
+            {
+                width = (int) (displayManager.screenWidth * 0.8f);
+            }
+        }
+
+        getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         etDatabaseUrl = (EditText) findViewById(R.id.etDatabaseUrl);
         etPort = (EditText) findViewById(R.id.etPort);
@@ -56,7 +73,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         etUsername = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
 
-        if(entry != null)
+        if (entry != null)
         {
             etDatabaseUrl.setText(entry.databaseUri);
             etPort.setText(entry.databasePort > 0 ? String.valueOf(entry.databasePort) : null);
@@ -77,7 +94,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
                 save();
                 break;
             case R.id.btnTest:
-                if(!informationIsValid())
+                if (!informationIsValid())
                     break;
                 initDatabaseEntry();
                 new ATTestConnection(this, entry).execute();
@@ -100,7 +117,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         @Override
         protected void onPreExecute()
         {
-            if(reference.get() == null)
+            if (reference.get() == null)
                 return;
             progressDialog = new ProgressDialog(reference.get());
             progressDialog.setMessage(reference.get().getString(R.string.please_wait));
@@ -111,7 +128,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         @Override
         protected Boolean doInBackground(Void... params)
         {
-            if(reference.get() == null)
+            if (reference.get() == null)
                 return null;
             return reference.get().testConnection(entry);
         }
@@ -119,9 +136,9 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Boolean aBoolean)
         {
-            if(progressDialog != null && progressDialog.isShowing())
+            if (progressDialog != null && progressDialog.isShowing())
                 progressDialog.dismiss();
-            if(reference.get() == null || aBoolean == null)
+            if (reference.get() == null || aBoolean == null)
                 return;
             AndroidUtility.showMessageAlertDialog(reference.get(), aBoolean ? R.string.connection_successfull : R.string.connection_failed, 0, null);
         }
@@ -129,7 +146,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
 
     private void save()
     {
-        if(!informationIsValid())
+        if (!informationIsValid())
             return;
 
         initDatabaseEntry();
@@ -144,19 +161,19 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
 
     private boolean informationIsValid()
     {
-        if(TextUtils.isEmpty(etDatabaseUrl.getText()))
+        if (TextUtils.isEmpty(etDatabaseUrl.getText()))
         {
             etDatabaseUrl.setError(getString(R.string.database_server_required));
             etDatabaseUrl.requestFocus();
             return false;
         }
-        if(TextUtils.isEmpty(etName.getText()))
+        if (TextUtils.isEmpty(etName.getText()))
         {
             etName.setError(getString(R.string.database_name_is_required));
             etName.requestFocus();
             return false;
         }
-        if(TextUtils.isEmpty(etUsername.getText()))
+        if (TextUtils.isEmpty(etUsername.getText()))
         {
             etUsername.setError(getString(R.string.username_required));
             etUsername.requestFocus();
@@ -173,7 +190,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
 
     private void initDatabaseEntry()
     {
-        if(entry == null)
+        if (entry == null)
         {
             entry = new DatabaseEntry();
             entry.id = UUID.randomUUID().toString();
@@ -187,9 +204,12 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
     }
 
     protected abstract int getDefaultDatabasePort();
+
     protected abstract String getDatabaseType();
+
     /**
-     * This method is called on worker thread, you must return if connection is valid*/
+     * This method is called on worker thread, you must return if connection is valid
+     */
     protected abstract boolean testConnection(DatabaseEntry entry);
 
     public static void start(@NonNull Activity activity, Class<? extends AddSQLDatabaseActivity> _class, @Nullable String databaseId, int requestCode)

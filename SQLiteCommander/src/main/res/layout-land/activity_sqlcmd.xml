@@ -41,7 +41,8 @@
                     android:hint="SQL"
                     android:id="@+id/etSqlCmd"
                     tools:ignore="HardcodedText"
-                    android:imeOptions="flagNoExtractUi"/>
+                    android:imeOptions="flagNoExtractUi"
+                    android:enabled="false"/>
 
                 <Button
                     android:layout_width="wrap_content"
@@ -50,7 +51,8 @@
                     tools:ignore="HardcodedText"
                     android:id="@+id/btnExecute"
                     android:layout_gravity="right"
-                    app:theme="@style/ButtonStyleGreen"/>
+                    app:theme="@style/ButtonStyleGreen"
+                    android:enabled="false"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -67,6 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/sqlView"
+                    android:layout_marginLeft="5dp"
                     app:sqlview_columnsBackground="@color/colorPrimary"/>
 
                 <ImageView

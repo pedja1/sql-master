@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">@string/app_name_free</string>
-    <string name="app_name_free">SQL Commander Free</string>
-    <string name="app_name_pro">SQL Commander</string>
+    <string name="app_name_free">SQL Master Free</string>
+    <string name="app_name_pro">SQL Master</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -32,7 +32,7 @@
     <string name="cant_read_database_file">Unable to read database file.</string>
     <string name="cant_write_database_file">Warning. Database file is now writable, you wont be able to modify database.</string>
     <string name="failed_to_verify_database">Failed to verify database file. Either file is not SQLite 3 database or some other error occured.</string>
-    <string name="login_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Commander servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.\nOnly database information is backed-up, not whole database content</string>
+    <string name="login_info"><b>Warning</b>\nTo backup your data to the cloud you must signing with google.\nGoogle is used only as signin method, all data is stored on SQL Master servers.\nWe CAN NOT guaranty your data safety, all information is saved in plain format.\nWe may introduce data encryption in future versions.\nOnly database information is backed-up, not whole database content</string>
     <string name="enable_sync">Cloud Sync Enabled</string>
     <string name="sync_history">Sync History</string>
     <string name="sync_favorites">Sync Favorites</string>
@@ -90,7 +90,7 @@
     <string name="action_search">Search</string>
     <string name="sync_notification_title">Cloud Sync</string>
     <string name="sync_notification_text">Cloud sync in progress...</string>
-    <string name="set_password_info"><b>Enter your password.</b>\nIf this is first time that you are using SQL Commander then enter new password.\nIf you already used SQL Commander before then you must enter your old password or existing backup wont work.</string>
+    <string name="set_password_info"><b>Enter your password.</b>\nIf this is first time that you are using SQL Master then enter new password.\nIf you already used SQL Master before then you must enter your old password or existing backup wont work.</string>
     <string name="set_password_warning"><b>WARNING</b>\nYour device is root-ed\nEncryption key generated from your password is stored in applications private folder.\nEncryption key is used to encrypt sensitive information (like database credentials)\nNormally this encryption key is accessible only from this application.\nHowever, on root-ed device, any application can potentially get your encryption key.\nMake sure that you trust all your apps that are given root access.</string>
     <string name="password">Password</string>
     <string name="set_password">Set Password</string>

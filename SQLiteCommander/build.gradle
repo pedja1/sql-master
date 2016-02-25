@@ -50,10 +50,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile = file(System.getenv('SQLCMD_KEYSTORE_PATH'))
+            /*storeFile = file(System.getenv('SQLCMD_KEYSTORE_PATH'))
             storePassword = System.getenv('SQLCMD_KEYSTORE_PASSWORD')
             keyAlias = System.getenv('SQLCMD_KEYSTORE_ALIAS')
-            keyPassword = System.getenv('SQLCMD_KEYSTORE_PASSWORD')
+            keyPassword = System.getenv('SQLCMD_KEYSTORE_PASSWORD')*/
         }
     }
 
@@ -96,7 +96,7 @@ dependencies {
     compile 'com.pedja1:font-widgets:1.0.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.201510071325'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.af:android-utility:1.0.0.6'
+    compile 'com.af:android-utility:1.0.0.7'
     compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'
     compile 'net.grandcentrix.tray:tray:1.0.0-rc3'
     compile project(':lib')

@@ -34,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:hint="SQL"
                 android:id="@+id/etSqlCmd"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText"
+                android:enabled="false"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -43,7 +44,8 @@
                 tools:ignore="HardcodedText"
                 android:id="@+id/btnExecute"
                 android:layout_gravity="right"
-                app:theme="@style/ButtonStyleGreen"/>
+                app:theme="@style/ButtonStyleGreen"
+                android:enabled="false"/>
         </LinearLayout>
 
         <TextView

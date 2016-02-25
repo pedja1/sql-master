@@ -4,18 +4,12 @@ package com.afstd.sqlitecommander.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
-import com.afstd.sqlcmd.SQLGridView;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.mysql.MySQLCMD;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
@@ -30,8 +24,6 @@ import java.util.List;
 public class MySQLCMDActivity extends SQLCMDActivity
 {
     public static final String INTENT_EXTRA_ID = "id";
-    private TextView tvError;
-    private ProgressBar pbLoading;
     private MySQLCMD sqlcmd;
 
     @Override
@@ -56,17 +48,9 @@ public class MySQLCMDActivity extends SQLCMDActivity
         }
         invalidateOptionsMenu();
 
-        setContentView(R.layout.activity_sqlcmd);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         setTitle(entry.databaseName);
         getSupportActionBar().setSubtitle(entry.databaseUri);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        tvError = (TextView) findViewById(R.id.tvError);
-        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
 
         sqlcmd = new MySQLCMD(entry, new MySQLCMD.OnMySQLConnectListener()
         {
@@ -105,9 +89,6 @@ public class MySQLCMDActivity extends SQLCMDActivity
     {
         pbLoading.setVisibility(View.GONE);
 
-        final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
-        final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
-
         SQLTextHighlighter highlighter = new SQLTextHighlighter(etSqlCmd, SettingsManager.getSyntaxHighlightTheme());
         highlighter.highlightTextChanges();
 
@@ -118,7 +99,9 @@ public class MySQLCMDActivity extends SQLCMDActivity
 
         etSqlCmd.setAdapter(mAdapter);
 
-        Button btnExecute = (Button) findViewById(R.id.btnExecute);
+        etSqlCmd.setEnabled(true);
+        btnExecute.setEnabled(true);
+
         //noinspection Duplicates
         btnExecute.setOnClickListener(new View.OnClickListener()
         {

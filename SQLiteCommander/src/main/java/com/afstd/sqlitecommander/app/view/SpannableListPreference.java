@@ -56,6 +56,11 @@ public class SpannableListPreference extends DialogPreference
     {
         super(context, attrs, defStyleAttr, defStyleRes);
 
+        init(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
+    {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SpannableListPreference, defStyleAttr, defStyleRes);
         mEntries = a.getTextArray(R.styleable.SpannableListPreference_android_entries);
         mEntryValues = a.getTextArray(R.styleable.SpannableListPreference_android_entryValues);
@@ -71,7 +76,8 @@ public class SpannableListPreference extends DialogPreference
 
     public SpannableListPreference(Context context, AttributeSet attrs, int defStyleAttr)
     {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr, 0);
     }
 
     public SpannableListPreference(Context context, AttributeSet attrs)

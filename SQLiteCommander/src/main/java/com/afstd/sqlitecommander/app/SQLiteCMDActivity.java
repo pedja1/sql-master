@@ -5,17 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
 import com.afstd.sqlcmd.SQLCMD;
-import com.afstd.sqlcmd.SQLGridView;
 import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.QueryHistory;
@@ -39,17 +33,11 @@ public class SQLiteCMDActivity extends SQLCMDActivity
     public static final String INTENT_EXTRA_PATH = "path";
     public static final String INTENT_EXTRA_VERIFY_DATABASE = "verify";
     private File databaseFile;
-    private TextView tvError;
-    private ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sqlcmd);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         String path = getIntent().getStringExtra(INTENT_EXTRA_PATH);
         databaseFile = new File(path);
@@ -57,9 +45,6 @@ public class SQLiteCMDActivity extends SQLCMDActivity
         setTitle(databaseFile.getName());
         getSupportActionBar().setSubtitle(databaseFile.getAbsolutePath());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        tvError = (TextView) findViewById(R.id.tvError);
-        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
 
         boolean shoudVerifyFile = getIntent().getBooleanExtra(INTENT_EXTRA_VERIFY_DATABASE, true);
 
@@ -129,8 +114,8 @@ public class SQLiteCMDActivity extends SQLCMDActivity
         DatabaseManager.getInstance().insertDatabaseEntry(entry);
         invalidateOptionsMenu();
 
-        final SQLGridView sqlGridView = (SQLGridView) findViewById(R.id.sqlView);
-        final AutoCompleteTextView etSqlCmd = (AutoCompleteTextView) findViewById(R.id.etSqlCmd);
+        etSqlCmd.setEnabled(true);
+        btnExecute.setEnabled(true);
 
         SQLTextHighlighter highlighter = new SQLTextHighlighter(etSqlCmd, SettingsManager.getSyntaxHighlightTheme());
         highlighter.highlightTextChanges();
@@ -142,7 +127,6 @@ public class SQLiteCMDActivity extends SQLCMDActivity
 
         etSqlCmd.setAdapter(mAdapter);
 
-        Button btnExecute = (Button) findViewById(R.id.btnExecute);
         btnExecute.setOnClickListener(new View.OnClickListener()
         {
             @Override

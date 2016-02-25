@@ -4,21 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sql_username_password_warning"/>
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +31,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/etDatabaseUrl"
                     android:inputType="textUri"
-                    android:hint="@string/database_url_hint"/>
+                    android:hint="@string/database_url_hint"
+                    android:imeOptions="flagNoExtractUi"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -48,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/etPort"
                     android:inputType="numberSigned"
+                    android:imeOptions="flagNoExtractUi"
                     android:hint="@string/database_port_hint"/>
 
             </android.support.design.widget.TextInputLayout>
@@ -60,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/etName"
-                    android:hint="@string/database_name_hint"/>
+                    android:hint="@string/database_name_hint"
+                    android:imeOptions="flagNoExtractUi"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -72,7 +71,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/etUsername"
-                    android:hint="@string/database_username_hint"/>
+                    android:hint="@string/database_username_hint"
+                    android:imeOptions="flagNoExtractUi"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -85,7 +85,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/etPassword"
                     android:hint="@string/database_password_hint"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:imeOptions="flagNoExtractUi"/>
 
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>

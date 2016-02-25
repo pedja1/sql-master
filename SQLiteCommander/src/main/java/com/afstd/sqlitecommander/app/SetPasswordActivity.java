@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.af.androidutility.lib.DisplayManager;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.sqlitecommander.app.utility.AesCbcWithIntegrity;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
@@ -30,7 +31,21 @@ public class SetPasswordActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_password);
 
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        DisplayManager displayManager = new DisplayManager(this);
+        if (AndroidUtility.isLandscape(this))
+        {
+            //noinspection SuspiciousNameCombination
+            width = displayManager.screenHeight;
+        }
+        else
+        {
+            if (AndroidUtility.isTablet(this))
+            {
+                width = (int) (displayManager.screenWidth * 0.8f);
+            }
+        }
+        getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         View tvRootWarning = findViewById(R.id.tvRootWarning);
         tvRootWarning.setVisibility(ShellInstance.getInstance().isSu() ? View.VISIBLE : View.GONE);
