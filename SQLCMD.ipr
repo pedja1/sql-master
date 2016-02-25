@@ -36,7 +36,10 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/SQLiteCommander" />
+            <option value="$PROJECT_DIR$/ads-mock" />
             <option value="$PROJECT_DIR$/lib" />
+            <option value="$PROJECT_DIR$/play-licencing" />
+            <option value="$PROJECT_DIR$/play-licencing-mock" />
             <option value="$PROJECT_DIR$/volleyplus/library" />
           </set>
         </option>
@@ -202,7 +205,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SQLCMD.iml" filepath="$PROJECT_DIR$/.idea/modules/SQLCMD.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SQLiteCommander/SQLiteCommander.iml" filepath="$PROJECT_DIR$/.idea/modules/SQLiteCommander/SQLiteCommander.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ads-mock/ads-mock.iml" filepath="$PROJECT_DIR$/.idea/modules/ads-mock/ads-mock.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/play-licencing/play-licencing.iml" filepath="$PROJECT_DIR$/.idea/modules/play-licencing/play-licencing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/play-licencing-mock/play-licencing-mock.iml" filepath="$PROJECT_DIR$/.idea/modules/play-licencing-mock/play-licencing-mock.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" filepath="$PROJECT_DIR$/.idea/modules/volleyplus/library/volleyplus.iml" />
     </modules>
   </component>
@@ -408,14 +414,6 @@
     <library name="org.apache.http.legacy-android-23">
       <CLASSES>
         <root url="jar://$USER_HOME$/sdk/platforms/android-23/optional/org.apache.http.legacy.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="play-services-ads-8.4.0">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/jars/classes.jar!/" />
-        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -44,6 +44,46 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770914414372:android:9324e0d90a18b3f1",
+        "client_id": "android:com.afstd.sqlcommander.app.pro",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.afstd.sqlcommander.app.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770914414372-sje3nm9t4p2ttt7akjh3to7oqjdaajlh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afstd.sqlcommander.app.pro",
+            "certificate_hash": "3AB000657F50619294E12153C306E19AF6558DB5"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "client_info": [],

@@ -49,7 +49,7 @@ public class FragmentHistoryFavorites extends Fragment
     private TextView tvError;
     private ProgressBar pbLoading;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private List<DatabaseEntry> databases;
+    private List<DatabaseListAdapter.DatabaseListItem> databases;
 
     private ATLoadDatabases mLoader;
     private DatabaseListAdapter mAdapter;
@@ -156,6 +156,14 @@ public class FragmentHistoryFavorites extends Fragment
             reference.get().tvError.setVisibility(databaseEntries.isEmpty() ? View.VISIBLE : View.GONE);
             reference.get().databases.clear();
             reference.get().databases.addAll(databaseEntries);
+
+            if (!reference.get().databases.isEmpty())
+            {
+                DatabaseListAdapter.ListItemAd ad = new DatabaseListAdapter.ListItemAd();
+
+                reference.get().databases.add(Math.min(2, reference.get().databases.size()), ad);
+            }
+
             reference.get().mAdapter.notifyDataSetChanged();
         }
     }

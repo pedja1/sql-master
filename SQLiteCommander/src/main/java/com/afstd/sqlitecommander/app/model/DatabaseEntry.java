@@ -4,12 +4,13 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 
 import com.afstd.sqlitecommander.app.R;
+import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 
 /**
  * Created by pedja on 13.2.16..
  */
-public class DatabaseEntry
+public class DatabaseEntry implements DatabaseListAdapter.DatabaseListItem
 {
     public static final String TYPE_SQLITE = "sqlite";
     public static final String TYPE_MYSQL = "mysql";
@@ -75,6 +76,12 @@ public class DatabaseEntry
             default:
                 return R.drawable.ic_menu_sql;
         }
+    }
+
+    @Override
+    public boolean isAd()
+    {
+        return false;
     }
 
     /*{

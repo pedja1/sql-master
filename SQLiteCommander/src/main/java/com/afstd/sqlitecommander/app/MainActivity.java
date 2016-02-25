@@ -3,6 +3,7 @@ package com.afstd.sqlitecommander.app;
 import android.accounts.Account;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -12,14 +13,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.af.androidutility.lib.AndroidUtility;
+import com.af.androidutility.lib.DeviceIDUtility;
 import com.afstd.sqlitecommander.app.acm.AMUtility;
 import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
@@ -35,6 +39,11 @@ import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.android.volley.misc.AsyncTask;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
 
@@ -45,13 +54,23 @@ import java.util.List;
 import eu.chainfire.libsuperuser.Shell;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchBox.SearchListener
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        SearchBox.SearchListener, LicenseCheckerCallback
 {
+    private static final String STATE_NAVIGATION_SELECTED = "selected_navigation";
+    private static final byte[] SALT = new byte[]{
+            -16, 65, 30, -45, -13, -1, 74, -64, 51, 88, -5, -45, 77, -117, -36, -13, -115, 32, -64,
+            89
+    };
     private static final int REQUEST_CODE_SET_PASSWORD = 1004;
     private NavigationView navigationView;
 
     private SearchBox mSearchBox;
     private boolean passwordSet;
+
+    private LicenseChecker mChecker;
+
+    private int checkedNavigationItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -90,8 +109,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tvVersion.setText(getString(R.string.version, AndroidUtility.getVersionName(MainActivity.this.getApplicationContext())));
             }
         });
-        navigationView.setCheckedItem(R.id.nav_overview);
-        onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_overview));
+        if(savedInstanceState == null)
+        {
+            checkedNavigationItem = R.id.nav_overview;
+        }
+        else
+        {
+            checkedNavigationItem = savedInstanceState.getInt(STATE_NAVIGATION_SELECTED);
+        }
+        navigationView.setCheckedItem(checkedNavigationItem);
+        onNavigationItemSelected(navigationView.getMenu().findItem(checkedNavigationItem));
 
         Account account = AMUtility.getAccount(SettingsManager.getActiveAccount());
         if (account != null)
@@ -101,6 +128,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         new ATCheckRoot(this).execute();
+
+        mChecker = new LicenseChecker(
+                this, new ServerManagedPolicy(this,
+                new AESObfuscator(SALT, getPackageName(), DeviceIDUtility.getPsuedoUniqueID())),
+                BuildConfig.BASE64_PUBLIC_KEY
+        );
+        mChecker.checkAccess(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        outState.putInt(STATE_NAVIGATION_SELECTED, checkedNavigationItem);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (mChecker != null)
+            mChecker.onDestroy();
     }
 
     @Override
@@ -226,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        checkedNavigationItem = id;
         return true;
     }
 
@@ -293,6 +343,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    public void allow(int reason)
+    {
+        //do nothing, user wont see a thing, seamless user experience
+        Log.d("MainActivity:allow", "Licence valid");
+    }
+
+    @Override
+    public void dontAllow(int reason)
+    {
+        if (isFinishing())
+        {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (reason == Policy.RETRY)
+        {
+            builder.setMessage(R.string.licence_retry_message);
+            builder.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    mChecker.checkAccess(MainActivity.this);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    finish();
+                }
+            });
+        }
+        else
+        {
+            builder.setMessage(R.string.licence_failed_message);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    finish();
+                }
+            });
+        }
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    @Override
+    public void applicationError(int errorCode)
+    {
+        dontAllow(Policy.NOT_LICENSED);
+    }
+
     private static class ATCheckRoot extends AsyncTask<Void, Void, Boolean>
     {
         ProgressDialog progressDialog;
@@ -333,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResumeFragments()
     {
-        if(passwordSet)
+        if (passwordSet)
         {
             onNavigationItemSelected(R.id.nav_cloud);
             passwordSet = false;

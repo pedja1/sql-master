@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="account_type">com.afstd.sqlcommander</string>
-    <string name="content_authority">com.afstd.sqlcommander.provider</string>
-    <string name="theme_default">Default</string>
-    <string name="theme_django">Django</string>
+    <string name="admob_id">ca-app-pub-6294976772687752/4137239624</string>
 
     <string-array name="syntaxThemeEntries">
         <item>@string/theme_default</item>
