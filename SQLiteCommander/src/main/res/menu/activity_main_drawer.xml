@@ -18,6 +18,10 @@
             android:id="@+id/nav_postgresql"
             android:icon="@drawable/ic_menu_postgressql"
             android:title="@string/postgresql"/>
+        <item
+            android:id="@+id/nav_mssql"
+            android:icon="@drawable/ic_action_mssql"
+            android:title="@string/mssql"/>
 
         <item
             android:id="@+id/nav_history"

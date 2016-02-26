@@ -113,4 +113,5 @@
     <string name="licence_retry_message">Failed to verify licence.\nPlease check your internet connection. Do you want to retry?</string>
     <string name="licence_failed_message">Failed to verify licence.\nThis means that we were unable to verify that you purchased this app.\nPlease purchase the application to continue.</string>
     <string name="retry">Retry</string>
+    <string name="mssql">MSSQL</string>
 </resources>

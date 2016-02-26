@@ -1,4 +1,4 @@
-package com.afstd.sqlitecommander.app.postgresql;
+package com.afstd.sqlitecommander.app.mssql;
 
 import com.afstd.sqlitecommander.app.JDBCSQLCMD;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
@@ -11,14 +11,15 @@ import java.util.List;
 /**
  * Created by pedja on 27.1.16..
  */
-public class PostgreSQLCMD extends JDBCSQLCMD
+public class MSSQLCMD extends JDBCSQLCMD
 {
     private static List<String> CONNECTION_ERROR_CODES = new ArrayList<>(Arrays.asList(new String[]{
-            "08000", "08003", "08006", "08001", "08004", "08007", "08P01"}));
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final int DEFAULT_PORT = 5432;
+            "08001", "08002", "08003", "08004", "08007", "08S07"}));
 
-    public PostgreSQLCMD(DatabaseEntry entry, OnJDBCSQLConnectListener listener)
+    public static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    public static final int DEFAULT_PORT = 1433;
+
+    public MSSQLCMD(DatabaseEntry entry, OnJDBCSQLConnectListener listener)
     {
         super(entry, listener);
     }
@@ -32,7 +33,7 @@ public class PostgreSQLCMD extends JDBCSQLCMD
     @Override
     protected String getDriverName()
     {
-        return "postgresql";
+        return "sqlserver";
     }
 
     @Override
@@ -50,7 +51,7 @@ public class PostgreSQLCMD extends JDBCSQLCMD
     @Override
     protected String getConnectionUrl(String driver, String host, int port, String databaseName)
     {
-        return String.format("jdbc:%s://%s:%d/%s", driver,
+        return String.format("jdbc:%s://%s:%d;databaseName=%s", driver,
                 host, port, databaseName);
     }
 }

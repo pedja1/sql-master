@@ -27,14 +27,15 @@ import com.af.androidutility.lib.DeviceIDUtility;
 import com.afstd.sqlitecommander.app.acm.AMUtility;
 import com.afstd.sqlitecommander.app.acm.SSyncAdapter;
 import com.afstd.sqlitecommander.app.fragment.FragmentCloud;
-import com.afstd.sqlitecommander.app.fragment.FragmentHistoryFavorites;
+import com.afstd.sqlitecommander.app.fragment.FragmentFavorites;
+import com.afstd.sqlitecommander.app.fragment.FragmentHistory;
+import com.afstd.sqlitecommander.app.fragment.FragmentMSSQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentMySQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentOverview;
 import com.afstd.sqlitecommander.app.fragment.FragmentPostgreSQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.DatabaseSearchResult;
-import com.afstd.sqlitecommander.app.postgresql.PostgreSQLCMD;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
@@ -239,6 +240,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.content, FragmentMySQL.newInstance());
             transaction.commit();
         }
+        else if (id == R.id.nav_mssql)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, FragmentMSSQL.newInstance());
+            transaction.commit();
+        }
         else if (id == R.id.nav_postgresql)
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -248,13 +255,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_history)
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, FragmentHistoryFavorites.newInstance(FragmentHistoryFavorites.TYPE_HISTORY));
+            transaction.replace(R.id.content, FragmentHistory.newInstance());
             transaction.commit();
         }
         else if (id == R.id.nav_favorites)
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, FragmentHistoryFavorites.newInstance(FragmentHistoryFavorites.TYPE_FAVORITES));
+            transaction.replace(R.id.content, FragmentFavorites.newInstance());
             transaction.commit();
         }
         else if (id == R.id.nav_settings)

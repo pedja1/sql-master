@@ -85,7 +85,7 @@ public abstract class JDBCSQLCMD extends SQLCMD
             {
                 Class.forName(getDriverClassName());
                 int port = databaseEntry.databasePort <= 0 ? getDefaultPort() : databaseEntry.databasePort;
-                conn = DriverManager.getConnection(String.format("jdbc:%s://%s:%d/%s", getDriverName(),
+                conn = DriverManager.getConnection(getConnectionUrl(getDriverName(),
                         databaseEntry.databaseUri, port, databaseEntry.databaseName),
                         databaseEntry.databaseUsername, databaseEntry.databasePassword);
             }
@@ -256,4 +256,5 @@ public abstract class JDBCSQLCMD extends SQLCMD
     protected abstract String getDriverName();
     protected abstract int getDefaultPort();
     protected abstract boolean isConnectionError(SQLException e);
+    protected abstract String getConnectionUrl(String driver, String host, int port, String databaseName);
 }

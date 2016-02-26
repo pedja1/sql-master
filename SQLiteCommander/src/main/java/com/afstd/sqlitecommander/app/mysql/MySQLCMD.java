@@ -41,4 +41,11 @@ public class MySQLCMD extends JDBCSQLCMD
     {
         return e.getErrorCode() >= 2000;
     }
+
+    @Override
+    protected String getConnectionUrl(String driver, String host, int port, String databaseName)
+    {
+        return String.format("jdbc:%s://%s:%d/%s", driver,
+                host, port, databaseName);
+    }
 }

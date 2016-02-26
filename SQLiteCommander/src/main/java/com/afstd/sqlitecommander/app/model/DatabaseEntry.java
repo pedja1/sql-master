@@ -14,6 +14,7 @@ public class DatabaseEntry implements DatabaseListAdapter.DatabaseListItem
 {
     public static final String TYPE_SQLITE = "sqlite";
     public static final String TYPE_MYSQL = "mysql";
+    public static final String TYPE_MSSQL = "mssql";
     public static final String TYPE_POSTGRESQL = "postgresql";
 
     /**
