@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.0.0-beta6'
         classpath 'io.fabric.tools:gradle:1.21.2'
     }
 }
@@ -94,7 +94,7 @@ dependencies {
         transitive = true;
     }
     compile 'com.pedja1:font-widgets:1.0.1'
-    compile 'eu.chainfire:libsuperuser:1.0.0.201510071325'
+    compile 'eu.chainfire:libsuperuser:1.0.0.201602242357'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.af:android-utility:1.0.0.7'
     compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'

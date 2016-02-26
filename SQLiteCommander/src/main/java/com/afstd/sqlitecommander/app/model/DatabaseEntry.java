@@ -15,7 +15,6 @@ public class DatabaseEntry implements DatabaseListAdapter.DatabaseListItem
     public static final String TYPE_SQLITE = "sqlite";
     public static final String TYPE_MYSQL = "mysql";
     public static final String TYPE_POSTGRESQL = "postgresql";
-    public static final int MYSQL_DEFAULT_PORT = 3306;
 
     /**
      * UUID of this database, used for sync*/

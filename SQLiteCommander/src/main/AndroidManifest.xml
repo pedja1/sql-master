@@ -58,11 +58,20 @@
             android:screenOrientation="user"
             android:configChanges="orientation|screenSize"/>
         <activity
+            android:name=".PostgreSQLCMDActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="user"
+            android:configChanges="orientation|screenSize"/>
+        <activity
             android:name=".SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/settings"/>
         <activity
             android:name=".AddMySQLDatabase"
+            android:label="@string/add_mysql_database"
+            android:theme="@style/AppTheme.NoActionBar.Dialog"/>
+        <activity
+            android:name=".AddPostgreSQLDatabase"
             android:label="@string/add_mysql_database"
             android:theme="@style/AppTheme.NoActionBar.Dialog"/>
         <activity

@@ -141,7 +141,6 @@ public class SettingsManager
             return null;
         if(key.getKeyClass() == boolean.class)
         {
-            //TODO i dont like this casting
             return (T)(Boolean)appPreferences.getBoolean(key.toString(), (boolean) key.getDefault());
         }
         else if(key.getKeyClass() == String.class)

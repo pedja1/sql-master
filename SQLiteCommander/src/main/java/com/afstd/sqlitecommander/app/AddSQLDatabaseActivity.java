@@ -198,6 +198,8 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         entry.databaseName = etName.getText().toString();
         entry.databaseUri = etDatabaseUrl.getText().toString();
         entry.databasePort = AndroidUtility.parseInt(etPort.getText().toString(), getDefaultDatabasePort());
+        if(entry.databasePort <= 0)
+            entry.databasePort = getDefaultDatabasePort();
         entry.type = getDatabaseType();
         entry.databaseUsername = etUsername.getText().toString();
         entry.databasePassword = etPassword.getText().toString();

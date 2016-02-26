@@ -34,6 +34,7 @@ import com.afstd.sqlitecommander.app.fragment.FragmentPostgreSQL;
 import com.afstd.sqlitecommander.app.fragment.FragmentSQLite;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.DatabaseSearchResult;
+import com.afstd.sqlitecommander.app.postgresql.PostgreSQLCMD;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
@@ -341,6 +342,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             MySQLCMDActivity.start(this, entry.id);
         }
+        else if (DatabaseEntry.TYPE_POSTGRESQL.equals(entry.type))
+        {
+            PostgreSQLCMDActivity.start(this, entry.id);
+        }
+        //TODO other types
     }
 
     @Override

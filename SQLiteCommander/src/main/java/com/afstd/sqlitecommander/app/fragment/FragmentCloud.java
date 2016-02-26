@@ -164,7 +164,6 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
 
     private void setLastSyncData()
     {
-        //TODO sync service sets this pref. Since sync service is running in separate process, changes wont reflect here
         long lastSyncTime = SettingsManager.getLastSyncTime();
         tvLastSyncTime.setText(Html.fromHtml(getString(R.string.last_sync, lastSyncTime <= 0 ? getString(R.string.never) : LAST_SYNC_FORMAT.format(lastSyncTime))));
     }

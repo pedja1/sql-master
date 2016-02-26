@@ -1,28 +1,29 @@
 package com.afstd.sqlitecommander.app;
 
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
-import com.afstd.sqlitecommander.app.mysql.MySQLCMD;
+import com.afstd.sqlitecommander.app.postgresql.PostgreSQLCMD;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 /**
  * Created by pedja on 18.2.16..
  */
-public class AddMySQLDatabase extends AddSQLDatabaseActivity
+public class AddPostgreSQLDatabase extends AddSQLDatabaseActivity
 {
     @Override
     protected int getDefaultDatabasePort()
     {
-        return MySQLCMD.DEFAULT_PORT;
+        return PostgreSQLCMD.DEFAULT_PORT;
     }
 
     @Override
     protected String getDatabaseType()
     {
-        return DatabaseEntry.TYPE_MYSQL;
+        return DatabaseEntry.TYPE_POSTGRESQL;
     }
 
     @Override
@@ -30,9 +31,9 @@ public class AddMySQLDatabase extends AddSQLDatabaseActivity
     {
         try
         {
-            Class.forName(MySQLCMD.JDBC_DRIVER);
-            int port = databaseEntry.databasePort <= 0 ? MySQLCMD.DEFAULT_PORT : databaseEntry.databasePort;
-            Connection conn = DriverManager.getConnection(String.format("jdbc:mysql://%s:%d/%s",
+            Class.forName(PostgreSQLCMD.JDBC_DRIVER);
+            int port = databaseEntry.databasePort <= 0 ? PostgreSQLCMD.DEFAULT_PORT : databaseEntry.databasePort;
+            Connection conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%d/%s",
                     databaseEntry.databaseUri, port, databaseEntry.databaseName),
                     databaseEntry.databaseUsername, databaseEntry.databasePassword);
             conn.close();

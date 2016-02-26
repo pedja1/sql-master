@@ -5,19 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
 
 import com.af.androidutility.lib.AndroidUtility;
-import com.afstd.sqlcmd.SQLCMD;
 import com.afstd.sqlcmd.SQLiteCMDDefault;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
-import com.afstd.sqlitecommander.app.model.QueryHistory;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.sqlite.SQLiteCMDRoot;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
-import com.afstd.sqlitecommander.app.utility.SQLTextHighlighter;
-import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.io.File;
 import java.util.List;
@@ -42,10 +36,6 @@ public class SQLiteCMDActivity extends SQLCMDActivity
         String path = getIntent().getStringExtra(INTENT_EXTRA_PATH);
         databaseFile = new File(path);
 
-        setTitle(databaseFile.getName());
-        getSupportActionBar().setSubtitle(databaseFile.getAbsolutePath());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         boolean shoudVerifyFile = getIntent().getBooleanExtra(INTENT_EXTRA_VERIFY_DATABASE, true);
 
         if (!shoudVerifyFile)
@@ -61,7 +51,7 @@ public class SQLiteCMDActivity extends SQLCMDActivity
                 @Override
                 public void onCommandResult(int commandCode, int exitCode, List<String> output)
                 {
-                    if (output != null && output.size() > 1 && AndroidUtility.parseInt(output.get(0).trim(), 0) == 1)
+                    if (output != null && output.size() >= 1 && AndroidUtility.parseInt(output.get(0).trim(), 0) == 1)
                     {
                         setup();
                     }
@@ -73,14 +63,30 @@ public class SQLiteCMDActivity extends SQLCMDActivity
                 }
             });
         }
-
     }
 
-    private void setup()
+    @Override
+    protected void setup()
     {
-        pbLoading.setVisibility(View.GONE);
+        createSQLCMD();
+        super.setup();
+    }
 
-        final SQLCMD sqlcmd;
+    @Override
+    protected CharSequence title()
+    {
+        return databaseFile.getName();
+    }
+
+    @Override
+    protected CharSequence subtitle()
+    {
+        return databaseFile.getAbsolutePath();
+    }
+
+    @Override
+    protected void createSQLCMD()
+    {
         if (ShellInstance.getInstance().isSu())
         {
             sqlcmd = new SQLiteCMDRoot(databaseFile.getAbsolutePath());
@@ -112,47 +118,6 @@ public class SQLiteCMDActivity extends SQLCMDActivity
         entry.accessed = System.currentTimeMillis();
         entry.type = DatabaseEntry.TYPE_SQLITE;
         DatabaseManager.getInstance().insertDatabaseEntry(entry);
-        invalidateOptionsMenu();
-
-        etSqlCmd.setEnabled(true);
-        btnExecute.setEnabled(true);
-
-        SQLTextHighlighter highlighter = new SQLTextHighlighter(etSqlCmd, SettingsManager.getSyntaxHighlightTheme());
-        highlighter.highlightTextChanges();
-
-        String query = "SELECT * FROM query_history";
-        final List<QueryHistory> list = DatabaseManager.getInstance().getQueryHistory(query, null);
-
-        ArrayAdapter<QueryHistory> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
-
-        etSqlCmd.setAdapter(mAdapter);
-
-        btnExecute.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                DatabaseManager.getInstance().insertQueryHistory(etSqlCmd.getText().toString());
-                list.add(new QueryHistory(etSqlCmd.getText().toString()));
-                pbLoading.setVisibility(View.VISIBLE);
-                tvError.setVisibility(View.GONE);
-
-                sqlcmd.executeSql(etSqlCmd.getText().toString(), new SQLCMD.OnResultListener()
-                {
-                    @Override
-                    public void onResult(boolean success, List<List<SQLCMD.KeyValuePair>> data, String error)
-                    {
-                        sqlGridView.setData(data);
-                        if (error != null)
-                        {
-                            tvError.setText(error);
-                            tvError.setVisibility(View.VISIBLE);
-                        }
-                        pbLoading.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
     }
 
     public static void start(Activity activity, String path, boolean verifyDatabase)

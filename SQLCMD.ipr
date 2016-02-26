@@ -376,14 +376,14 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/83d41901478fa8795254244acbafd03f14224dab/library-2.4.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="libsuperuser-1.0.0.201510071325">
+    <library name="libsuperuser-1.0.0.201602242357">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/eu.chainfire/libsuperuser/1.0.0.201510071325/jars/classes.jar!/" />
-        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/eu.chainfire/libsuperuser/1.0.0.201510071325/res" />
+        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/eu.chainfire/libsuperuser/1.0.0.201602242357/jars/classes.jar!/" />
+        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/eu.chainfire/libsuperuser/1.0.0.201602242357/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/eu.chainfire/libsuperuser/1.0.0.201510071325/88e06eec33a6c51461c9b54bfbbfad8d0b13045e/libsuperuser-1.0.0.201510071325-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/eu.chainfire/libsuperuser/1.0.0.201602242357/b31d1f8837572c659c79d6744a447072dbd6c653/libsuperuser-1.0.0.201602242357-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="mockito-core-1.10.19">
@@ -414,6 +414,14 @@
     <library name="org.apache.http.legacy-android-23">
       <CLASSES>
         <root url="jar://$USER_HOME$/sdk/platforms/android-23/optional/org.apache.http.legacy.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="play-services-ads-8.4.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/jars/classes.jar!/" />
+        <root url="file://$PROJECT_DIR$/SQLiteCommander/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

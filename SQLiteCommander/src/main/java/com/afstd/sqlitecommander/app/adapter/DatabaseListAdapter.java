@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.af.androidutility.lib.RVArrayAdapter;
 import com.afstd.sqlitecommander.app.AddMySQLDatabase;
+import com.afstd.sqlitecommander.app.AddPostgreSQLDatabase;
 import com.afstd.sqlitecommander.app.AddSQLDatabaseActivity;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
@@ -96,7 +97,7 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseListAdapter.Data
                 holder.ivEdit.setVisibility(View.VISIBLE);
                 holder.ivIcon.setImageResource(databaseEntry.getIconResource());
                 holder.text1.setText(DatabaseEntry.TYPE_MYSQL.equals(databaseEntry.type) ? databaseEntry.databaseName : new File(databaseEntry.databaseUri).getName());
-                holder.text2.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort <= 0 ? DatabaseEntry.MYSQL_DEFAULT_PORT : databaseEntry.databasePort));
+                holder.text2.setText(String.format("%s:%s", databaseEntry.databaseUri, databaseEntry.databasePort));
 
                 holder.ivCredWarning.setVisibility(hasCredentials(databaseEntry) ? View.GONE : View.VISIBLE);
             }
@@ -201,6 +202,8 @@ public class DatabaseListAdapter extends RVArrayAdapter<DatabaseListAdapter.Data
         {
             case DatabaseEntry.TYPE_MYSQL:
                 return AddMySQLDatabase.class;
+            case DatabaseEntry.TYPE_POSTGRESQL:
+                return AddPostgreSQLDatabase.class;
         }
         //TODO other types
         return null;//die, horribly
