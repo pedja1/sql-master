@@ -1,0 +1,4 @@
+/build
+*.iws
+src/main/obj/
+src/main/libs/*/*.so

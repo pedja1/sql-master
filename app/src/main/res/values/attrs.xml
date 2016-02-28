@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpannableListPreference">
+        <!-- Style of the circle indicator. -->
+        <attr name="android:entries"/>
+        <attr name="android:entryValues"/>
+        <attr name="android:summary"/>
+    </declare-styleable>
+</resources>

@@ -1,2 +1,1 @@
-include ':lib', ':SQLiteCommander', ':volleyplus', ':ads-mock', ':play-licencing', ':play-licencing-mock'
-project(':volleyplus').projectDir = new File('./volleyplus/library')
+include ':sqlcmd', ':app'

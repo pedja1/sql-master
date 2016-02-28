@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admob_id">ca-app-pub-6294976772687752/4137239624</string>
+
+    <string-array name="syntaxThemeEntries">
+        <item>@string/theme_default</item>
+        <item>@string/theme_django</item>
+    </string-array>
+
+    <string-array name="syntaxThemeValues">
+        <item>default</item>
+        <item>django</item>
+    </string-array>
+</resources>

@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">SQL CMD</string>
-    <string name="display_limit_exceeded">Showing first %s results.</string>
-</resources>

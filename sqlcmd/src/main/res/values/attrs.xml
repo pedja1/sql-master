@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SQLGridView">
+        <attr name="android:textSize"/>
+        <attr name="sqlview_itemPaddingTop" format="dimension"/>
+        <attr name="sqlview_itemPaddingLeft" format="dimension"/>
+        <attr name="sqlview_itemPaddingRight" format="dimension"/>
+        <attr name="sqlview_itemPaddingBottom" format="dimension"/>
+        <attr name="sqlview_maxColumnWidth" format="dimension"/>
+        <attr name="sqlview_maxDisplayRows" format="integer"/>
+        <attr name="sqlview_verticalDividerSize" format="dimension"/>
+        <attr name="sqlview_horizontalDividerSize" format="dimension"/>
+        <attr name="sqlview_dividerColor" format="color"/>
+        <attr name="sqlview_columnsBackground" format="reference"/>
+        <attr name="sqlview_selectedItemBackground" format="reference"/>
+        <attr name="sqlview_itemTextColor" format="color"/>
+        <attr name="sqlview_itemTextColorSelected" format="color"/>
+        <attr name="sqlview_columnTextColor" format="color"/>
+        <attr name="sqlview_showMessageIfDisplayLimitIsExceeded" format="boolean"/>
+    </declare-styleable>
+</resources>
