@@ -2,7 +2,6 @@ package com.afstd.sqlitecommander.app.fragment;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import com.afstd.sqlitecommander.app.SQLiteDatabaseListActivity;
 import com.afstd.sqlitecommander.app.appmanager.App;
 import com.afstd.sqlitecommander.app.appmanager.AppAdapter;
 import com.afstd.sqlitecommander.app.appmanager.AppManagerUtility;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +82,7 @@ public class FragmentSQLiteApps extends Fragment
         }
     }
 
-    private class ATLoadApps extends AsyncTask<String, Integer, Void>
+    private class ATLoadApps extends SAsyncTask<String, Integer, Void>
     {
         ArrayList<App> apps;
 

@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
@@ -36,6 +35,7 @@ import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.model.DatabaseSearchResult;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBillingProcessor.loadOwnedPurchasesFromGoogle();
     }
 
-    private static class ATCheckRoot extends AsyncTask<Void, Void, Boolean>
+    private static class ATCheckRoot extends SAsyncTask<Void, Void, Boolean>
     {
         ProgressDialog progressDialog;
         private WeakReference<MainActivity> reference;
@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private static class ATGetPro extends AsyncTask<Void, Void, Boolean>
+    private static class ATGetPro extends SAsyncTask<Void, Void, Boolean>
     {
         ProgressDialog progressDialog;
         private WeakReference<MainActivity> reference;

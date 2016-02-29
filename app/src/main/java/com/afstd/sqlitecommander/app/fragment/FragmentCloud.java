@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -33,6 +32,7 @@ import com.afstd.sqlitecommander.app.bus.SyncStatusResponseEvent;
 import com.afstd.sqlitecommander.app.model.AuthToken;
 import com.afstd.sqlitecommander.app.network.SRequestBuilder;
 import com.afstd.sqlitecommander.app.network.SRequestHandler;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -177,6 +177,8 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         {
             mGoogleApiClient.disconnect();
         }
+        if(loadingAnimation != null)
+            loadingAnimation.cancel(true);
     }
 
     @SuppressWarnings("unused")
@@ -415,7 +417,7 @@ public class FragmentCloud extends Fragment implements GoogleApiClient.OnConnect
         }
     }
 
-    private class LoadingAnimation extends AsyncTask<Void, Integer, Void>
+    private class LoadingAnimation extends SAsyncTask<Void, Integer, Void>
     {
         private boolean canceled;
 

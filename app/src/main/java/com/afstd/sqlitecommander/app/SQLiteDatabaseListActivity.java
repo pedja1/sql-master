@@ -2,7 +2,6 @@ package com.afstd.sqlitecommander.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +17,7 @@ import com.afstd.sqlitecommander.app.filemanager.FMAdapter;
 import com.afstd.sqlitecommander.app.filemanager.FMEntry;
 import com.afstd.sqlitecommander.app.filemanager.FMUtils;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class SQLiteDatabaseListActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private class ATParseOutput extends AsyncTask<String, Void, List<FMEntry>>
+    private class ATParseOutput extends SAsyncTask<String, Void, List<FMEntry>>
     {
         private List<String> files;
 

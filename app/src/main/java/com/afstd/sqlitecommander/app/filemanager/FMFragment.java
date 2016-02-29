@@ -18,7 +18,6 @@
  */
 package com.afstd.sqlitecommander.app.filemanager;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -33,6 +32,7 @@ import com.afstd.sqlitecommander.app.App;
 import com.afstd.sqlitecommander.app.R;
 import com.afstd.sqlitecommander.app.SQLiteCMDActivity;
 import com.afstd.sqlitecommander.app.su.ShellInstance;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,7 +188,7 @@ public class FMFragment extends Fragment
 		}
 	}
 
-    private class ATParseOutput extends AsyncTask<String, Void, List<FMEntry>>
+    private class ATParseOutput extends SAsyncTask<String, Void, List<FMEntry>>
     {
         boolean back;
         private List<String> files;

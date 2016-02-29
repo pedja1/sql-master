@@ -2,7 +2,6 @@ package com.afstd.sqlitecommander.app.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +22,7 @@ import com.afstd.sqlitecommander.app.adapter.DatabaseListAdapter;
 import com.afstd.sqlitecommander.app.bus.RemoveAdsEvent;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 import com.afstd.sqlitecommander.app.utility.SettingsManager;
 
 import java.lang.ref.WeakReference;
@@ -144,7 +144,7 @@ public abstract class FragmentDatabaseList extends Fragment implements View.OnCl
         }
     }
 
-    private static class ATLoadDatabases extends AsyncTask<Void, Void, List<DatabaseEntry>>
+    private static class ATLoadDatabases extends SAsyncTask<Void, Void, List<DatabaseEntry>>
     {
         private WeakReference<FragmentDatabaseList> reference;
 

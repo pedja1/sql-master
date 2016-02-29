@@ -3,7 +3,6 @@ package com.afstd.sqlitecommander.app;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +17,7 @@ import com.af.androidutility.lib.AndroidUtility;
 import com.af.androidutility.lib.DisplayManager;
 import com.afstd.sqlitecommander.app.model.DatabaseEntry;
 import com.afstd.sqlitecommander.app.sqlite.DatabaseManager;
+import com.afstd.sqlitecommander.app.utility.SAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
@@ -102,7 +102,7 @@ public abstract class AddSQLDatabaseActivity extends AppCompatActivity
         }
     }
 
-    private static class ATTestConnection extends AsyncTask<Void, Void, Boolean>
+    private static class ATTestConnection extends SAsyncTask<Void, Void, Boolean>
     {
         private WeakReference<AddSQLDatabaseActivity> reference;
         private ProgressDialog progressDialog;
